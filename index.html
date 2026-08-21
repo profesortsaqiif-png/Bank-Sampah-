@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Tabungan Sampah BSU Makkio Baji</title>
+  <link rel="stylesheet" href="assets/css/stylein.css">
+</head>
+<body>
+
+  <!-- HEADER & NAV-BAR -->
+  <div class="top-header-container">
+    <header class="app-header">
+      <img src="assets/img/logo bsu.png" alt="Logo Bank Sampah" class="app-logo">
+      <div class="app-title-container">
+        <h1>BSU Makkio Baji</h1>
+        <p>Sistem Informasi Penimbangan & Tabungan Sampah Digital (Admin Panel)</p>
+      </div>
+    </header>
+
+    <nav class="nav-bar">
+      <a href="#section-transaksi" class="nav-link">⚖️ Transaksi Nasabah</a>
+      <a href="#section-pengelolaan" class="nav-link">⚙️ Pengelolaan Sistem</a>
+      <a href="#section-histori" class="nav-link">📜 Histori Transaksi</a>
+    </nav>
+  </div>
+
+  <!-- BOX BAGIKAN LINK PORTAL NASABAH -->
+  <div class="share-portal-box">
+    <div class="share-portal-info">
+      <strong>🔗 Link Portal Mandiri Nasabah</strong>
+      Bagikan link ini ke nasabah agar mereka bisa mengecek saldo & histori sendiri.
+    </div>
+    <div class="share-portal-input-group">
+      <input type="text" id="linkPortalInput" readonly>
+      <button class="btn-copy" onclick="salinLinkPortal()">📋 Salin Link</button>
+    </div>
+  </div>
+
+  <!-- KONTEN UTAMA -->
+  <div class="main-container">
+
+    <!-- SECTION 1: TRANSAKSI NASABAH -->
+    <div class="card" id="section-transaksi">
+      <div class="section-header">
+        <h2>⚖️ Transaksi Nasabah</h2>
+        <p>Penimbangan sampah dan penarikan saldo nasabah</p>
+      </div>
+
+      <div class="card-body">
+        <div class="form-group">
+          <label for="inputNasabah">Ketik Nomor / Nama Nasabah:</label>
+          <input type="text" id="inputNasabah" placeholder="Cth: Ketik 1 atau Andi Intan" oninput="muatDataNasabah()" list="listRekomendasiNasabah" autocomplete="off">
+          <datalist id="listRekomendasiNasabah"></datalist>
+          <div id="labelNasabahTerdeteksi" class="info-nasabah"></div>
+        </div>
+
+        <div class="form-group" id="containerUbahNamaNasabah" style="display:none;">
+          <label for="inputUbahNamaNasabah">Kelola Nasabah Ini:</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="inputUbahNamaNasabah" placeholder="Nama Baru Nasabah">
+            <button class="btn btn-update" style="width: 110px;" onclick="simpanPerubahanNamaNasabah()">Simpan</button>
+          </div>
+          <button class="btn btn-delete-nasabah" onclick="hapusNasabahTerpilih()">🗑️ Hapus / Hilangkan Nasabah Ini</button>
+        </div>
+
+        <div class="saldo-box">
+          <span>Total Sisa Saldo Nasabah</span>
+          <h3 id="displaySaldo">Rp 0</h3>
+        </div>
+
+        <div class="sub-section-title">1. Form Penimbangan / Penyetoran</div>
+
+        <!-- PILIHAN TANGGAL PENIMBANGAN MANUAL -->
+        <div class="form-group">
+          <label for="inputTanggalTimbang">Pilih Tanggal Penimbangan:</label>
+          <input type="date" id="inputTanggalTimbang">
+        </div>
+
+        <div class="form-group">
+          <label for="inputCariJenisSampah">Ketik Kata Kunci Jenis Sampah:</label>
+          <input type="text" id="inputCariJenisSampah" placeholder="Cth: Ketik 'botol', 'plastik', 'besi'" oninput="prosesPilihSampahInput()" list="listRekomendasiSampah" autocomplete="off">
+          <datalist id="listRekomendasiSampah"></datalist>
+          <div id="infoHargaSampahTerpilih" class="info-nasabah"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="inputBobot" id="labelBobot">Jumlah / Bobot (kg):</label>
+          <input type="number" id="inputBobot" placeholder="Masukkan jumlah/bobot" step="0.1" oninput="hitungHasilTimbang()">
+        </div>
+
+        <div class="result-box">
+          <div class="result-item">
+            <span>Hasil Penimbangan Ini:</span>
+            <strong id="hasilRupiahTimbang" style="color: #2e7d32; font-size: 16px;">Rp 0</strong>
+          </div>
+        </div>
+
+        <button class="btn" style="margin-top: 15px;" onclick="simpanPenimbangan()">+ Simpan Transaksi Penimbangan</button>
+
+        <div class="sub-section-title">2. Penarikan Dana (Tarik Saldo)</div>
+
+        <div class="form-group">
+          <label for="inputTarik">Jumlah Penarikan (Rp):</label>
+          <input type="number" id="inputTarik" placeholder="Masukkan nominal rupiah">
+        </div>
+
+        <button class="btn btn-withdraw" onclick="tarikDana()">- Tarik Dana Saldo</button>
+      </div>
+    </div>
+
+    <!-- SECTION 2: PENGELOLAAN SISTEM -->
+    <div class="card" id="section-pengelolaan">
+      <div class="section-header">
+        <h2>⚙️ Pengelolaan Sistem</h2>
+        <p>Pengaturan data nasabah, jenis & harga master sampah</p>
+      </div>
+
+      <div class="card-body">
+        <div class="sub-section-title">1. Tambah Nasabah Baru</div>
+        <div class="form-group">
+          <label for="inputNamaNasabahBaru">Nama Lengkap Nasabah Baru:</label>
+          <input type="text" id="inputNamaNasabahBaru" placeholder="Cth: Budi Santoso">
+        </div>
+        <button class="btn" style="background-color: #2e7d32; margin-bottom: 25px;" onclick="tambahNasabahBaru()">+ Tambah Nasabah Baru</button>
+
+        <div class="sub-section-title">2. Edit Nama/Harga Sampah Terdaftar</div>
+        <div class="form-group">
+          <label for="editCariJenis">Ketik Nama Sampah yang Ingin Diedit:</label>
+          <input type="text" id="editCariJenis" placeholder="Cth: Ketik 'botol' atau pilih dari list" oninput="tampilkanHargaSaatIni()" list="listRekomendasiSampahEdit" autocomplete="off">
+          <datalist id="listRekomendasiSampahEdit"></datalist>
+        </div>
+
+        <div class="form-group">
+          <label for="editNamaJenisLama">Nama Jenis Sampah Baru:</label>
+          <input type="text" id="editNamaJenisLama" placeholder="Nama Jenis Sampah">
+        </div>
+
+        <div class="form-group">
+          <label for="editHargaBaru">Harga Satuan (Rp):</label>
+          <input type="number" id="editHargaBaru" placeholder="Masukkan harga baru">
+        </div>
+
+        <button class="btn btn-update" onclick="simpanPerubahanHarga()">Simpan Perubahan Sampah</button>
+
+        <div class="sub-section-title" style="margin-top:25px;">3. Tambah Jenis Sampah Baru</div>
+        <div class="form-group">
+          <label for="inputJenisBaru">Nama Sampah Baru:</label>
+          <input type="text" id="inputJenisBaru" placeholder="Cth: PLASTIK - Botol Galon">
+        </div>
+
+        <div class="form-group">
+          <label for="inputHargaJenisBaru">Harga (Rp):</label>
+          <input type="number" id="inputHargaJenisBaru" placeholder="Cth: 3000">
+        </div>
+
+        <div class="form-group">
+          <label for="inputSatuanJenisBaru">Satuan:</label>
+          <select id="inputSatuanJenisBaru">
+            <option value="kg">kg</option>
+            <option value="pcs">pcs</option>
+            <option value="lembar">lembar</option>
+          </select>
+        </div>
+
+        <button class="btn" style="background-color: #2e7d32;" onclick="tambahJenisSampahBaru()">+ Tambah Jenis Sampah</button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: HISTORI TRANSAKSI -->
+    <div class="card card-full" id="section-histori">
+      <div class="section-header">
+        <h2>📜 Histori Transaksi Nasabah</h2>
+        <p id="judulHistoriNasabah">Silakan pilih atau ketik nasabah untuk melihat riwayat transaksi</p>
+      </div>
+
+      <div class="card-body">
+        
+        <!-- KOMPONEN REKAPITULASI PENIMBANGAN PER HARI -->
+        <div id="containerRekapHarian" class="rekap-harian-box" style="display: none;">
+          <div class="rekap-harian-title">📅 Total Penimbangan per Hari:</div>
+          <div id="listRekapHarian" class="rekap-harian-list"></div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Tipe Transaksi</th>
+                <th>Keterangan</th>
+                <th>Nominal (Rp)</th>
+                <th style="text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelHistori">
+              <tr>
+                <td colspan="5" class="empty-state">Belum ada nasabah yang dipilih.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL POPUP EDIT HISTORI -->
+  <div id="modalEdit" class="modal-overlay">
+    <div class="modal-content">
+      <h3 style="margin-top:0; color:#2e7d32; text-align:center;">Edit Transaksi Histori</h3>
+      
+      <div class="form-group">
+        <label for="editTanggalHistori">Tanggal Transaksi:</label>
+        <input type="date" id="editTanggalHistori">
+      </div>
+
+      <div id="containerEditPenimbangan">
+        <div class="form-group">
+          <label for="editJenisSampahHistori">Jenis Sampah (Ketik Kata Kunci):</label>
+          <input type="text" id="editJenisSampahHistori" placeholder="Ketik jenis sampah..." oninput="hitungKalkulasiModalEdit()" list="listRekomendasiSampahModal" autocomplete="off">
+          <datalist id="listRekomendasiSampahModal"></datalist>
+        </div>
+
+        <div class="form-group">
+          <label for="editBobotHistori" id="labelModalBobot">Jumlah / Bobot Satuan:</label>
+          <input type="number" id="editBobotHistori" step="0.1" oninput="hitungKalkulasiModalEdit()">
+        </div>
+      </div>
+
+      <div id="containerEditPenarikan" style="display: none;">
+        <div class="form-group">
+          <label for="editKetHistori">Keterangan Transaksi:</label>
+          <input type="text" id="editKetHistori">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="editNominalHistori">Total Nominal (Rp):</label>
+        <input type="number" id="editNominalHistori">
+      </div>
+
+      <button class="btn" onclick="simpanEditHistori()">Simpan Perubahan</button>
+      <button class="btn btn-cancel" onclick="tutupModalEdit()">Batal</button>
+    </div>
+  </div>
+
+  <!-- LOGIKA JAVASCRIPT -->
+  <script>
+    function muatLinkPortal() {
+      const currentUrl = window.location.href;
+      const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+      const portalUrl = baseUrl + "history.html";
+      document.getElementById("linkPortalInput").value = portalUrl;
+    }
+
+    function salinLinkPortal() {
+      const input = document.getElementById("linkPortalInput");
+      input.select();
+      input.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(input.value).then(() => {
+        alert("Link Portal Nasabah berhasil disalin!\nSilakan bagikan link ini ke nasabah.");
+      }).catch(err => {
+        alert("Gagal menyalin otomatis, silakan salin link secara manual.");
+      });
+    }
+
+    // Set default tanggal input ke hari ini (Format YYYY-MM-DD)
+    function setTanggalHariIni() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("inputTanggalTimbang").value = today;
+    }
+
+    // Format YYYY-MM-DD menjadi DD/MM/YYYY
+    function formatTanggalKeIndo(strTanggal) {
+      if (!strTanggal) return "";
+      const bagian = strTanggal.split("-");
+      if (bagian.length === 3) {
+        return `${bagian[2]}/${bagian[1]}/${bagian[0]}`;
+      }
+      return strTanggal;
+    }
+
+    // Convert DD/MM/YYYY kembali ke YYYY-MM-DD untuk input date
+    function formatTanggalKeInput(strIndo) {
+      if (!strIndo) return "";
+      const bagian = strIndo.split("/");
+      if (bagian.length === 3) {
+        return `${bagian[2]}-${bagian[1]}-${bagian[0]}`;
+      }
+      return strIndo;
+    }
+
+    const daftarNamaAwal = [
+      "Andi Intan", "Safria", "Hamsidar", "Lasviwati Ginting", "Umm Nisrianty", 
+      "A. Putri Dwi Yanti", "St. Farida Syam", "Desi Saraswati", "Hj. Hastia", "Umm Nuraeni", 
+      "Umm Rahmawati", "Umm Jumriah", "Umm Fajriah", "Ansar Djanantin", "Abdul Manan", 
+      "Andi Anto", "Narmi Rahayu", "Umm Ramlah", "Aisyah", "A. Bau Chandrawali", 
+      "Suryani", "Syamsul Sadiman", "Selvi Karim", "Saniasa", "Lutfia", 
+      "Irmayanty Ahmad", "A. Fasiha", "Rostati Abbas", "Hadijah Yusuf", "Hadhoral Qismah", 
+      "Hasniawati M.", "Rahmansyah Dermawan", "Hj. Samsiah", "Ismayanti", "Hj. Nurhaedah", 
+      "Siti Haderah", "Dessy Yanti", "Nur Rakhma Radjab Djoha, SH.", "Iriani Haji", "Novia Tenriawaru", 
+      "Laela Qadrianti", "Nursiah Chaidir", "Siti Nadrah", "Sitti Nursyahda", "Ummi Ros", 
+      "Riska Maulidiah", "H. Kadir dg. Bani", "A. Ilmi Asrianti Asdar", "Andi Rosmawati", "Adriani (Upi)", 
+      "Muh. Irwan", "Sitti Rahma Said (Oma)", "Andi wahida Mahmud", "Hj. A. Kartini Suaib", "Sumarniati", 
+      "Hijrah Amalia Azis", "Umm Nanny", "Ahmad", "A. Syamsuria", "Sri Anita", 
+      "Asniar Tahir", "Juarni", "Hj. Asnaini R.", "Harlinda", "Hatijah", 
+      "A. Mahira", "Ismayuni, SE.", "Dr. Ir. Subagio, SE., MM.", "Norma Syam", "Orin (Novrini Kesumadewi)", 
+      "Abidar", "Pammusereng", "Nursan", "Husti", "Christyanti", 
+      "daeng Tobo", "Hj. Suswati", "Asni Azis", "Muh. Dapri Kodding", "Aghits Renaldy", 
+      "Hj. Semma", "A. Wiwi", "Dewi Sartika", "Umm Isel", "Meri", 
+      "Anggraini", "Azizah", "Amrullah", "Abidin NUhung", "Andi Rahmi", 
+      "Siti Syara Syarda", "Ateng", "Asni Nurani", "Hj. Sumiati", "Suriani Jabbar", 
+      "Rosmah Tami", "Hj. Erna Habibah", "Rahmat Ilannur", "A. Ernawaty", "Azura", 
+      "Winda", "Raihan Shafa", "Maryani", "Febi", "Nurwanti", 
+      "Fidah", "Mila", "Maryati Tombokan", "H. Gus", "Hasni Dekor", 
+      "Muh. Sain", "Putri Katering", "Hj. Musina", "Rustam", "Evi Alimin", 
+      "Yulman", "MBG", "Ridawati", "Suwarni", "Suwardi", 
+      "Damis", "Cece", "Nur Fahmi", "Andi Rahmawati", "M. Taufik", 
+      "Fuad", "Emma", "Sawir", "Maya", "Hj. Ernawati Dahlan", 
+      "Suci", "Masdar", "Waris", "Nuraeni", "Jamaludin", 
+      "Hijrah Abbas", "Muslim", "Yuyun", "Erna Dedi", "A. Titin", 
+      "Amos", "Baso Jalaluddin", "Memed/Siti Hafsah", "M. Saiful Saad, SH.", "Marsuni", 
+      "Samin", "Firman", "Khaeriyati", "Jupri", "Feli", 
+      "Nafisa", "Muh. Saad", "Sumartina", "Sukri", "Mulai", 
+      "Ayhu Siti Hajar", "Erni Johan", "Hartati Abbas", "Ria", "Umm Manaf", 
+      "Ernawati Rifai", "Nurfitriani", "Umm Yeti", "Ramli Abbas", "Salmawati", 
+      "A. Hasnia / Nuni", "Nurlia", "Jumriah", "Hasnah Dg. Baji", "Uni Dg. Masenang", 
+      "Edo", "Lidia", "Fadillah", "M. Rizal Rahman", "Risma Nawir", 
+      "KWT Permata Hijau / Wana", "Wahida", "A. Rasnah", "Menuk", "Herna Hamzah", 
+      "Hj. Inda Siradju"
+    ];
+
+    const defaultHargaBSU = {
+      "PLASTIK - PP Gelas Bening Bersih": { harga: 5000, satuan: "kg" },
+      "PLASTIK - PP Gelas Bening Kotor": { harga: 2500, satuan: "kg" },
+      "PLASTIK - PP Gelas Warna (ale2, montea, teh gelas)": { harga: 2100, satuan: "kg" },
+      "PLASTIK - PP Pipet": { harga: 900, satuan: "kg" },
+      "PLASTIK - PP Cincin Gelas": { harga: 1800, satuan: "kg" },
+      "PLASTIK - PET Botol Bening Bersih": { harga: 4500, satuan: "kg" },
+      "PLASTIK - PET Botol Biru Muda Bersih": { harga: 3200, satuan: "kg" },
+      "PLASTIK - PET Botol Kotor": { harga: 800, satuan: "kg" },
+      "PLASTIK - PET Botol Warna Bersih (hijau/biru)": { harga: 1100, satuan: "kg" },
+      "PLASTIK - PET Botol Bersih Campur (semua warna)": { harga: 1000, satuan: "kg" },
+      "PLASTIK - Toples (bahan PET)": { harga: 1200, satuan: "kg" },
+      "PLASTIK - HD Campur (baskom, gelas, piring)": { harga: 1100, satuan: "kg" },
+      "PLASTIK - Tutup Botol": { harga: 2000, satuan: "kg" },
+      "PLASTIK - Tutup Galon": { harga: 2400, satuan: "kg" },
+      "PLASTIK - HD Blow (bergaris tengah)": { harga: 1500, satuan: "kg" },
+      "PLASTIK - PP Metalik (pembungkus snack silver)": { harga: 200, satuan: "kg" },
+      "PLASTIK - PP Cetak (pembungkus snack, roti, mie)": { harga: 1000, satuan: "kg" },
+      "PLASTIK - Refill / Kemasan Plastik / Karung": { harga: 150, satuan: "lembar" },
+
+      "LOGAM - Besi Tebal (besi cor, besi plat)": { harga: 2500, satuan: "kg" },
+      "LOGAM - Besi Tipis (drum, rak piring)": { harga: 1600, satuan: "kg" },
+      "LOGAM - Kaleng Makanan / Kaleng Susu": { harga: 1000, satuan: "kg" },
+      "LOGAM - Kuningan (kuningan piala)": { harga: 44000, satuan: "kg" },
+      "LOGAM - Tembaga (kabel)": { harga: 80000, satuan: "kg" },
+      "LOGAM - Aluminium Tebal (box mesin motor)": { harga: 15000, satuan: "kg" },
+      "LOGAM - Aluminium Tipis (kaleng minuman, wajan)": { harga: 12000, satuan: "kg" },
+      "LOGAM - Aluminium Siku (Alma dekor)": { harga: 17000, satuan: "kg" },
+      "LOGAM - Aluminium Campur (campur besi)": { harga: 7000, satuan: "kg" },
+      "LOGAM - Besi Seng (seng bekas)": { harga: 800, satuan: "kg" },
+      "LOGAM - Perunggu (keran air, kepala regulator)": { harga: 12000, satuan: "kg" },
+
+      "KERTAS - Kertas Putih (buku tanpa cover, HVS)": { harga: 1300, satuan: "kg" },
+      "KERTAS - Kertas Campur/Warna (majalah, dos)": { harga: 450, satuan: "kg" },
+      "KERTAS - Kertas Buram / Kelabu": { harga: 800, satuan: "kg" },
+      "KERTAS - Kardus (dos/kardus coklat)": { harga: 1200, satuan: "kg" },
+      "KERTAS - Kertas Semen": { harga: 300, satuan: "kg" },
+      "KERTAS - Koran Berita": { harga: 950, satuan: "kg" },
+      "KERTAS - Cones (gulungan bulat)": { harga: 200, satuan: "kg" },
+
+      "KACA - Botol Markisa / Bensin": { harga: 700, satuan: "pcs" },
+      "KACA - Botol Kecap / DHT": { harga: 450, satuan: "pcs" },
+
+      "MINYAK JELANTAH": { harga: 400, satuan: "kg" },
+      "RAK TELUR B (bagus, tidak robek)": { harga: 800, satuan: "kg" },
+      "RAK TELUR C (ada yang robek)": { harga: 600, satuan: "kg" },
+      "AKI Motor": { harga: 10000, satuan: "pcs" },
+      "AKI Mobil": { harga: 55000, satuan: "pcs" },
+      "ORGANIK - Kompos Kering (diayak)": { harga: 800, satuan: "kg" },
+      "ORGANIK - Kompos Basah": { harga: 400, satuan: "kg" },
+      "ORGANIK - Kasgot Murni (kering, diayak)": { harga: 6000, satuan: "kg" }
+    };
+
+    function buatDbAwal() {
+      const db = {};
+      daftarNamaAwal.forEach((nama, index) => {
+        const id = (index + 1).toString();
+        db[id] = { id: id, nama: nama, totalPendapatan: 0, totalPenarikan: 0, histori: [] };
+      });
+      return db;
+    }
+
+    let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3"));
+    if (!dbNasabah || !dbNasabah["1"] || !dbNasabah["1"].nama) {
+      dbNasabah = buatDbAwal();
+      localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
+    }
+
+    let daftarHarga = JSON.parse(localStorage.getItem("daftarHargaBSU_v3")) || defaultHargaBSU;
+
+    let tempNasabahId = null;
+    let tempIndexHistori = null;
+
+    function simpanKeStorage() {
+      localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
+      localStorage.setItem("daftarHargaBSU_v3", JSON.stringify(daftarHarga));
+    }
+
+    function hitungUlangSaldoRealtime(id) {
+      if (!dbNasabah[id]) return;
+      let totalPendapatan = 0;
+      let totalPenarikan = 0;
+
+      if (dbNasabah[id].histori) {
+        dbNasabah[id].histori.forEach(item => {
+          if (item.tipe === 'Penimbangan') {
+            totalPendapatan += item.nominal;
+          } else if (item.tipe === 'Penarikan') {
+            totalPenarikan += item.nominal;
+          }
+        });
+      }
+
+      dbNasabah[id].totalPendapatan = totalPendapatan;
+      dbNasabah[id].totalPenarikan = totalPenarikan;
+      simpanKeStorage();
+    }
+
+    function cariIdNasabah(input) {
+      if (!input) return null;
+      const kataKunci = input.trim().toLowerCase();
+
+      if (dbNasabah[kataKunci]) return kataKunci;
+
+      const pemisah = kataKunci.split(".")[0].trim();
+      if (dbNasabah[pemisah]) return pemisah;
+
+      for (let id in dbNasabah) {
+        if (dbNasabah[id].nama.toLowerCase() === kataKunci) {
+          return id;
+        }
+      }
+      return null;
+    }
+
+    function muatKomponenDinamis() {
+      const listRekomendasiNasabah = document.getElementById("listRekomendasiNasabah");
+      listRekomendasiNasabah.innerHTML = "";
+      for (let id in dbNasabah) {
+        let n = dbNasabah[id];
+        let opt = document.createElement("option");
+        opt.value = `${n.id}. ${n.nama}`;
+        listRekomendasiNasabah.appendChild(opt);
+      }
+
+      const listRekomendasiSampah = document.getElementById("listRekomendasiSampah");
+      const listRekomendasiSampahEdit = document.getElementById("listRekomendasiSampahEdit");
+      const listRekomendasiSampahModal = document.getElementById("listRekomendasiSampahModal");
+
+      listRekomendasiSampah.innerHTML = "";
+      listRekomendasiSampahEdit.innerHTML = "";
+      listRekomendasiSampahModal.innerHTML = "";
+
+      for (let jenis in daftarHarga) {
+        let item = daftarHarga[jenis];
+        
+        let opt1 = document.createElement("option");
+        opt1.value = jenis;
+        opt1.innerText = `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
+        listRekomendasiSampah.appendChild(opt1);
+
+        let opt2 = document.createElement("option");
+        opt2.value = jenis;
+        listRekomendasiSampahEdit.appendChild(opt2);
+
+        let opt3 = document.createElement("option");
+        opt3.value = jenis;
+        opt3.innerText = `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
+        listRekomendasiSampahModal.appendChild(opt3);
+      }
+    }
+
+    function cariNamaJenisSampah(input) {
+      if (!input) return null;
+      const kataKunci = input.trim().toLowerCase();
+
+      if (daftarHarga[input.trim()]) return input.trim();
+
+      for (let jenis in daftarHarga) {
+        if (jenis.toLowerCase() === kataKunci) {
+          return jenis;
+        }
+      }
+      return null;
+    }
+
+    function prosesPilihSampahInput() {
+      const inputVal = document.getElementById("inputCariJenisSampah").value;
+      const jenisFound = cariNamaJenisSampah(inputVal);
+      const infoBox = document.getElementById("infoHargaSampahTerpilih");
+
+      if (jenisFound && daftarHarga[jenisFound]) {
+        const item = daftarHarga[jenisFound];
+        infoBox.innerText = `✓ Terpilih: ${jenisFound} (Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan})`;
+        document.getElementById("labelBobot").innerText = `Jumlah / Bobot (${item.satuan}):`;
+        document.getElementById("inputBobot").placeholder = `Masukkan jumlah (${item.satuan})`;
+      } else {
+        infoBox.innerText = inputVal ? "Mengetik kata kunci..." : "";
+        document.getElementById("labelBobot").innerText = `Jumlah / Bobot (kg):`;
+      }
+      hitungHasilTimbang();
+    }
+
+    function tambahNasabahBaru() {
+      const namaBaru = document.getElementById("inputNamaNasabahBaru").value.trim();
+      if (!namaBaru) {
+        alert("Masukkan nama nasabah baru terlebih dahulu!");
+        return;
+      }
+
+      for (let key in dbNasabah) {
+        if (dbNasabah[key].nama.toLowerCase() === namaBaru.toLowerCase()) {
+          alert(`Nasabah "${namaBaru}" sudah terdaftar dengan ID ${key}!`);
+          return;
+        }
+      }
+
+      const keys = Object.keys(dbNasabah).map(k => parseInt(k)).filter(k => !isNaN(k));
+      const nextId = (keys.length > 0 ? Math.max(...keys) + 1 : 1).toString();
+
+      dbNasabah[nextId] = {
+        id: nextId,
+        nama: namaBaru,
+        totalPendapatan: 0,
+        totalPenarikan: 0,
+        histori: []
+      };
+
+      simpanKeStorage();
+      muatKomponenDinamis();
+
+      document.getElementById("inputNamaNasabahBaru").value = "";
+      document.getElementById("inputNasabah").value = `${nextId}. ${namaBaru}`;
+      muatDataNasabah();
+
+      alert(`Nasabah baru "${namaBaru}" berhasil ditambahkan dengan ID: ${nextId}!`);
+    }
+
+    function hapusNasabahTerpilih() {
+      const input = document.getElementById("inputNasabah").value;
+      const idFound = cariIdNasabah(input);
+
+      if (!idFound || !dbNasabah[idFound]) {
+        alert("Nasabah tidak ditemukan!");
+        return;
+      }
+
+      const namaNasabah = dbNasabah[idFound].nama;
+
+      if (confirm(`Apakah Anda yakin ingin menghapus nasabah "${namaNasabah}" (ID: ${idFound})?\n\nTindakan ini bersifat PERMANEN.`)) {
+        delete dbNasabah[idFound];
+        simpanKeStorage();
+
+        alert(`Nasabah "${namaNasabah}" (ID: ${idFound}) telah berhasil dihapus dari sistem!`);
+        document.getElementById("inputNasabah").value = "";
+        muatKomponenDinamis();
+        muatDataNasabah();
+      }
+    }
+
+    function muatDataNasabah() {
+      const input = document.getElementById("inputNasabah").value;
+      const idFound = cariIdNasabah(input);
+
+      if (idFound && dbNasabah[idFound]) {
+        hitungUlangSaldoRealtime(idFound);
+        const data = dbNasabah[idFound];
+        const sisaSaldo = data.totalPendapatan - data.totalPenarikan;
+        
+        document.getElementById("displaySaldo").innerText = "Rp " + sisaSaldo.toLocaleString('id-ID');
+        document.getElementById("labelNasabahTerdeteksi").innerText = `✓ Terdeteksi: No. ${data.id} - ${data.nama}`;
+        
+        document.getElementById("containerUbahNamaNasabah").style.display = "block";
+        document.getElementById("inputUbahNamaNasabah").value = data.nama;
+
+        tampilkanHistori(data);
+      } else {
+        document.getElementById("displaySaldo").innerText = "Rp 0";
+        document.getElementById("labelNasabahTerdeteksi").innerText = input ? "Nasabah tidak ditemukan" : "";
+        document.getElementById("containerUbahNamaNasabah").style.display = "none";
+        document.getElementById("containerRekapHarian").style.display = "none";
+        
+        document.getElementById("judulHistoriNasabah").innerText = "Silakan pilih atau ketik nasabah untuk melihat riwayat transaksi";
+        document.getElementById("tabelHistori").innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">Belum ada nasabah yang dipilih.</td>
+          </tr>
+        `;
+      }
+    }
+
+    function simpanPerubahanNamaNasabah() {
+      const input = document.getElementById("inputNasabah").value;
+      const idFound = cariIdNasabah(input);
+      const namaBaru = document.getElementById("inputUbahNamaNasabah").value.trim();
+
+      if (!idFound || !dbNasabah[idFound]) {
+        alert("Pilih nasabah terlebih dahulu!");
+        return;
+      }
+      if (!namaBaru) {
+        alert("Masukkan nama baru!");
+        return;
+      }
+
+      dbNasabah[idFound].nama = namaBaru;
+      simpanKeStorage();
+      
+      document.getElementById("inputNasabah").value = `${idFound}. ${namaBaru}`;
+      alert(`Nama nasabah ID ${idFound} berhasil diubah menjadi "${namaBaru}" secara permanen!`);
+      
+      muatKomponenDinamis();
+      muatDataNasabah();
+    }
+
+    // FUNGSI TAMPILKAN HISTORI & KALKULASI REKAP PENIMBANGAN PER HARI
+    function tampilkanHistori(nasabah) {
+      document.getElementById("judulHistoriNasabah").innerText = `Riwayat Transaksi: No. ${nasabah.id} - ${nasabah.nama}`;
+      const tbody = document.getElementById("tabelHistori");
+      const containerRekap = document.getElementById("containerRekapHarian");
+      const listRekap = document.getElementById("listRekapHarian");
+      
+      if (!nasabah.histori || nasabah.histori.length === 0) {
+        containerRekap.style.display = "none";
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">Belum ada riwayat penimbangan atau penarikan dana.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      // 1. Hitung Rekapitulasi Penimbangan per Hari
+      const rekapPerHari = {};
+      let adaPenimbangan = false;
+
+      nasabah.histori.forEach(item => {
+        if (item.tipe === 'Penimbangan') {
+          adaPenimbangan = true;
+          const tanggal = item.waktu; // Menyimpan tanggal saja (contoh: "18/08/2026")
+          if (!rekapPerHari[tanggal]) {
+            rekapPerHari[tanggal] = 0;
+          }
+          rekapPerHari[tanggal] += item.nominal;
+        }
+      });
+
+      // Tampilkan Rekap Harian jika ada data Penimbangan
+      if (adaPenimbangan) {
+        containerRekap.style.display = "block";
+        let htmlRekap = "";
+        for (let tgl in rekapPerHari) {
+          htmlRekap += `
+            <div class="rekap-harian-chip">
+              🗓️ <strong>${tgl}</strong>: Rp ${rekapPerHari[tgl].toLocaleString('id-ID')}
+            </div>
+          `;
+        }
+        listRekap.innerHTML = htmlRekap;
+      } else {
+        containerRekap.style.display = "none";
+      }
+
+      // 2. Render Baris Tabel Histori
+      let html = "";
+      for (let i = nasabah.histori.length - 1; i >= 0; i--) {
+        const item = nasabah.histori[i];
+        const badgeClass = item.tipe === 'Penimbangan' ? 'badge-setor' : 'badge-tarik';
+        const tanda = item.tipe === 'Penimbangan' ? '+' : '-';
+        const warna = item.tipe === 'Penimbangan' ? '#2e7d32' : '#d84315';
+
+        html += `
+          <tr>
+            <td>${item.waktu}</td>
+            <td><span class="badge ${badgeClass}">${item.tipe}</span></td>
+            <td>${item.keterangan}</td>
+            <td style="color: ${warna}; font-weight: bold;">${tanda} Rp ${item.nominal.toLocaleString('id-ID')}</td>
+            <td style="text-align: center; white-space: nowrap;">
+              <button class="btn-action btn-edit" onclick="bukaModalEdit('${nasabah.id}', ${i})">Edit</button>
+              <button class="btn-action btn-delete" onclick="hapusHistori('${nasabah.id}', ${i})">Hapus</button>
+            </td>
+          </tr>
+        `;
+      }
+
+      tbody.innerHTML = html;
+    }
+
+    function hitungHasilTimbang() {
+      const inputVal = document.getElementById("inputCariJenisSampah").value;
+      const jenisFound = cariNamaJenisSampah(inputVal);
+      const bobot = parseFloat(document.getElementById("inputBobot").value) || 0;
+      
+      const item = daftarHarga[jenisFound];
+      const totalRupiah = item ? bobot * item.harga : 0;
+
+      document.getElementById("hasilRupiahTimbang").innerText = "Rp " + totalRupiah.toLocaleString('id-ID');
+      return totalRupiah;
+    }
+
+    function simpanPenimbangan() {
+      const input = document.getElementById("inputNasabah").value.trim();
+      const inputValSampah = document.getElementById("inputCariJenisSampah").value;
+      const jenis = cariNamaJenisSampah(inputValSampah);
+      const bobot = parseFloat(document.getElementById("inputBobot").value);
+      const valTanggal = document.getElementById("inputTanggalTimbang").value;
+
+      if (!input) {
+        alert("Ketikkan Nomor atau Nama Nasabah terlebih dahulu!");
+        return;
+      }
+
+      let id = cariIdNasabah(input);
+
+      if (!id) {
+        alert("Nasabah belum terdaftar! Silakan tambahkan nasabah baru terlebih dahulu.");
+        return;
+      }
+
+      if (!valTanggal) {
+        alert("Pilih tanggal penimbangan terlebih dahulu!");
+        return;
+      }
+
+      if (!jenis || !daftarHarga[jenis]) {
+        alert("Jenis sampah tidak terdaftar! Silakan ketik dan pilih sampah yang sesuai dari list.");
+        return;
+      }
+
+      if (!bobot || bobot <= 0) {
+        alert("Masukkan jumlah/bobot yang valid!");
+        return;
+      }
+
+      const item = daftarHarga[jenis];
+      const hasilRupiah = hitungHasilTimbang();
+      const tglFormatted = formatTanggalKeIndo(valTanggal);
+
+      if (!dbNasabah[id].histori) dbNasabah[id].histori = [];
+      
+      dbNasabah[id].histori.push({
+        waktu: tglFormatted,
+        tipe: 'Penimbangan',
+        jenis: jenis,
+        bobot: bobot,
+        hargaSatuanSaatItu: item.harga,
+        keterangan: `${jenis} (${bobot} ${item.satuan})`,
+        nominal: hasilRupiah
+      });
+
+      hitungUlangSaldoRealtime(id);
+
+      alert(`Penimbangan tanggal ${tglFormatted} berhasil disimpan!\n+ Rp ${hasilRupiah.toLocaleString('id-ID')} ditambahkan ke saldo No. ${dbNasabah[id].id} (${dbNasabah[id].nama}).`);
+      
+      muatKomponenDinamis();
+      muatDataNasabah();
+      document.getElementById("inputCariJenisSampah").value = "";
+      document.getElementById("infoHargaSampahTerpilih").innerText = "";
+      document.getElementById("inputBobot").value = "";
+      document.getElementById("hasilRupiahTimbang").innerText = "Rp 0";
+    }
+
+    function tarikDana() {
+      const input = document.getElementById("inputNasabah").value.trim();
+      const nominalTarik = parseFloat(document.getElementById("inputTarik").value);
+      const valTanggal = document.getElementById("inputTanggalTimbang").value || new Date().toISOString().split('T')[0];
+      const id = cariIdNasabah(input);
+
+      if (!id || !dbNasabah[id]) {
+        alert("Nasabah tidak ditemukan! Ketikkan Nomor/Nama yang valid.");
+        return;
+      }
+      if (!nominalTarik || nominalTarik <= 0) {
+        alert("Masukkan nominal penarikan yang valid!");
+        return;
+      }
+
+      const data = dbNasabah[id];
+      const sisaSaldo = data.totalPendapatan - data.totalPenarikan;
+
+      if (nominalTarik > sisaSaldo) {
+        alert(`Penarikan gagal! Saldo tidak mencukupi.\nSisa saldo saat ini: Rp ${sisaSaldo.toLocaleString('id-ID')}`);
+        return;
+      }
+
+      const tglFormatted = formatTanggalKeIndo(valTanggal);
+
+      if (!data.histori) data.histori = [];
+      data.histori.push({
+        waktu: tglFormatted,
+        tipe: 'Penarikan',
+        keterangan: 'Tarik Tunai Saldo',
+        nominal: nominalTarik
+      });
+
+      hitungUlangSaldoRealtime(id);
+
+      alert(`Penarikan dana tanggal ${tglFormatted} berhasil!\n- Rp ${nominalTarik.toLocaleString('id-ID')} ditarik dari saldo No. ${data.id} (${data.nama}).`);
+      document.getElementById("inputTarik").value = "";
+      muatDataNasabah();
+    }
+
+    function bukaModalEdit(id, index) {
+      tempNasabahId = id;
+      tempIndexHistori = index;
+
+      const item = dbNasabah[id].histori[index];
+
+      document.getElementById("editTanggalHistori").value = formatTanggalKeInput(item.waktu);
+
+      if (item.tipe === 'Penimbangan') {
+        document.getElementById("containerEditPenimbangan").style.display = "block";
+        document.getElementById("containerEditPenarikan").style.display = "none";
+        
+        document.getElementById("editJenisSampahHistori").value = item.jenis || "";
+        document.getElementById("editBobotHistori").value = item.bobot !== undefined ? item.bobot : 0;
+        document.getElementById("editNominalHistori").readOnly = true;
+
+        hitungKalkulasiModalEdit();
+      } else {
+        document.getElementById("containerEditPenimbangan").style.display = "none";
+        document.getElementById("containerEditPenarikan").style.display = "block";
+        
+        document.getElementById("editKetHistori").value = item.keterangan;
+        document.getElementById("editNominalHistori").value = item.nominal;
+        document.getElementById("editNominalHistori").readOnly = false;
+      }
+
+      document.getElementById("modalEdit").style.display = "flex";
+    }
+
+    function hitungKalkulasiModalEdit() {
+      const inputVal = document.getElementById("editJenisSampahHistori").value;
+      const jenisFound = cariNamaJenisSampah(inputVal);
+      const bobot = parseFloat(document.getElementById("editBobotHistori").value) || 0;
+
+      if (jenisFound && daftarHarga[jenisFound]) {
+        const item = daftarHarga[jenisFound];
+        document.getElementById("labelModalBobot").innerText = `Jumlah / Bobot (${item.satuan}):`;
+        const nominalBaru = bobot * item.harga;
+        document.getElementById("editNominalHistori").value = nominalBaru;
+      }
+    }
+
+    function tutupModalEdit() {
+      document.getElementById("modalEdit").style.display = "none";
+      tempNasabahId = null;
+      tempIndexHistori = null;
+    }
+
+    function simpanEditHistori() {
+      const id = tempNasabahId;
+      const index = tempIndexHistori;
+      const item = dbNasabah[id].histori[index];
+      const valTanggal = document.getElementById("editTanggalHistori").value;
+
+      if (!valTanggal) {
+        alert("Pilih tanggal transaksi!");
+        return;
+      }
+
+      item.waktu = formatTanggalKeIndo(valTanggal);
+
+      if (item.tipe === 'Penimbangan') {
+        const inputVal = document.getElementById("editJenisSampahHistori").value;
+        const jenisBaru = cariNamaJenisSampah(inputVal);
+        const bobotBaru = parseFloat(document.getElementById("editBobotHistori").value);
+
+        if (!jenisBaru || !daftarHarga[jenisBaru] || isNaN(bobotBaru) || bobotBaru <= 0) {
+          alert("Ketik Jenis Sampah yang valid dan masukkan bobot!");
+          return;
+        }
+
+        const dataHarga = daftarHarga[jenisBaru];
+        const nominalBaru = bobotBaru * dataHarga.harga;
+
+        item.jenis = jenisBaru;
+        item.bobot = bobotBaru;
+        item.keterangan = `${jenisBaru} (${bobotBaru} ${dataHarga.satuan})`;
+        item.nominal = nominalBaru;
+      } else {
+        const ketBaru = document.getElementById("editKetHistori").value.trim();
+        const nominalBaru = parseFloat(document.getElementById("editNominalHistori").value);
+
+        if (!ketBaru || isNaN(nominalBaru) || nominalBaru < 0) {
+          alert("Masukkan Keterangan dan Nominal Rp yang valid!");
+          return;
+        }
+
+        item.keterangan = ketBaru;
+        item.nominal = nominalBaru;
+      }
+
+      hitungUlangSaldoRealtime(id);
+      tutupModalEdit();
+      muatDataNasabah();
+      alert("Transaksi histori berhasil diperbarui!");
+    }
+
+    function hapusHistori(id, index) {
+      const item = dbNasabah[id].histori[index];
+      if (confirm(`Apakah Anda yakin ingin menghapus transaksi "${item.keterangan}" sebesar Rp ${item.nominal.toLocaleString('id-ID')}?`)) {
+        dbNasabah[id].histori.splice(index, 1);
+        hitungUlangSaldoRealtime(id);
+        muatDataNasabah();
+        alert("Transaksi berhasil dihapus dan saldo otomatis diperbarui!");
+      }
+    }
+
+    function tampilkanHargaSaatIni() {
+      const inputVal = document.getElementById("editCariJenis").value;
+      const jenisFound = cariNamaJenisSampah(inputVal);
+      if (jenisFound && daftarHarga[jenisFound]) {
+        document.getElementById("editNamaJenisLama").value = jenisFound;
+        document.getElementById("editHargaBaru").value = daftarHarga[jenisFound].harga;
+      }
+    }
+
+    function simpanPerubahanHarga() {
+      const inputVal = document.getElementById("editCariJenis").value;
+      const jenisLama = cariNamaJenisSampah(inputVal);
+      const namaJenisBaru = document.getElementById("editNamaJenisLama").value.trim();
+      const hargaBaru = parseFloat(document.getElementById("editHargaBaru").value);
+
+      if (!jenisLama) {
+        alert("Pilih jenis sampah yang ingin diubah!");
+        return;
+      }
+      if (!namaJenisBaru) {
+        alert("Nama jenis sampah tidak boleh kosong!");
+        return;
+      }
+      if (isNaN(hargaBaru) || hargaBaru < 0) {
+        alert("Masukkan harga baru yang valid!");
+        return;
+      }
+
+      const satuanLama = daftarHarga[jenisLama].satuan;
+
+      if (jenisLama !== namaJenisBaru) {
+        delete daftarHarga[jenisLama];
+      }
+
+      daftarHarga[namaJenisBaru] = { harga: hargaBaru, satuan: satuanLama };
+      simpanKeStorage();
+
+      muatKomponenDinamis();
+      muatDataNasabah();
+      alert(`Harga/Nama sampah "${namaJenisBaru}" berhasil diperbarui menjadi Rp ${hargaBaru.toLocaleString('id-ID')}.`);
+    }
+
+    function tambahJenisSampahBaru() {
+      const namaBaru = document.getElementById("inputJenisBaru").value.trim();
+      const hargaBaru = parseFloat(document.getElementById("inputHargaJenisBaru").value);
+      const satuanBaru = document.getElementById("inputSatuanJenisBaru").value;
+
+      if (!namaBaru) {
+        alert("Masukkan nama jenis sampah baru!");
+        return;
+      }
+      if (isNaN(hargaBaru) || hargaBaru < 0) {
+        alert("Masukkan harga sampah yang valid!");
+        return;
+      }
+
+      daftarHarga[namaBaru] = { harga: hargaBaru, satuan: satuanBaru };
+      simpanKeStorage();
+      muatKomponenDinamis();
+
+      document.getElementById("inputJenisBaru").value = "";
+      document.getElementById("inputHargaJenisBaru").value = "";
+      
+      alert(`Jenis sampah baru "${namaBaru}" berhasil ditambahkan secara permanen!`);
+    }
+
+    // INISIALISASI
+    setTanggalHariIni();
+    muatKomponenDinamis();
+    muatLinkPortal();
+  </script>
+</body>
+</html>
