@@ -50,7 +50,7 @@
       <div class="card-body">
         <div class="form-group">
           <label for="inputNasabah">Ketik Nomor / Nama Nasabah:</label>
-          <input type="text" id="inputNasabah" placeholder="Cth: Ketik 1 atau Andi Intan" list="listRekomendasiNasabah" autocomplete="off">
+          <input type="text" id="inputNasabah" placeholder="Masukkan Nomor/Nama Nasabah" list="listRekomendasiNasabah" autocomplete="off">
           <datalist id="listRekomendasiNasabah"></datalist>
           <div id="labelNasabahTerdeteksi" class="info-nasabah"></div>
         </div>
@@ -109,7 +109,6 @@
           <select id="inputMetodeTarik">
             <option value="Tunai">💵 Tunai (Cash)</option>
             <option value="Transfer Bank">🏦 Transfer Bank</option>
-
             <option value="Gopay">🟢 GoPay</option>
             <option value="OVO">💜 OVO</option>
             <option value="ShopeePay">🟠 ShopeePay</option>
@@ -249,7 +248,6 @@
           <select id="editMetodeHistori">
             <option value="Tunai">💵 Tunai (Cash)</option>
             <option value="Transfer Bank">🏦 Transfer Bank</option>
-
             <option value="GoPay">🟢 GoPay</option>
             <option value="OVO">💜 OVO</option>
             <option value="ShopeePay">🟠 ShopeePay</option>
@@ -275,47 +273,13 @@
 
   <!-- LOGIKA JAVASCRIPT -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const daftarNamaAwal = [
-        "Andi Intan", "Safria", "Hamsidar", "Lasviwati Ginting", "Umm Nisrianty", 
-        "A. Putri Dwi Yanti", "St. Farida Syam", "Desi Saraswati", "Hj. Hastia", "Umm Nuraeni", 
-        "Umm Rahmawati", "Umm Jumriah", "Umm Fajriah", "Ansar Djanantin", "Abdul Manan", 
-        "Andi Anto", "Narmi Rahayu", "Umm Ramlah", "Aisyah", "A. Bau Chandrawali", 
-        "Suryani", "Syamsul Sadiman", "Selvi Karim", "Saniasa", "Lutfia", 
-        "Irmayanty Ahmad", "A. Fasiha", "Rostati Abbas", "Hadijah Yusuf", "Hadhoral Qismah", 
-        "Hasniawati M.", "Rahmansyah Dermawan", "Hj. Samsiah", "Ismayanti", "Hj. Nurhaedah", 
-        "Siti Haderah", "Dessy Yanti", "Nur Rakhma Radjab Djoha, SH.", "Iriani Haji", "Novia Tenriawaru", 
-        "Laela Qadrianti", "Nursiah Chaidir", "Siti Nadrah", "Sitti Nursyahda", "Ummi Ros", 
-        "Riska Maulidiah", "H. Kadir dg. Bani", "A. Ilmi Asrianti Asdar", "Andi Rosmawati", "Adriani (Upi)", 
-        "Muh. Irwan", "Sitti Rahma Said (Oma)", "Andi wahida Mahmud", "Hj. A. Kartini Suaib", "Sumarniati", 
-        "Hijrah Amalia Azis", "Umm Nanny", "Ahmad", "A. Syamsuria", "Sri Anita", 
-        "Asniar Tahir", "Juarni", "Hj. Asnaini R.", "Harlinda", "Hatijah", 
-        "A. Mahira", "Ismayuni, SE.", "Dr. Ir. Subagio, SE., MM.", "Norma Syam", "Orin (Novrini Kesumadewi)", 
-        "Abidar", "Pammusereng", "Nursan", "Husti", "Christyanti", 
-        "daeng Tobo", "Hj. Suswati", "Asni Azis", "Muh. Dapri Kodding", "Aghits Renaldy", 
-        "Hj. Semma", "A. Wiwi", "Dewi Sartika", "Umm Isel", "Meri", 
-        "Anggraini", "Azizah", "Amrullah", "Abidin NUhung", "Andi Rahmi", 
-        "Siti Syara Syarda", "Ateng", "Asni Nurani", "Hj. Sumiati", "Suriani Jabbar", 
-        "Rosmah Tami", "Hj. Erna Habibah", "Rahmat Ilannur", "A. Ernawaty", "Azura", 
-        "Winda", "Raihan Shafa", "Maryani", "Febi", "Nurwanti", 
-        "Fidah", "Mila", "Maryati Tombokan", "H. Gus", "Hasni Dekor", 
-        "Muh. Sain", "Putri Katering", "Hj. Musina", "Rustam", "Evi Alimin", 
-        "Yulman", "MBG", "Ridawati", "Suwarni", "Suwardi", 
-        "Damis", "Cece", "Nur Fahmi", "Andi Rahmawati", "M. Taufik", 
-        "Fuad", "Emma", "Sawir", "Maya", "Hj. Ernawati Dahlan", 
-        "Suci", "Masdar", "Waris", "Nuraeni", "Jamaludin", 
-        "Hijrah Abbas", "Muslim", "Yuyun", "Erna Dedi", "A. Titin", 
-        "Amos", "Baso Jalaluddin", "Memed/Siti Hafsah", "M. Saiful Saad, SH.", "Marsuni", 
-        "Samin", "Firman", "Khaeriyati", "Jupri", "Feli", 
-        "Nafisa", "Muh. Saad", "Sumartina", "Sukri", "Mulai", 
-        "Ayhu Siti Hajar", "Erni Johan", "Hartati Abbas", "Ria", "Umm Manaf", 
-        "Ernawati Rifai", "Nurfitriani", "Umm Yeti", "Ramli Abbas", "Salmawati", 
-        "A. Hasnia / Nuni", "Nurlia", "Jumriah", "Hasnah Dg. Baji", "Uni Dg. Masenang", 
-        "Edo", "Lidia", "Fadillah", "M. Rizal Rahman", "Risma Nawir", 
-        "KWT Permata Hijau / Wana", "Wahida", "A. Rasnah", "Menuk", "Herna Hamzah", 
-        "Hj. Inda Siradju"
-      ];
+    // Membaca murni data nasabah hasil pendaftaran dari LocalStorage (tanpa dummy)
+let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
 
+// Memastikan state ter-save dengan benar
+localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
+    document.addEventListener("DOMContentLoaded", () => {
+      // Daftar Harga Default Sampah BSU
       const defaultHargaBSU = {
         "PLASTIK - PP Gelas Bening Bersih": { harga: 5000, satuan: "kg" },
         "PLASTIK - PP Gelas Bening Kotor": { harga: 2500, satuan: "kg" },
@@ -369,20 +333,9 @@
         "ORGANIK - Kasgot Murni (kering, diayak)": { harga: 6000, satuan: "kg" }
       };
 
-      const buatDbAwal = () => {
-        const db = {};
-        daftarNamaAwal.forEach((nama, index) => {
-          const id = (index + 1).toString();
-          db[id] = { id, nama, totalPendapatan: 0, totalPenarikan: 0, histori: [] };
-        });
-        return db;
-      };
-
-      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3"));
-      if (!dbNasabah || !dbNasabah["1"] || !dbNasabah["1"].nama) {
-        dbNasabah = buatDbAwal();
-        localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
-      }
+      // Mengambil Database Nasabah murni dari LocalStorage (terhubung langsung dengan pendaftaran di login.html)
+      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
+      localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
 
       let daftarHarga = JSON.parse(localStorage.getItem("daftarHargaBSU_v3")) || defaultHargaBSU;
       let tempNasabahId = null;
