@@ -1,195 +1,667 @@
-  * {
+ * {
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    }
+
+    :root {
+      --sidebar-bg: #0b4eab;
+      --sidebar-hover: #155ec4;
+      --sidebar-active: #1d69d8;
+      --main-bg: #eaf3ff;
+      --card-bg: #ffffff;
+      --text-main: #0f2b5c;
+      --text-muted: #64748b;
+      --accent-blue: #1d69d8;
+      --header-height: 90px;
+      --sidebar-width: 240px;
     }
 
     body {
-      background-color: #f0f4f8;
+      background-color: var(--main-bg);
+      min-height: 100vh;
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
     }
 
-    /* Header Logo */
-    .app-header {
-      background: #ffffff;
+    /* HEADER UTAMA GLOBAL */
+    .site-header {
       width: 100%;
-      max-width: 700px;
-      border-radius: 12px;
-      padding: 20px;
+      min-height: var(--header-height);
+      background-color: var(--sidebar-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 200;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Tombol Toggle Menu Mobile */
+    .menu-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .site-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-box {
+      width: 60px;
+      height: 60px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 850;
+      line-height: 1.2;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title b {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 2px;
+      color: #dbeafe;
+    }
+
+    .header-right-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-left: auto;
+    }
+
+    .header-search-box {
+      width: 280px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header-search-box input {
+      width: 100%;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #0f2b5c;
+      transition: all 0.2s ease;
+    }
+
+    .header-search-box input:focus {
+      background-color: #ffffff;
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.4);
+    }
+
+    .header-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 6px 12px;
+      border-radius: 20px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background-color: var(--sidebar-active);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-role {
+      font-size: 10px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+
+    .user-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* APP LAYOUT */
+    .app-container {
+      display: flex;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    /* SIDEBAR LAYOUT */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      position: fixed;
+      top: var(--header-height);
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 100;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* MODIFIKASI: Mengatur grup menu atas agar memenuhi sisa tinggi sidebar */
+    .nav-top-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex-grow: 1;
+      justify-content: space-evenly; /* Menyebarkan menu Home dan History secara seimbang */
+      padding-bottom: 16px;
+    }
+
+    /* MODIFIKASI: Memperbesar ukuran tombol Home dan History */
+    .nav-top-group .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 20px; /* Ukuran padding diperbesar */
+      font-size: 17px;    /* Ukuran font diperbesar */
+      font-weight: 700;
+      border-radius: 14px;
+      flex: 1;            /* Mengisi ruang secara vertikal */
+      max-height: 120px;  /* Batas tinggi maksimum tombol */
+    }
+
+    .nav-top-group .nav-icon {
+      font-size: 26px;    /* Ukuran ikon diperbesar */
+      width: 36px;
+    }
+
+    .nav-bottom-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background-color: var(--sidebar-hover);
+      color: white;
+    }
+
+    .nav-item.active {
+      background-color: var(--sidebar-active);
+      color: white;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      width: calc(100% - var(--sidebar-width));
+    }
+
+    .top-global-header {
+      position: sticky;
+      top: var(--header-height);
+      z-index: 90;
+      background: var(--main-bg);
+      padding: 20px 24px 12px 24px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .global-nasabah-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
       flex-wrap: wrap;
     }
 
-    .app-logo {
-      max-height: 50px;
-      width: auto;
-      object-fit: contain;
-      background-color: #489f4279;
-      border-radius: 20px;
+    .global-card-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      min-width: 240px;
     }
 
-    .app-title-container {
-      text-align: left;
+    .global-card-right {
+      display: flex;
+      align-items: center;
     }
 
-    .app-title-container h1 {
-      margin: 0;
-      font-size: 20px;
-      color: #2e7d32;
+    .nasabah-info-badge {
+      display: none;
+      align-items: center;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      flex-wrap: wrap;
     }
 
-    .app-title-container p {
-      margin: 2px 0 0 0;
-      font-size: 12px;
-      color: #666;
+    .nasabah-info-badge.active {
+      display: flex;
     }
 
-    /* Container Utama */
-    .portal-container {
+    .nasabah-info-col {
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f2b5c;
+      border-right: 1px solid #e2e8f0;
+      background-color: #ffffff;
+    }
+
+    .nasabah-info-col:last-child {
+      border-right: none;
+      flex-grow: 1;
+    }
+
+    .nasabah-info-col.no-id {
+      background-color: #f8fafc;
+      color: #334155;
+      text-align: center;
+      min-width: 40px;
+    }
+
+    .saldo-box-inline {
+      background: #ffffff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      text-align: right;
+      border: 1px dashed #93c5fd;
+      min-width: 160px;
+    }
+
+    .main-content {
+      padding: 16px 24px 32px 24px;
+      max-width: 1400px;
       width: 100%;
-      max-width: 700px;
+    }
+
+    .dashboard-header {
+      margin-bottom: 20px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .dashboard-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .content-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      margin-bottom: 20px;
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0369a1;
+      background-color: #e0f2fe;
+      padding: 8px 14px;
+      border-radius: 8px;
+      display: inline-block;
+      border-left: 4px solid #0284c7;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* CONTAINER DIAGRAM */
+    .charts-grid-container {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-    }
-
-    .section-header {
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      color: white;
-      padding: 15px 20px;
-    }
-
-    .section-header h2 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    .card-body {
-      padding: 20px;
-    }
-
-    /* Input Pencarian */
-    label {
-      font-weight: 600;
-      color: #333;
-      display: block;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-
-    input[type="text"] {
+    .chart-container-box {
+      position: relative;
       width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.3s;
-      background-color: #fff;
+      height: 300px;
+      margin-top: 10px;
     }
 
-    input[type="text"]:focus {
-      border-color: #2e7d32;
+    .page-section {
+      display: none;
     }
 
-    .info-detected {
-      font-size: 13px;
-      color: #2e7d32;
-      font-weight: bold;
-      margin-top: 6px;
+    .page-section.active {
+      display: block;
     }
 
-    /* Tampilan Utama Box Saldo */
-    .saldo-box {
-      background-color: #e8f5e9;
-      border: 2px solid #2e7d32;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      margin-top: 15px;
-    }
-
-    .saldo-box span {
-      font-size: 12px;
-      color: #555;
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    .saldo-box h3 {
-      margin: 8px 0 0 0;
-      color: #2e7d32;
-      font-size: 32px;
-    }
-
-    /* Tabel Histori */
     .table-container {
+      width: 100%;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
-    }
-
-    th, td {
-      padding: 12px;
       text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-      vertical-align: middle;
+      white-space: nowrap;
     }
 
     th {
-      background-color: #2e7d32;
-      color: white;
-      font-weight: 600;
+      padding: 12px 14px;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e2e8f0;
     }
 
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--text-main);
     }
 
-    /* Badge Transaksi */
     .badge {
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 12px;
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 600;
       display: inline-block;
     }
 
-    .badge-setor {
-      background-color: #e8f5e9;
-      color: #2e7d32;
-      border: 1px solid #a5d6a7;
+    .badge-setor { background-color: #dcfce7; color: #166534; }
+    .badge-tarik { background-color: #fee2e2; color: #991b1b; }
+
+    /* STYLES KARTU KONTAK */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
 
-    .badge-tarik {
-      background-color: #fbe9e7;
-      color: #d84315;
-      border: 1px solid #ffab91;
+    .contact-card-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: all 0.2s ease;
     }
 
-    .empty-state {
-      text-align: center;
-      color: #777;
-      padding: 25px 10px;
-      font-style: italic;
+    .contact-card-item:hover {
+      border-color: #93c5fd;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .contact-icon {
+      font-size: 24px;
+      background: #e0f2fe;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-info-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .contact-info-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* OVERLAY MOBILE SIDEBAR */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+
+    /* RESPONSIVE MEDIA QUERIES */
+    @media (max-width: 992px) {
+      .header-search-box {
+        width: 220px;
+      }
+      .brand-subtitle {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --header-height: auto;
+      }
+
+      .site-header {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        position: sticky;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .header-right-container {
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-between;
+        margin-top: 8px;
+        gap: 8px;
+      }
+
+      .header-search-box {
+        flex: 1;
+        width: auto;
+      }
+
+      .header-user-badge {
+        padding: 4px 8px;
+      }
+      
+      .user-info {
+        display: none;
+      }
+
+      .app-container {
+        margin-top: 0;
+        min-height: auto;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+        width: 260px;
+        height: 100vh;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .top-global-header {
+        position: relative;
+        top: 0;
+        padding: 12px 16px;
+      }
+
+      .main-content {
+        padding: 12px 16px 24px 16px;
+      }
+
+      .global-nasabah-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .saldo-box-inline {
+        text-align: left;
+        width: 100%;
+      }
+
+      .chart-container-box {
+        height: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-title {
+        font-size: 15px;
+      }
+
+      .brand-logo-box {
+        width: 44px;
+        height: 44px;
+      }
+
+      .content-card {
+        padding: 14px;
+      }
+
+      .dashboard-header h1 {
+        font-size: 18px;
+      }
     }

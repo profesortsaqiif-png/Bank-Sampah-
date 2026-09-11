@@ -3,188 +3,591 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cek Tabungan Nasabah - BSU Makkio Baji</title>
+  <title>Portal Nasabah - BSU Makkio Baji</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="assets/css/stylehis.css">
 </head>
 <body>
 
-  <!-- HEADER APLIKASI + LOGO -->
-  <header class="app-header">
-    <img src="assets/img/logo bsu.png" alt="Logo Bank Sampah" class="app-logo">
-    <div class="app-title-container">
-      <h1>BSU Makkio Baji</h1>
-      <p>Pengecekan Saldo & Histori Tabungan</p>
+  <!-- HEADER ATAS GLOBAL -->
+  <header class="site-header">
+    <div class="header-left">
+      <button class="menu-toggle" id="btnToggleSidebar" aria-label="Buka Menu">☰</button>
+      <div class="site-brand">
+        <div class="brand-logo-box">
+          <img src="assets/img/logo.jpeg" alt="Logo BSU Makkio Baji" class="brand-logo-img">
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Bank Sampah <b>Makkio Baji</b></span>
+          <span class="brand-subtitle">Portal Informasi & Tabungan Nasabah</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-right-container">
+      <div class="header-search-box">
+        <input type="text" id="inputNasabah" placeholder="🔍 Cari No. / Nama Nasabah..." list="listRekomendasiNasabah" autocomplete="off">
+        <datalist id="listRekomendasiNasabah"></datalist>
+      </div>
+
+      <div class="header-user-badge">
+        <div class="user-avatar">N</div>
+        <div class="user-info">
+          <span class="user-role">NASABAH PORTAL</span>
+          <span class="user-name">Portal Publik</span>
+        </div>
+      </div>
     </div>
   </header>
 
-  <div class="portal-container">
+  <!-- OVERLAY UNTUK MOBILE SIDEBAR -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- CARD 1: PENCARIAN & SALDO -->
-    <div class="card">
-      <div class="section-header">
-        <h2>💰 Informasi Saldo Nasabah</h2>
-      </div>
-
-      <div class="card-body">
-        <!-- Input Pencarian -->
-        <div>
-          <label for="inputCariNasabah">Masukkan Nama atau Nomor ID Nasabah:</label>
-          <input type="text" id="inputCariNasabah" placeholder="Cth: Andi Intan atau 1" oninput="cariDanTampilkanNasabah()" list="listRekomendasi" autocomplete="off">
-          <datalist id="listRekomendasi"></datalist>
-          <div id="labelTerdeteksi" class="info-detected"></div>
+  <div class="app-container">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="sidebar">
+      <nav class="nav-menu">
+        <div class="nav-top-group">
+          <a id="navHome" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+          </a>
+          <a id="navHistory" class="nav-item">
+            <span class="nav-icon">📜</span>
+            <span>Histori Transaksi</span>
+          </a>
         </div>
 
-        <!-- TAMPILAN TOTAL SALDO UTAMA -->
-        <div class="saldo-box">
-          <span>Total Sisa Saldo Anda</span>
-          <h3 id="displaySaldo">Rp 0</h3>
+        <div class="nav-bottom-group">
+          <a id="navContact" class="nav-item">
+            <span class="nav-icon">📞</span>
+            <span>Kontak</span>
+          </a>
         </div>
-      </div>
+      </nav>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+
+      <!-- HEADER GLOBAL NASABAH CARD -->
+      <header class="top-global-header">
+        <div class="global-nasabah-card">
+          <div class="global-card-left">
+            <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
+              Informasi Nasabah Terpilih:
+            </span>
+            <div id="nasabahInfoBadge" class="nasabah-info-badge">
+              <div id="infoColNo" class="nasabah-info-col no-id">-</div>
+              <div id="infoColKode" class="nasabah-info-col">-</div>
+              <div id="infoColNama" class="nasabah-info-col">-</div>
+            </div>
+            <div id="nasabahEmptyState" style="font-size: 13px; color: var(--text-muted); font-style: italic; padding: 6px 0;">
+              Silakan pilih/cari nasabah di kolom pencarian ↗️
+            </div>
+          </div>
+
+          <div class="global-card-right">
+            <div class="saldo-box-inline">
+              <span style="font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sisa Saldo Nasabah</span>
+              <h3 id="displaySaldo" style="font-size: 20px; color: #0b326f; margin-top: 2px; font-weight: 800;">Rp 0</h3>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT AREA -->
+      <main class="main-content">
+        
+        <!-- SECTION HOME -->
+        <div id="sectionHome" class="page-section active">
+          <div class="dashboard-header">
+            <h1>Dashboard & Analisis Tabungan 📊</h1>
+            <p>Visualisasi statistik total timbangan sampah berdasarkan kategori dan per bulan (Jan - Des).</p>
+          </div>
+
+          <section class="content-card" style="border: 2px solid #bfdbfe; background: #f4f8ff;">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="section-title" style="background-color: #dbeafe; color: #1e40af; border-left-color: #1d69d8;">
+                  👤 Diagram Statistik Per Nasabah Terpilih
+                </h2>
+              </div>
+            </div>
+
+            <div class="charts-grid-container">
+              <!-- Kartu Diagram 1: 7 Kategori Standar -->
+              <div class="content-card" style="margin-bottom: 0;">
+                <h3 style="font-size: 14px; font-weight: 700; color: #0f2b5c; margin-bottom: 10px;" id="labelChartNasabahKategori">
+                  📦 Timbangan per 7 Kategori (kg) - (Pilih Nasabah)
+                </h3>
+                <div class="chart-container-box">
+                  <canvas id="chartKategori"></canvas>
+                </div>
+              </div>
+
+              <!-- Kartu Diagram 2: Per Bulan Lengkap (Jan - Des) -->
+              <div class="content-card" style="margin-bottom: 0;">
+                <h3 style="font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 10px;" id="labelChartNasabahBulan">
+                  📅 Timbangan per Bulan Jan - Des (kg) - (Pilih Nasabah)
+                </h3>
+                <div class="chart-container-box">
+                  <canvas id="chartBulan"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- SECTION HISTORI TRANSAKSI -->
+        <div id="sectionHistory" class="page-section">
+          <div class="dashboard-header">
+            <h1>Riwayat & Histori Transaksi 📜</h1>
+            <p>Daftar catatan transaksi penimbangan sampah dan penarikan saldo nasabah.</p>
+          </div>
+
+          <section class="content-card">
+            <div>
+              <h2 class="section-title">📜 Histori Transaksi</h2>
+              <p class="section-sub" id="judulHistoriNasabah" style="margin-bottom: 18px;">Pilih nasabah untuk melihat rincian transaksi</p>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Tipe Transaksi</th>
+                    <th>Keterangan / Detail</th>
+                    <th style="text-align: right;">Nominal</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelHistori">
+                  <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">
+                      Silakan cari ID atau Nama Nasabah di kolom atas untuk menampilkan riwayat transaksi.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <!-- SECTION KONTAK -->
+        <div id="sectionContact" class="page-section">
+          <div class="dashboard-header">
+            <h1>Hubungi Kami 📞</h1>
+            <p>Informasi layanan pengurus Bank Sampah Unit Makkio Baji.</p>
+          </div>
+
+          <section class="content-card">
+            <div>
+              <h2 class="section-title">💬 Layanan & Kontak Pengurus</h2>
+              <p class="section-sub" style="margin-bottom: 18px;">Silakan hubungi kontak di bawah ini jika memiliki pertanyaan terkait penimbangan sampah atau saldo tabungan nasabah.</p>
+            </div>
+
+            <div class="contact-grid">
+              <div class="contact-card-item">
+                <div class="contact-icon">📍</div>
+                <div class="contact-info-text">
+                  <h4>Alamat Sekretariat</h4>
+                  <p>BSU Makkio Baji, Kec. Manggala, Kota Makassar, Sulawesi Selatan.</p>
+                </div>
+              </div>
+
+              <div class="contact-card-item">
+                <div class="contact-icon">💬</div>
+                <div class="contact-info-text">
+                  <h4>WhatsApp / Telepon</h4>
+                  <p>+62-813-1538-2589 (Pengurus BSU)</p>
+                </div>
+              </div>
+
+              <div class="contact-card-item">
+                <div class="contact-icon">⏰</div>
+                <div class="contact-info-text">
+                  <h4>Jam Operasional</h4>
+                  <p>Hari : Rabu dan Minggu 
+                    <br>Pukul : 08.00-11.00 WITA
+                    <br>Minggu: Libur</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </main>
     </div>
-
-    <!-- CARD 2: TABEL HISTORI TRANSAKSI -->
-    <div class="card">
-      <div class="section-header">
-        <h2>📜 Histori Transaksi</h2>
-      </div>
-
-      <div class="card-body">
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal & Waktu</th>
-                <th>Tipe</th>
-                <th>Keterangan</th>
-                <th>Nominal (Rp)</th>
-              </tr>
-            </thead>
-            <tbody id="tabelHistoriNasabah">
-              <tr>
-                <td colspan="4" class="empty-state">Ketikkan Nama/ID di atas untuk melihat riwayat transaksi.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- JAVASCRIPT READ-ONLY -->
   <script>
-    // Mengambil Database dari LocalStorage
-    let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
+    document.addEventListener("DOMContentLoaded", () => {
+      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v5")) || JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
 
-    // Auto-complete Nama Nasabah
-    function inisialisasiDatalist() {
-      const list = document.getElementById("listRekomendasi");
-      list.innerHTML = "";
-      for (let id in dbNasabah) {
-        let n = dbNasabah[id];
-        let opt = document.createElement("option");
-        opt.value = `${n.id}. ${n.nama}`;
-        list.appendChild(opt);
-      }
-    }
+      const inputNasabah = document.getElementById("inputNasabah");
+      const listRekomendasiNasabah = document.getElementById("listRekomendasiNasabah");
+      const nasabahInfoBadge = document.getElementById("nasabahInfoBadge");
+      const nasabahEmptyState = document.getElementById("nasabahEmptyState");
+      const infoColNo = document.getElementById("infoColNo");
+      const infoColKode = document.getElementById("infoColKode");
+      const infoColNama = document.getElementById("infoColNama");
+      const displaySaldo = document.getElementById("displaySaldo");
+      const judulHistoriNasabah = document.getElementById("judulHistoriNasabah");
+      const labelChartNasabahKategori = document.getElementById("labelChartNasabahKategori");
+      const labelChartNasabahBulan = document.getElementById("labelChartNasabahBulan");
+      const tabelHistori = document.getElementById("tabelHistori");
 
-    // Mencari ID Nasabah
-    function cariIdNasabah(input) {
-      if (!input) return null;
-      const kataKunci = input.trim().toLowerCase();
+      // Elements Navigasi Sidebar Mobile
+      const btnToggleSidebar = document.getElementById("btnToggleSidebar");
+      const sidebar = document.getElementById("sidebar");
+      const sidebarOverlay = document.getElementById("sidebarOverlay");
 
-      if (dbNasabah[kataKunci]) return kataKunci;
+      const toggleMobileSidebar = () => {
+        sidebar.classList.toggle("open");
+        sidebarOverlay.classList.toggle("active");
+      };
 
-      const pemisah = kataKunci.split(".")[0].trim();
-      if (dbNasabah[pemisah]) return pemisah;
+      const closeMobileSidebar = () => {
+        sidebar.classList.remove("open");
+        sidebarOverlay.classList.remove("active");
+      };
 
-      for (let id in dbNasabah) {
-        if (dbNasabah[id].nama.toLowerCase() === kataKunci) {
-          return id;
+      btnToggleSidebar.addEventListener("click", toggleMobileSidebar);
+      sidebarOverlay.addEventListener("click", closeMobileSidebar);
+
+      // Elements Navigasi Tab
+      const navHome = document.getElementById("navHome");
+      const navHistory = document.getElementById("navHistory");
+      const navContact = document.getElementById("navContact");
+      const sectionHome = document.getElementById("sectionHome");
+      const sectionHistory = document.getElementById("sectionHistory");
+      const sectionContact = document.getElementById("sectionContact");
+
+      let chartKategoriInstance = null;
+      let chartBulanInstance = null;
+
+      // 7 Kategori Sampah Utama
+      const KATEGORI_UTAMA = [
+        "PLASTIK",
+        "LOGAM",
+        "KERTAS",
+        "KACA",
+        "MINYAK JELANTAH",
+        "ORGANIK",
+        "LAIN-LAIN (ELEKTRONIK)"
+      ];
+
+      const WARNA_KATEGORI = [
+        "#1d69d8",
+        "#64748b",
+        "#f59e0b",
+        "#06b6d4",
+        "#eab308",
+        "#10b981",
+        "#8b5cf6"
+      ];
+
+      // Daftar 12 Bulan Lengkap
+      const LIST_BULAN = [
+        "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", 
+        "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
+      ];
+
+      // Event Listener Navigasi Menu
+      navHome.addEventListener("click", () => {
+        navHome.classList.add("active");
+        navHistory.classList.remove("active");
+        navContact.classList.remove("active");
+        sectionHome.classList.add("active");
+        sectionHistory.classList.remove("active");
+        sectionContact.classList.remove("active");
+        closeMobileSidebar();
+      });
+
+      navHistory.addEventListener("click", () => {
+        navHistory.classList.add("active");
+        navHome.classList.remove("active");
+        navContact.classList.remove("active");
+        sectionHistory.classList.add("active");
+        sectionHome.classList.remove("active");
+        sectionContact.classList.remove("active");
+        closeMobileSidebar();
+      });
+
+      navContact.addEventListener("click", () => {
+        navContact.classList.add("active");
+        navHome.classList.remove("active");
+        navHistory.classList.remove("active");
+        sectionContact.classList.add("active");
+        sectionHome.classList.remove("active");
+        sectionHistory.classList.remove("active");
+        closeMobileSidebar();
+      });
+
+      const muatDatalist = () => {
+        listRekomendasiNasabah.innerHTML = "";
+        for (let id in dbNasabah) {
+          const opt = document.createElement("option");
+          opt.value = `${dbNasabah[id].id}. ${dbNasabah[id].nama}`;
+          listRekomendasiNasabah.appendChild(opt);
         }
-      }
-      return null;
-    }
+      };
 
-    // Menghitung Saldo Realtime
-    function hitungSaldo(data) {
-      let totalSetor = 0;
-      let totalTarik = 0;
+      const cariIdNasabah = (input) => {
+        if (!input) return null;
+        const kw = input.trim().toLowerCase();
+        if (dbNasabah[kw]) return kw;
+        const pemisah = kw.split(".")[0].trim();
+        if (dbNasabah[pemisah]) return pemisah;
+        for (let id in dbNasabah) {
+          if (dbNasabah[id].nama.toLowerCase() === kw) return id;
+        }
+        return null;
+      };
 
-      if (data.histori && Array.isArray(data.histori)) {
-        data.histori.forEach(item => {
-          if (item.tipe === 'Penimbangan') {
-            totalSetor += item.nominal;
-          } else if (item.tipe === 'Penarikan') {
-            totalTarik += item.nominal;
+      const hitungSaldoRealtime = (data) => {
+        let pendapatan = 0;
+        let penarikan = 0;
+        if (data && data.histori) {
+          data.histori.forEach(item => {
+            const tipe = item.tipe || (item.kategori ? 'Penimbangan' : '');
+            if (tipe === 'Penimbangan' || (item.nominal > 0 && !item.metode)) {
+              pendapatan += (item.nominal || item.totalRupiah || 0);
+            } else if (tipe === 'Penarikan' || item.metode) {
+              penarikan += (item.nominal || item.totalRupiah || 0);
+            }
+          });
+        }
+        return pendapatan - penarikan;
+      };
+
+      const dapatkanIndeksBulan = (strWaktu) => {
+        if (!strWaktu || strWaktu === '-') return -1;
+        const tglBersih = strWaktu.split(',')[0].split(' ')[0].trim();
+        
+        if (tglBersih.includes('/')) {
+          const bagian = tglBersih.split('/');
+          if (bagian.length >= 2) {
+            const bulan = parseInt(bagian[1], 10) - 1;
+            if (bulan >= 0 && bulan < 12) return bulan;
+          }
+        } else if (tglBersih.includes('-')) {
+          const bagian = tglBersih.split('-');
+          if (bagian.length >= 2 && bagian[0].length <= 2 && bagian[2]?.length === 4) {
+            const bulan = parseInt(bagian[1], 10) - 1;
+            if (bulan >= 0 && bulan < 12) return bulan;
+          } else if (bagian.length >= 2 && bagian[0].length === 4) {
+            const bulan = parseInt(bagian[1], 10) - 1;
+            if (bulan >= 0 && bulan < 12) return bulan;
+          }
+        }
+
+        const d = new Date(strWaktu);
+        if (!isNaN(d.getTime())) {
+          return d.getMonth();
+        }
+
+        return -1;
+      };
+
+      const petakanKategori = (inputKat) => {
+        if (!inputKat) return "LAIN-LAIN (ELEKTRONIK)";
+        const txt = inputKat.toUpperCase().trim();
+        
+        if (txt.includes("PLASTIK") || txt.includes("PET") || txt.includes("HDPE")) return "PLASTIK";
+        if (txt.includes("LOGAM") || txt.includes("BESI") || txt.includes("SENG") || txt.includes("TEMBAGA") || txt.includes("ALUMNIUM")) return "LOGAM";
+        if (txt.includes("KERTAS") || txt.includes("KARTON") || txt.includes("DUPLEX") || txt.includes("KORAN") || txt.includes("RAK TELUR") || txt.includes("EGG TRAY")) return "KERTAS";
+        if (txt.includes("KACA") || txt.includes("BELING")) return "KACA";
+        if (txt.includes("JELANTAH") || txt.includes("MINYAK")) return "MINYAK JELANTAH";
+        if (txt.includes("ORGANIK") || txt.includes("KOMPOS") || txt.includes("MAKANAN")) return "ORGANIK";
+        if (txt.includes("AKI") || txt.includes("ACCU") || txt.includes("ELEKTRONIK")) return "LAIN-LAIN (ELEKTRONIK)";
+        
+        return "LAIN-LAIN (ELEKTRONIK)";
+      };
+
+      const updateCharts = (data) => {
+        const ctxKategori = document.getElementById('chartKategori').getContext('2d');
+        const ctxBulan = document.getElementById('chartBulan').getContext('2d');
+
+        if (chartKategoriInstance) chartKategoriInstance.destroy();
+        if (chartBulanInstance) chartBulanInstance.destroy();
+
+        const kategoriMap = {
+          "PLASTIK": 0,
+          "LOGAM": 0,
+          "KERTAS": 0,
+          "KACA": 0,
+          "MINYAK JELANTAH": 0,
+          "ORGANIK": 0,
+          "LAIN-LAIN (ELEKTRONIK)": 0
+        };
+
+        const bulanData12 = Array(12).fill(0);
+
+        if (data && data.histori && data.histori.length > 0) {
+          data.histori.forEach(item => {
+            const isSetor = (item.tipe === 'Penimbangan') || (!item.tipe && item.nominal > 0 && !item.metode);
+            
+            if (isSetor) {
+              const rawKat = item.kategori || item.jenis || 'LAIN-LAIN (ELEKTRONIK)';
+              const katMapped = petakanKategori(rawKat);
+              const berat = parseFloat(item.berat || item.bobot || item.kg || 1);
+              
+              if (kategoriMap.hasOwnProperty(katMapped)) {
+                kategoriMap[katMapped] += berat;
+              } else {
+                kategoriMap["LAIN-LAIN (ELEKTRONIK)"] += berat;
+              }
+
+              const idxBulan = dapatkanIndeksBulan(item.waktu || item.tanggal);
+              if (idxBulan !== -1) {
+                bulanData12[idxBulan] += berat;
+              }
+            }
+          });
+        }
+
+        const catLabels = KATEGORI_UTAMA;
+        const catData = KATEGORI_UTAMA.map(k => kategoriMap[k]);
+
+        chartKategoriInstance = new Chart(ctxKategori, {
+          type: 'bar',
+          data: {
+            labels: catLabels,
+            datasets: [{
+              label: 'Total Timbangan (kg)',
+              data: catData,
+              backgroundColor: WARNA_KATEGORI,
+              borderColor: WARNA_KATEGORI,
+              borderWidth: 1,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` Berat: ${ctx.raw} kg`
+                }
+              }
+            },
+            scales: { 
+              y: { 
+                beginAtZero: true, 
+                title: { display: true, text: 'Berat (kg)' } 
+              },
+              x: {
+                ticks: { font: { size: 10 } }
+              }
+            }
           }
         });
-      }
 
-      return totalSetor - totalTarik;
-    }
+        chartBulanInstance = new Chart(ctxBulan, {
+          type: 'bar',
+          data: {
+            labels: LIST_BULAN,
+            datasets: [{
+              label: 'Total Timbangan (kg)',
+              data: bulanData12,
+              backgroundColor: '#10b981',
+              borderColor: '#047857',
+              borderWidth: 1,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` Berat: ${ctx.raw} kg`
+                }
+              }
+            },
+            scales: { 
+              y: { 
+                beginAtZero: true, 
+                title: { display: true, text: 'Berat (kg)' } 
+              },
+              x: {
+                ticks: { font: { size: 10 } }
+              }
+            }
+          }
+        });
+      };
 
-    // Tampilkan Data Saldo & Histori
-    function cariDanTampilkanNasabah() {
-      dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
+      const tampilkanData = () => {
+        const idFound = cariIdNasabah(inputNasabah.value);
 
-      const input = document.getElementById("inputCariNasabah").value;
-      const idFound = cariIdNasabah(input);
+        if (idFound && dbNasabah[idFound]) {
+          const data = dbNasabah[idFound];
+          const saldo = hitungSaldoRealtime(data);
 
-      const displaySaldo = document.getElementById("displaySaldo");
-      const labelTerdeteksi = document.getElementById("labelTerdeteksi");
-      const tbody = document.getElementById("tabelHistoriNasabah");
+          nasabahInfoBadge.classList.add("active");
+          nasabahEmptyState.style.display = "none";
+          infoColNo.innerText = data.id || idFound;
+          infoColKode.innerText = data.kodeRekening || `-`;
+          infoColNama.innerText = data.nama;
+          displaySaldo.innerText = "Rp " + saldo.toLocaleString("id-ID");
 
-      if (idFound && dbNasabah[idFound]) {
-        const data = dbNasabah[idFound];
-        const sisaSaldo = hitungSaldo(data);
+          judulHistoriNasabah.innerText = `Menampilkan histori transaksi untuk ${data.nama} (No. ${data.id})`;
+          labelChartNasabahKategori.innerText = `📦 Timbangan per 7 Kategori (kg) - ${data.nama}`;
+          labelChartNasabahBulan.innerText = `📅 Timbangan per Bulan (Jan - Des) (kg) - ${data.nama}`;
 
-        // Tampilkan Saldo
-        displaySaldo.innerText = "Rp " + sisaSaldo.toLocaleString('id-ID');
-        labelTerdeteksi.innerText = `✓ Terdeteksi: No. ${data.id} - ${data.nama}`;
+          updateCharts(data);
 
-        // Tampilkan Tabel Histori
-        if (!data.histori || data.histori.length === 0) {
-          tbody.innerHTML = `
-            <tr>
-              <td colspan="4" class="empty-state">Belum ada riwayat transaksi.</td>
-            </tr>
-          `;
-          return;
+          if (!data.histori || data.histori.length === 0) {
+            tabelHistori.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada catatan transaksi.</td></tr>`;
+          } else {
+            let html = "";
+            for (let i = data.histori.length - 1; i >= 0; i--) {
+              const item = data.histori[i];
+              const isSetor = (item.tipe === 'Penimbangan') || (!item.tipe && item.nominal > 0 && !item.metode);
+              const badgeClass = isSetor ? 'badge-setor' : 'badge-tarik';
+              const labelTipe = isSetor ? 'Penimbangan' : 'Penarikan';
+              const tanda = isSetor ? '+' : '-';
+              const warna = isSetor ? '#166534' : '#991b1b';
+              const nominalVal = item.nominal || item.totalRupiah || 0;
+              const ket = item.keterangan || item.jenis || (item.metode ? `Penarikan via ${item.metode}` : '-');
+              const waktu = item.waktu || item.tanggal || '-';
+
+              html += `
+                <tr>
+                  <td>${waktu}</td>
+                  <td><span class="badge ${badgeClass}">${labelTipe}</span></td>
+                  <td>${ket}</td>
+                  <td style="text-align: right; color: ${warna}; font-weight: 700;">${tanda} Rp ${nominalVal.toLocaleString('id-ID')}</td>
+                </tr>
+              `;
+            }
+            tabelHistori.innerHTML = html;
+          }
+        } else {
+          nasabahInfoBadge.classList.remove("active");
+          nasabahEmptyState.style.display = "block";
+          displaySaldo.innerText = "Rp 0";
+          judulHistoriNasabah.innerText = "Pilih nasabah untuk melihat rincian transaksi";
+          labelChartNasabahKategori.innerText = "📦 Timbangan per 7 Kategori (kg) - (Pilih Nasabah)";
+          labelChartNasabahBulan.innerText = "📅 Timbangan per Bulan (Jan - Des) (kg) - (Pilih Nasabah)";
+          tabelHistori.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">Silakan cari ID atau Nama Nasabah di kolom atas untuk menampilkan riwayat transaksi.</td></tr>`;
+          
+          updateCharts(null);
         }
+      };
 
-        let html = "";
-        for (let i = data.histori.length - 1; i >= 0; i--) {
-          const item = data.histori[i];
-          const badgeClass = item.tipe === 'Penimbangan' ? 'badge-setor' : 'badge-tarik';
-          const tanda = item.tipe === 'Penimbangan' ? '+' : '-';
-          const warna = item.tipe === 'Penimbangan' ? '#2e7d32' : '#d84315';
-
-          html += `
-            <tr>
-              <td>${item.waktu}</td>
-              <td><span class="badge ${badgeClass}">${item.tipe}</span></td>
-              <td>${item.keterangan}</td>
-              <td style="color: ${warna}; font-weight: bold;">${tanda} Rp ${item.nominal.toLocaleString('id-ID')}</td>
-            </tr>
-          `;
-        }
-        tbody.innerHTML = html;
-
-      } else {
-        // Reset jika tidak ketemu
-        displaySaldo.innerText = "Rp 0";
-        labelTerdeteksi.innerText = input ? "Nasabah tidak ditemukan" : "";
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="4" class="empty-state">Ketikkan Nama/ID di atas untuk melihat riwayat transaksi.</td>
-          </tr>
-        `;
-      }
-    }
-
-    // Load data awal
-    inisialisasiDatalist();
+      inputNasabah.addEventListener("input", tampilkanData);
+      muatDatalist();
+      tampilkanData();
+    });
   </script>
 </body>
 </html>

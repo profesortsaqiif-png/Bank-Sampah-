@@ -4,246 +4,475 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistem Tabungan Sampah BSU Makkio Baji</title>
+  <!-- Chart.js CDN untuk Grafik -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="assets/css/stylein.css">
 </head>
 <body>
 
-  <!-- HEADER & NAV-BAR -->
-  <div class="top-header-container">
-    <header class="app-header">
-      <img src="assets/img/logo bsu.png" alt="Logo Bank Sampah" class="app-logo">
-      <div class="app-title-container">
-        <h1>BSU Makkio Baji</h1>
-        <p>Sistem Informasi Penimbangan & Tabungan Sampah Digital (Admin Panel)</p>
+  <!-- HEADER ATAS -->
+  <header class="site-header">
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div class="site-brand">
+        <div class="brand-logo-box">
+          <img src="assets/img/logo.jpeg" alt="Logo BSU Makkio Baji" class="brand-logo-img" onerror="this.src='https://via.placeholder.com/70?text=BSU'">
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Bank Sampah Unit <b>Makkio Baji</b></span>
+          <span class="brand-subtitle">Bank Sampah Unit & Tabungan</span>
+        </div>
       </div>
-    </header>
+      <!-- TOMBOL HAMBURGER UNTUK LAYAR KECIL -->
+      <button class="mobile-nav-toggle" id="btnHamburger" aria-label="Toggle Navigation">☰</button>
+    </div>
 
-    <nav class="nav-bar">
-      <a href="#section-transaksi" class="nav-link">⚖️ Transaksi Nasabah</a>
-      <a href="#section-pengelolaan" class="nav-link">⚙️ Pengelolaan Sistem</a>
-      <a href="#section-histori" class="nav-link">📜 Histori Transaksi</a>
-    </nav>
+    <div class="header-right-container">
+      <div class="header-user-badge">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <span class="user-role">ADMIN PANEL</span>
+          <span class="user-name">Admin BSU</span>
+        </div>
+      </div>
+
+      <div class="header-search-box">
+        <input type="text" id="inputNasabah" placeholder="🔍 Ketik No. / Nama Nasabah..." list="listRekomendasiNasabah" autocomplete="off">
+        <datalist id="listRekomendasiNasabah"></datalist>
+      </div>
+    </div>
+  </header>
+
+  <!-- OVERLAY BACKGROUND SIDEBAR MOBILE -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-container">
+    <!-- SIDEBAR / NAVIGATION -->
+    <aside class="sidebar" id="appSidebar">
+      <nav class="nav-menu">
+        <a class="nav-item active" data-tab="tab-home">
+          <span class="nav-icon">🏠</span>
+          <span>Home</span>
+        </a>
+        <a class="nav-item" data-tab="tab-transaksi">
+          <span class="nav-icon">⚖️</span>
+          <span>Transaksi</span>
+        </a>
+        <a class="nav-item" data-tab="tab-pengelolaan">
+          <span class="nav-icon">⚙️</span>
+          <span>Kelola</span>
+        </a>
+        <a class="nav-item" data-tab="tab-histori">
+          <span class="nav-icon">📜</span>
+          <span>Histori</span>
+        </a>
+        <a class="nav-item" data-tab="tab-akumulasi-global">
+          <span class="nav-icon">📈</span>
+          <span>Global</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+
+      <!-- HEADER GLOBAL TERATAS -->
+      <header class="top-global-header">
+        <div class="global-nasabah-card">
+          <div class="global-card-left">
+            <span style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
+              Informasi Nasabah Terpilih:
+            </span>
+            <div id="nasabahInfoBadge" class="nasabah-info-badge">
+              <div id="infoColNo" class="nasabah-info-col no-id">1</div>
+              <div id="infoColKode" class="nasabah-info-col">01/BSU MB/BKL/VII/2025</div>
+              <div id="infoColNama" class="nasabah-info-col">Andi Intan</div>
+              <button type="button" id="btnEditCardNasabah" class="btn-edit-badge" title="Edit Data Nasabah Ini">✏️ Edit</button>
+            </div>
+            <div id="nasabahEmptyState" style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; padding: 6px 0;">
+              Silakan pilih/cari nasabah di bagian pencarian header ↗️
+            </div>
+          </div>
+
+          <div class="global-card-right">
+            <div class="saldo-box-inline">
+              <span style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Sisa Saldo Nasabah</span>
+              <h3 id="displaySaldo" style="font-size: 1.25rem; color: #0b326f; margin-top: 2px; font-weight: 800;">Rp 0</h3>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT AREA -->
+      <main class="main-content">
+        
+        <!-- 1. TAB HOME -->
+        <div id="tab-home" class="tab-content active">
+          <div class="dashboard-header">
+            <h1>Selamat Datang di Sistem BSU Makkio Baji 👋</h1>
+            <p>Kelola transaksi tabungan sampah, timbangan, dan saldo nasabah secara real-time.</p>
+          </div>
+
+          <!-- SECTION DIAGRAM KHUSUS NASABAH -->
+          <section class="content-card" style="border: 2px solid #bfdbfe; background: #f4f8ff;">
+            <div class="card-header-flex" style="margin-bottom: 12px;">
+              <div>
+                <h2 class="section-title" style="background-color: #dbeafe; color: #1e40af; border-left-color: #1d69d8;">
+                  👤 Diagram Statistik Per Nasabah Terpilih
+                </h2>
+              </div>
+            </div>
+
+            <div class="charts-grid-container">
+              <div class="content-card" style="margin-bottom: 0;">
+                <h3 style="font-size: 0.85rem; font-weight: 700; color: #0f2b5c; margin-bottom: 10px;" id="labelChartNasabahKategori">
+                  📦 Timbangan per Kategori (kg) - (Pilih Nasabah)
+                </h3>
+                <div class="chart-container-box">
+                  <canvas id="chartNasabahKategori"></canvas>
+                </div>
+              </div>
+
+              <div class="content-card" style="margin-bottom: 0;">
+                <h3 style="font-size: 0.85rem; font-weight: 700; color: #15803d; margin-bottom: 10px;" id="labelChartNasabahBulan">
+                  📅 Timbangan per Bulan (kg) - (Pilih Nasabah)
+                </h3>
+                <div class="chart-container-box">
+                  <canvas id="chartNasabahBulan"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-card">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="section-title">Link Portal Mandiri Nasabah</h2>
+              </div>
+            </div>
+            <div class="flex-responsive-row">
+              <input type="text" id="linkPortalInput" readonly style="flex: 1;">
+              <button class="btn" id="btnSalinPortal">📋 Salin Link</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- 2. TAB TRANSAKSI NASABAH -->
+        <div id="tab-transaksi" class="tab-content">
+          <section class="content-card">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="section-title">⚖️ Transaksi Sampah (Penimbangan)</h2>
+                <p class="section-sub">Masukkan rincian timbangan sampah nasabah terpilih</p>
+              </div>
+            </div>
+
+            <div class="form-vertical">
+              <div class="form-group">
+                <label for="inputTanggalTimbang">Tanggal Penimbangan:</label>
+                <input type="date" id="inputTanggalTimbang">
+              </div>
+
+              <div class="form-group">
+                <label for="inputCariJenisSampah">Jenis Sampah / Kata Kunci:</label>
+                <input type="text" id="inputCariJenisSampah" placeholder="Cth: botol, rak telur, aki, minyak jelantah" list="listRekomendasiSampah" autocomplete="off">
+                <datalist id="listRekomendasiSampah"></datalist>
+                <div id="infoHargaSampahTerpilih" style="font-size: 0.75rem; color: #2563eb; margin-top: 4px; font-weight: 600;"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="inputBobot" id="labelBobot">Jumlah / Bobot (kg):</label>
+                <input type="number" id="inputBobot" placeholder="Masukkan jumlah bobot (cth: 2.5)" step="0.1">
+              </div>
+
+              <div class="estimasi-box">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #166534;">Estimasi Total Pendapatan:</span>
+                <div id="hasilRupiahTimbang" style="font-size: 1.1rem; font-weight: 800; color: #166534;">Rp 0</div>
+              </div>
+
+              <div class="form-group" style="margin-top: 10px;">
+                <button class="btn" id="btnSimpanTimbang">+ Simpan Transaksi Penimbangan</button>
+              </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px dashed #cbd5e1; margin: 24px 0;">
+
+            <div class="card-header-flex" style="margin-bottom: 16px;">
+              <div>
+                <h2 class="section-title" style="background-color: #fef2f2; color: #991b1b; border-left-color: #ef4444;">💵 Penarikan Dana (Tarik Saldo)</h2>
+                <p class="section-sub">Pencatatan penarikan saldo nasabah</p>
+              </div>
+            </div>
+
+            <div class="form-vertical">
+              <div class="form-group">
+                <label for="inputTanggalTarik">Tanggal Penarikan:</label>
+                <input type="date" id="inputTanggalTarik">
+              </div>
+
+              <div class="form-group">
+                <label for="inputMetodeTarik">Metode Pembayaran:</label>
+                <select id="inputMetodeTarik">
+                  <option value="Tunai">💵 Tunai (Cash)</option>
+                  <option value="Transfer Bank">🏦 Transfer Bank</option>
+                  <option value="GoPay">🟢 GoPay</option>
+                  <option value="OVO">💜 OVO</option>
+                  <option value="ShopeePay">🟠 ShopeePay</option>
+                  <option value="Lainnya">📝 Lainnya</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="inputTarik">Jumlah Penarikan (Rp):</label>
+                <input type="number" id="inputTarik" placeholder="Masukkan nominal penarikan">
+                
+                <div class="quick-add-group">
+                  <button type="button" class="btn-quick btn-quick-primary" id="btnTambahRibu">+000 (Ribu)</button>
+                  <button type="button" class="btn-quick" id="btnNominal10k">10.000</button>
+                  <button type="button" class="btn-quick" id="btnNominal20k">20.000</button>
+                  <button type="button" class="btn-quick" id="btnNominal50k">50.000</button>
+                  <button type="button" class="btn-quick" id="btnNominal100k">100.000</button>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: 10px;">
+                <button class="btn btn-danger" id="btnTarikDana">- Tarik Dana Saldo</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- 3. TAB PENGELOLAAN SYSTEM -->
+        <div id="tab-pengelolaan" class="tab-content">
+          <section class="content-card">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="section-title">⚙️ Pengelolaan Sistem</h2>
+                <p class="section-sub">Manajemen nasabah dan master jenis & harga sampah</p>
+              </div>
+            </div>
+
+            <h3 class="section-title" style="margin-bottom: 16px;">👥 Manajemen Nasabah</h3>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="inputNamaNasabahBaru">➕ Tambah Nasabah Baru:</label>
+                <div class="flex-responsive-row" style="margin-bottom: 8px;">
+                  <input type="text" id="inputNamaNasabahBaru" placeholder="Nama lengkap nasabah baru">
+                  <input type="text" id="inputKodeRekeningBaru" placeholder="Kode Rekening (Cth: 211/BSU MB/BKL/VIII/2026)">
+                </div>
+                <button class="btn" id="btnTambahNasabah" style="width: 100%;">+ Tambah Nasabah Baru</button>
+              </div>
+
+              <div class="form-group full-width" style="margin-top: 10px;">
+                <label for="inputHapusNasabah" style="color: #991b1b;">🗑️ Hapus Nasabah Terdaftar:</label>
+                <div class="flex-responsive-row">
+                  <input type="text" id="inputHapusNasabah" placeholder="Ketik nomor atau nama nasabah..." list="listRekomendasiNasabahHapus" autocomplete="off">
+                  <datalist id="listRekomendasiNasabahHapus"></datalist>
+                  <button class="btn btn-danger" id="btnHapusNasabah" style="white-space: nowrap;">- Hapus Nasabah</button>
+                </div>
+              </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+
+            <h3 class="section-title" style="margin-bottom: 16px;">♻️ Manajemen Master Sampah</h3>
+            
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label>➕ Pilih Kategori & Ketik Nama Sampah Baru:</label>
+                <div class="flex-responsive-row">
+                  <select id="inputKategoriSampahBaru">
+                    <option value="PLASTIK">PLASTIK</option>
+                    <option value="LOGAM">LOGAM</option>
+                    <option value="KERTAS">KERTAS</option>
+                    <option value="KACA">KACA</option>
+                    <option value="MINYAK JELANTAH">MINYAK JELANTAH</option>
+                    <option value="ORGANIK">ORGANIK</option>
+                    <option value="LAIN-LAIN (ELEKTRONIK)">LAIN-LAIN (ELEKTRONIK)</option>
+                  </select>
+                  <input type="text" id="inputNamaSampahBaru" placeholder="Cth: Rak Telur / Aki Bekas">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="inputHargaSampahBaru">Harga per Satuan (Rp):</label>
+                <div class="flex-responsive-row">
+                  <input type="number" id="inputHargaSampahBaru" placeholder="Cth: 3000">
+                  <select id="inputSatuanSampahBaru" style="max-width: 100px;">
+                    <option value="kg">kg</option>
+                    <option value="pcs">pcs</option>
+                    <option value="liter">liter</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="justify-content: flex-end;">
+                <button class="btn" id="btnTambahSampah" style="background-color: #15803d; width: 100%;">+ Tambah Jenis Sampah</button>
+              </div>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;">
+
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="inputHapusSampah" style="color: #991b1b;">🗑️ Hapus Jenis Sampah Terdaftar:</label>
+                <div class="flex-responsive-row">
+                  <input type="text" id="inputHapusSampah" placeholder="Ketik jenis sampah yang ingin dihapus..." list="listRekomendasiSampahHapus" autocomplete="off">
+                  <datalist id="listRekomendasiSampahHapus"></datalist>
+                  <button class="btn btn-danger" id="btnHapusSampah" style="white-space: nowrap;">- Hapus Sampah</button>
+                </div>
+              </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="editCariJenis">✏️ Edit Nama & Harga Sampah Terdaftar:</label>
+                <input type="text" id="editCariJenis" placeholder="Ketik & pilih jenis sampah yang mau diubah..." list="listRekomendasiSampahEdit" autocomplete="off">
+                <datalist id="listRekomendasiSampahEdit"></datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="editNamaJenisLama">Nama Sampah Baru:</label>
+                <input type="text" id="editNamaJenisLama">
+              </div>
+
+              <div class="form-group">
+                <label for="editHargaBaru">Harga Baru (Rp):</label>
+                <input type="number" id="editHargaBaru">
+              </div>
+
+              <div class="form-group full-width" style="margin-top: 4px;">
+                <button class="btn btn-warning" id="btnSimpanEditHarga">Simpan Perubahan Sampah</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- 4. TAB HISTORI TRANSAKSI -->
+        <div id="tab-histori" class="tab-content">
+          <section class="content-card">
+            <div class="card-header-flex">
+              <div>
+                <h2 class="section-title">📜 Histori Transaksi</h2>
+                <p class="section-sub" id="judulHistoriNasabah">Pilih nasabah untuk melihat riwayat transaksi</p>
+              </div>
+            </div>
+
+            <div id="containerRekapHarian" style="display:none; margin-bottom: 20px; background: #f8fafc; padding: 14px; border-radius: 8px;">
+              <div style="font-size: 0.75rem; font-weight: 600; margin-bottom: 8px;">📅 Total Penimbangan per Hari:</div>
+              <div id="listRekapHarian" style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.75rem;"></div>
+            </div>
+
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Tipe</th>
+                    <th>Keterangan</th>
+                    <th>Nominal</th>
+                    <th style="text-align: center;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelHistori">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada nasabah yang dipilih.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <!-- 5. TAB AKUMULASI GLOBAL -->
+        <div id="tab-akumulasi-global" class="tab-content">
+          <div class="dashboard-header">
+            <h1>Akumulasi Total Seluruh Nasabah 🌐</h1>
+            <p>Statistik dan rekapitulasi data dari seluruh nasabah terdaftar di BSU Makkio Baji.</p>
+          </div>
+
+          <div class="charts-grid-container">
+            <section class="content-card">
+              <div class="card-header-flex">
+                <div>
+                  <h2 class="section-title">📊 Total Timbangan per Kategori (kg)</h2>
+                </div>
+              </div>
+              <div class="chart-container-box">
+                <canvas id="chartSampahBatang"></canvas>
+              </div>
+            </section>
+
+            <section class="content-card">
+              <div class="card-header-flex">
+                <div>
+                  <h2 class="section-title" style="background-color: #f0fdf4; color: #15803d; border-left-color: #16a34a;">📅 Total Timbangan per Bulan (kg)</h2>
+                </div>
+              </div>
+              <div class="chart-container-box">
+                <canvas id="chartSampahBulan"></canvas>
+              </div>
+            </section>
+          </div>
+        </div>
+
+      </main>
+    </div>
   </div>
 
-  <!-- BOX BAGIKAN LINK PORTAL NASABAH -->
-  <div class="share-portal-box">
-    <div class="share-portal-info">
-      <strong>🔗 Link Portal Mandiri Nasabah</strong>
-      Bagikan link ini ke nasabah agar mereka bisa mengecek saldo & histori sendiri.
-    </div>
-    <div class="share-portal-input-group">
-      <input type="text" id="linkPortalInput" readonly>
-      <button class="btn-copy" id="btnSalinPortal">📋 Salin Link</button>
+  <!-- MODAL EDIT DATA NASABAH -->
+  <div id="modalEditNasabah" class="modal-overlay">
+    <div class="modal-content">
+      <h3 class="section-title" style="margin-bottom: 16px; display: block; text-align: center;">✏️ Edit Data Nasabah</h3>
+      
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label for="editNoNasabahCard">No. Urut Nasabah:</label>
+        <input type="text" id="editNoNasabahCard" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label for="editKodeNasabahCard">Nomor / Kode Rekening:</label>
+        <input type="text" id="editKodeNasabahCard" placeholder="Cth: 01/BSU MB/BKL/VII/2025">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="editNamaNasabahCard">Nama Lengkap Nasabah:</label>
+        <input type="text" id="editNamaNasabahCard" placeholder="Nama nasabah">
+      </div>
+
+      <div class="flex-responsive-row">
+        <button class="btn" id="btnSimpanEditNasabahCard" style="flex: 1;">Simpan</button>
+        <button class="btn btn-secondary" id="btnTutupModalNasabahCard" style="flex: 1;">Batal</button>
+      </div>
     </div>
   </div>
 
-  <!-- KONTEN UTAMA -->
-  <main class="main-container">
-
-    <!-- SECTION 1: TRANSAKSI NASABAH -->
-    <section class="card" id="section-transaksi">
-      <div class="section-header">
-        <h2>⚖️ Transaksi Nasabah</h2>
-        <p>Penimbangan sampah dan penarikan saldo nasabah</p>
-      </div>
-
-      <div class="card-body">
-        <div class="form-group">
-          <label for="inputNasabah">Ketik Nomor / Nama Nasabah:</label>
-          <input type="text" id="inputNasabah" placeholder="Masukkan Nomor/Nama Nasabah" list="listRekomendasiNasabah" autocomplete="off">
-          <datalist id="listRekomendasiNasabah"></datalist>
-          <div id="labelNasabahTerdeteksi" class="info-nasabah"></div>
-        </div>
-
-        <div class="form-group" id="containerUbahNamaNasabah" style="display:none;">
-          <label for="inputUbahNamaNasabah">Kelola Nasabah Ini:</label>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="inputUbahNamaNasabah" placeholder="Nama Baru Nasabah">
-            <button class="btn btn-update" style="width: 110px;" id="btnSimpanNamaNasabah">Simpan</button>
-          </div>
-          <button class="btn btn-delete-nasabah" id="btnHapusNasabah">🗑️ Hapus / Hilangkan Nasabah Ini</button>
-        </div>
-
-        <div class="saldo-box">
-          <span>Total Sisa Saldo Nasabah</span>
-          <h3 id="displaySaldo">Rp 0</h3>
-        </div>
-
-        <div class="sub-section-title">1. Form Penimbangan / Penyetoran</div>
-
-        <div class="form-group">
-          <label for="inputTanggalTimbang">Pilih Tanggal Penimbangan:</label>
-          <input type="date" id="inputTanggalTimbang">
-        </div>
-
-        <div class="form-group">
-          <label for="inputCariJenisSampah">Ketik Kata Kunci Jenis Sampah:</label>
-          <input type="text" id="inputCariJenisSampah" placeholder="Cth: Ketik 'botol', 'plastik', 'besi'" list="listRekomendasiSampah" autocomplete="off">
-          <datalist id="listRekomendasiSampah"></datalist>
-          <div id="infoHargaSampahTerpilih" class="info-nasabah"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="inputBobot" id="labelBobot">Jumlah / Bobot (kg):</label>
-          <input type="number" id="inputBobot" placeholder="Masukkan jumlah/bobot" step="0.1">
-        </div>
-
-        <div class="result-box">
-          <div class="result-item">
-            <span>Hasil Penimbangan Ini:</span>
-            <strong id="hasilRupiahTimbang" style="color: #2e7d32; font-size: 16px;">Rp 0</strong>
-          </div>
-        </div>
-
-        <button class="btn" style="margin-top: 15px;" id="btnSimpanTimbang">+ Simpan Transaksi Penimbangan</button>
-
-        <div class="sub-section-title">2. Penarikan Dana (Tarik Saldo)</div>
-
-        <div class="form-group">
-          <label for="inputTanggalTarik">Pilih Tanggal Penarikan:</label>
-          <input type="date" id="inputTanggalTarik">
-        </div>
-
-        <div class="form-group">
-          <label for="inputMetodeTarik">Metode Pembayaran Penarikan:</label>
-          <select id="inputMetodeTarik">
-            <option value="Tunai">💵 Tunai (Cash)</option>
-            <option value="Transfer Bank">🏦 Transfer Bank</option>
-            <option value="Gopay">🟢 GoPay</option>
-            <option value="OVO">💜 OVO</option>
-            <option value="ShopeePay">🟠 ShopeePay</option>
-            <option value="Lainnya">📝 Lainnya</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="inputTarik">Jumlah Penarikan (Rp):</label>
-          <input type="number" id="inputTarik" placeholder="Masukkan nominal rupiah">
-        </div>
-
-        <button class="btn btn-withdraw" id="btnTarikDana">- Tarik Dana Saldo</button>
-      </div>
-    </section>
-
-    <!-- SECTION 2: PENGELOLAAN SISTEM -->
-    <section class="card" id="section-pengelolaan">
-      <div class="section-header">
-        <h2>⚙️ Pengelolaan Sistem</h2>
-        <p>Pengaturan data nasabah, jenis & harga master sampah</p>
-      </div>
-
-      <div class="card-body">
-        <div class="sub-section-title">1. Tambah Nasabah Baru</div>
-        <div class="form-group">
-          <label for="inputNamaNasabahBaru">Nama Lengkap Nasabah Baru:</label>
-          <input type="text" id="inputNamaNasabahBaru" placeholder="Cth: Budi Santoso">
-        </div>
-        <button class="btn" style="background-color: #2e7d32; margin-bottom: 25px;" id="btnTambahNasabah">+ Tambah Nasabah Baru</button>
-
-        <div class="sub-section-title">2. Edit Nama/Harga Sampah Terdaftar</div>
-        <div class="form-group">
-          <label for="editCariJenis">Ketik Nama Sampah yang Ingin Diedit:</label>
-          <input type="text" id="editCariJenis" placeholder="Cth: Ketik 'botol' atau pilih dari list" list="listRekomendasiSampahEdit" autocomplete="off">
-          <datalist id="listRekomendasiSampahEdit"></datalist>
-        </div>
-
-        <div class="form-group">
-          <label for="editNamaJenisLama">Nama Jenis Sampah Baru:</label>
-          <input type="text" id="editNamaJenisLama" placeholder="Nama Jenis Sampah">
-        </div>
-
-        <div class="form-group">
-          <label for="editHargaBaru">Harga Satuan (Rp):</label>
-          <input type="number" id="editHargaBaru" placeholder="Masukkan harga baru">
-        </div>
-
-        <button class="btn btn-update" id="btnSimpanEditHarga">Simpan Perubahan Sampah</button>
-
-        <div class="sub-section-title" style="margin-top:25px;">3. Tambah Jenis Sampah Baru</div>
-        <div class="form-group">
-          <label for="inputJenisBaru">Nama Sampah Baru:</label>
-          <input type="text" id="inputJenisBaru" placeholder="Cth: PLASTIK - Botol Galon">
-        </div>
-
-        <div class="form-group">
-          <label for="inputHargaJenisBaru">Harga (Rp):</label>
-          <input type="number" id="inputHargaJenisBaru" placeholder="Cth: 3000">
-        </div>
-
-        <div class="form-group">
-          <label for="inputSatuanJenisBaru">Satuan:</label>
-          <select id="inputSatuanJenisBaru">
-            <option value="kg">kg</option>
-            <option value="pcs">pcs</option>
-            <option value="lembar">lembar</option>
-          </select>
-        </div>
-
-        <button class="btn" style="background-color: #2e7d32;" id="btnTambahJenisSampah">+ Tambah Jenis Sampah</button>
-      </div>
-    </section>
-
-    <!-- SECTION 3: HISTORI TRANSAKSI -->
-    <section class="card card-full" id="section-histori">
-      <div class="section-header">
-        <h2>📜 Histori Transaksi Nasabah</h2>
-        <p id="judulHistoriNasabah">Silakan pilih atau ketik nasabah untuk melihat riwayat transaksi</p>
-      </div>
-
-      <div class="card-body">
-        <div id="containerRekapHarian" class="rekap-harian-box" style="display: none;">
-          <div class="rekap-harian-title">📅 Total Penimbangan per Hari:</div>
-          <div id="listRekapHarian" class="rekap-harian-list"></div>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Tipe Transaksi</th>
-                <th>Keterangan</th>
-                <th>Nominal (Rp)</th>
-                <th style="text-align: center;">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tabelHistori">
-              <tr>
-                <td colspan="5" class="empty-state">Belum ada nasabah yang dipilih.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODAL POPUP EDIT HISTORI -->
+  <!-- MODAL EDIT HISTORI TRANSAKSI -->
   <div id="modalEdit" class="modal-overlay">
     <div class="modal-content">
-      <h3 style="margin-top:0; color:#2e7d32; text-align:center;">Edit Transaksi Histori</h3>
+      <h3 class="section-title" style="margin-bottom: 16px; display: block; text-align: center;">Edit Transaksi Histori</h3>
       
-      <div class="form-group">
+      <div class="form-group" style="margin-bottom: 12px;">
         <label for="editTanggalHistori">Tanggal Transaksi:</label>
         <input type="date" id="editTanggalHistori">
       </div>
 
       <div id="containerEditPenimbangan">
-        <div class="form-group">
-          <label for="editJenisSampahHistori">Jenis Sampah (Ketik Kata Kunci):</label>
-          <input type="text" id="editJenisSampahHistori" placeholder="Ketik jenis sampah..." list="listRekomendasiSampahModal" autocomplete="off">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label for="editJenisSampahHistori">Jenis Sampah:</label>
+          <input type="text" id="editJenisSampahHistori" list="listRekomendasiSampahModal" autocomplete="off">
           <datalist id="listRekomendasiSampahModal"></datalist>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 12px;">
           <label for="editBobotHistori" id="labelModalBobot">Jumlah / Bobot Satuan:</label>
           <input type="number" id="editBobotHistori" step="0.1">
         </div>
       </div>
 
       <div id="containerEditPenarikan" style="display: none;">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 12px;">
           <label for="editMetodeHistori">Metode Pembayaran:</label>
           <select id="editMetodeHistori">
             <option value="Tunai">💵 Tunai (Cash)</option>
@@ -255,103 +484,134 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 12px;">
           <label for="editKetHistori">Keterangan Tambahan:</label>
           <input type="text" id="editKetHistori">
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" style="margin-bottom: 20px;">
         <label for="editNominalHistori">Total Nominal (Rp):</label>
         <input type="number" id="editNominalHistori">
       </div>
 
-      <button class="btn" id="btnSimpanEditHistori">Simpan Perubahan</button>
-      <button class="btn btn-cancel" id="btnTutupModalEdit">Batal</button>
+      <div class="flex-responsive-row">
+        <button class="btn" id="btnSimpanEditHistori" style="flex: 1;">Simpan</button>
+        <button class="btn btn-secondary" id="btnTutupModalEdit" style="flex: 1;">Batal</button>
+      </div>
     </div>
   </div>
 
-  <!-- LOGIKA JAVASCRIPT -->
   <script>
-    // Membaca murni data nasabah hasil pendaftaran dari LocalStorage (tanpa dummy)
-let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
-
-// Memastikan state ter-save dengan benar
-localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
     document.addEventListener("DOMContentLoaded", () => {
-      // Daftar Harga Default Sampah BSU
+      
+      // LOGIKA HAMBURGER MENU & SIDEBAR MOBILE
+      const btnHamburger = document.getElementById('btnHamburger');
+      const appSidebar = document.getElementById('appSidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      const toggleSidebar = () => {
+        appSidebar.classList.toggle('open');
+        sidebarOverlay.classList.toggle('active');
+      };
+
+      const closeSidebar = () => {
+        appSidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+      };
+
+      if (btnHamburger) btnHamburger.addEventListener('click', toggleSidebar);
+      if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+      // LOGIKA SWITCHING TAB
+      const navItems = document.querySelectorAll('.nav-menu .nav-item[data-tab]');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const targetTabId = item.getAttribute('data-tab');
+          navItems.forEach(nav => nav.classList.remove('active'));
+          tabContents.forEach(tab => tab.classList.remove('active'));
+          item.classList.add('active');
+          document.getElementById(targetTabId).classList.add('active');
+          
+          // Tutup sidebar jika dalam mode mobile
+          closeSidebar();
+          
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      // DATABASE MASTER NASABAH INITIAL DATA
+      const daftarNasabahMaster = [
+        { id: "1", kodeRekening: "01/BSU MB/BKL/VII/2025", nama: "Andi Intan" },
+        { id: "2", kodeRekening: "02/BSU MB/BKL/VII/2025", nama: "Safria" },
+        { id: "3", kodeRekening: "03/BSU MB/BKL/VII/2025", nama: "Hamsidar" },
+        { id: "4", kodeRekening: "04/BSU MB/BKL/VII/2025", nama: "Lasviwati Ginting" },
+        { id: "5", kodeRekening: "05/BSU MB/BKL/VII/2025", nama: "Umm Nisrianty" },
+        { id: "6", kodeRekening: "07/BSU MB/BKL/VII/2025", nama: "A. Putri Dwi Yanti" },
+        { id: "7", kodeRekening: "07/BSU MB/BKL/VII/2025", nama: "St. Farida Syam" },
+        { id: "8", kodeRekening: "08/BSU MB/BKL/VII/2025", nama: "Desi Saraswati" },
+        { id: "9", kodeRekening: "09/BSU MB/BKL/VII/2025", nama: "Hj. Hastia" },
+        { id: "10", kodeRekening: "10/BSU MB/BKL/VII/2025", nama: "Umm Nuraeni" },
+        { id: "210", kodeRekening: "210/BSU MB/BKL/VIII/2026", nama: "Amanah Amirah" }
+      ];
+
       const defaultHargaBSU = {
         "PLASTIK - PP Gelas Bening Bersih": { harga: 5000, satuan: "kg" },
         "PLASTIK - PP Gelas Bening Kotor": { harga: 2500, satuan: "kg" },
-        "PLASTIK - PP Gelas Warna (ale2, montea, teh gelas)": { harga: 2100, satuan: "kg" },
-        "PLASTIK - PP Pipet": { harga: 900, satuan: "kg" },
-        "PLASTIK - PP Cincin Gelas": { harga: 1800, satuan: "kg" },
         "PLASTIK - PET Botol Bening Bersih": { harga: 4500, satuan: "kg" },
-        "PLASTIK - PET Botol Biru Muda Bersih": { harga: 3200, satuan: "kg" },
-        "PLASTIK - PET Botol Kotor": { harga: 800, satuan: "kg" },
-        "PLASTIK - PET Botol Warna Bersih (hijau/biru)": { harga: 1100, satuan: "kg" },
-        "PLASTIK - PET Botol Bersih Campur (semua warna)": { harga: 1000, satuan: "kg" },
-        "PLASTIK - Toples (bahan PET)": { harga: 1200, satuan: "kg" },
-        "PLASTIK - HD Campur (baskom, gelas, piring)": { harga: 1100, satuan: "kg" },
-        "PLASTIK - Tutup Botol": { harga: 2000, satuan: "kg" },
-        "PLASTIK - Tutup Galon": { harga: 2400, satuan: "kg" },
-        "PLASTIK - HD Blow (bergaris tengah)": { harga: 1500, satuan: "kg" },
-        "PLASTIK - PP Metalik (pembungkus snack silver)": { harga: 200, satuan: "kg" },
-        "PLASTIK - PP Cetak (pembungkus snack, roti, mie)": { harga: 1000, satuan: "kg" },
-        "PLASTIK - Refill / Kemasan Plastik / Karung": { harga: 150, satuan: "lembar" },
-
         "LOGAM - Besi Tebal (besi cor, besi plat)": { harga: 2500, satuan: "kg" },
-        "LOGAM - Besi Tipis (drum, rak piring)": { harga: 1600, satuan: "kg" },
-        "LOGAM - Kaleng Makanan / Kaleng Susu": { harga: 1000, satuan: "kg" },
-        "LOGAM - Kuningan (kuningan piala)": { harga: 44000, satuan: "kg" },
-        "LOGAM - Tembaga (kabel)": { harga: 80000, satuan: "kg" },
-        "LOGAM - Aluminium Tebal (box mesin motor)": { harga: 15000, satuan: "kg" },
-        "LOGAM - Aluminium Tipis (kaleng minuman, wajan)": { harga: 12000, satuan: "kg" },
-        "LOGAM - Aluminium Siku (Alma dekor)": { harga: 17000, satuan: "kg" },
-        "LOGAM - Aluminium Campur (campur besi)": { harga: 7000, satuan: "kg" },
-        "LOGAM - Besi Seng (seng bekas)": { harga: 800, satuan: "kg" },
-        "LOGAM - Perunggu (keran air, kepala regulator)": { harga: 12000, satuan: "kg" },
-
-        "KERTAS - Kertas Putih (buku tanpa cover, HVS)": { harga: 1300, satuan: "kg" },
-        "KERTAS - Kertas Campur/Warna (majalah, dos)": { harga: 450, satuan: "kg" },
-        "KERTAS - Kertas Buram / Kelabu": { harga: 800, satuan: "kg" },
         "KERTAS - Kardus (dos/kardus coklat)": { harga: 1200, satuan: "kg" },
-        "KERTAS - Kertas Semen": { harga: 300, satuan: "kg" },
-        "KERTAS - Koran Berita": { harga: 950, satuan: "kg" },
-        "KERTAS - Cones (gulungan bulat)": { harga: 200, satuan: "kg" },
-
-        "KACA - Botol Markisa / Bensin": { harga: 700, satuan: "pcs" },
-        "KACA - Botol Kecap / DHT": { harga: 450, satuan: "pcs" },
-
-        "MINYAK JELANTAH": { harga: 400, satuan: "kg" },
-        "RAK TELUR B (bagus, tidak robek)": { harga: 800, satuan: "kg" },
-        "RAK TELUR C (ada yang robek)": { harga: 600, satuan: "kg" },
-        "AKI Motor": { harga: 10000, satuan: "pcs" },
-        "AKI Mobil": { harga: 55000, satuan: "pcs" },
-        "ORGANIK - Kompos Kering (diayak)": { harga: 800, satuan: "kg" },
-        "ORGANIK - Kompos Basah": { harga: 400, satuan: "kg" },
-        "ORGANIK - Kasgot Murni (kering, diayak)": { harga: 6000, satuan: "kg" }
+        "KERTAS - Rak Telur": { harga: 1000, satuan: "kg" },
+        "MINYAK JELANTAH - Jerigen": { harga: 6000, satuan: "kg" },
+        "LAIN-LAIN (ELEKTRONIK) - Aki Bekas": { harga: 10000, satuan: "kg" }
       };
 
-      // Mengambil Database Nasabah murni dari LocalStorage (terhubung langsung dengan pendaftaran di login.html)
-      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
-      localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
+      const buatDbAwal = () => {
+        const db = {};
+        daftarNasabahMaster.forEach((item) => {
+          db[item.id] = { 
+            id: item.id, 
+            kodeRekening: item.kodeRekening, 
+            nama: item.nama.trim(), 
+            totalPendapatan: 0, 
+            totalPenarikan: 0, 
+            histori: [] 
+          };
+        });
+        return db;
+      };
+
+      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v5"));
+      if (!dbNasabah || !dbNasabah["210"]) {
+        dbNasabah = buatDbAwal();
+        localStorage.setItem("dbNasabahBSU_v5", JSON.stringify(dbNasabah));
+      }
 
       let daftarHarga = JSON.parse(localStorage.getItem("daftarHargaBSU_v3")) || defaultHargaBSU;
-      let tempNasabahId = null;
-      let tempIndexHistori = null;
 
-      // --- ELEMENT REFERENCES ---
+      let activeEditContext = null;
+      let activeNasabahCardId = null;
+
+      let chartSampahInstance = null;
+      let chartBulanInstance = null;
+      let chartNasabahKategoriInstance = null;
+      let chartNasabahBulanInstance = null;
+
       const els = {
+        labelChartNasabahKategori: document.getElementById("labelChartNasabahKategori"),
+        labelChartNasabahBulan: document.getElementById("labelChartNasabahBulan"),
         linkPortalInput: document.getElementById("linkPortalInput"),
         btnSalinPortal: document.getElementById("btnSalinPortal"),
         inputNasabah: document.getElementById("inputNasabah"),
         listRekomendasiNasabah: document.getElementById("listRekomendasiNasabah"),
-        labelNasabahTerdeteksi: document.getElementById("labelNasabahTerdeteksi"),
-        containerUbahNamaNasabah: document.getElementById("containerUbahNamaNasabah"),
-        inputUbahNamaNasabah: document.getElementById("inputUbahNamaNasabah"),
-        btnSimpanNamaNasabah: document.getElementById("btnSimpanNamaNasabah"),
-        btnHapusNasabah: document.getElementById("btnHapusNasabah"),
+        nasabahInfoBadge: document.getElementById("nasabahInfoBadge"),
+        nasabahEmptyState: document.getElementById("nasabahEmptyState"),
+        infoColNo: document.getElementById("infoColNo"),
+        infoColKode: document.getElementById("infoColKode"),
+        infoColNama: document.getElementById("infoColNama"),
+        btnEditCardNasabah: document.getElementById("btnEditCardNasabah"),
         displaySaldo: document.getElementById("displaySaldo"),
         inputTanggalTimbang: document.getElementById("inputTanggalTimbang"),
         inputTanggalTarik: document.getElementById("inputTanggalTarik"),
@@ -364,22 +624,41 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
         hasilRupiahTimbang: document.getElementById("hasilRupiahTimbang"),
         btnSimpanTimbang: document.getElementById("btnSimpanTimbang"),
         inputTarik: document.getElementById("inputTarik"),
+        btnTambahRibu: document.getElementById("btnTambahRibu"),
+        btnNominal10k: document.getElementById("btnNominal10k"),
+        btnNominal20k: document.getElementById("btnNominal20k"),
+        btnNominal50k: document.getElementById("btnNominal50k"),
+        btnNominal100k: document.getElementById("btnNominal100k"),
         btnTarikDana: document.getElementById("btnTarikDana"),
         inputNamaNasabahBaru: document.getElementById("inputNamaNasabahBaru"),
+        inputKodeRekeningBaru: document.getElementById("inputKodeRekeningBaru"),
         btnTambahNasabah: document.getElementById("btnTambahNasabah"),
+        inputHapusNasabah: document.getElementById("inputHapusNasabah"),
+        listRekomendasiNasabahHapus: document.getElementById("listRekomendasiNasabahHapus"),
+        btnHapusNasabah: document.getElementById("btnHapusNasabah"),
+        inputKategoriSampahBaru: document.getElementById("inputKategoriSampahBaru"),
+        inputNamaSampahBaru: document.getElementById("inputNamaSampahBaru"),
+        inputHargaSampahBaru: document.getElementById("inputHargaSampahBaru"),
+        inputSatuanSampahBaru: document.getElementById("inputSatuanSampahBaru"),
+        btnTambahSampah: document.getElementById("btnTambahSampah"),
+        inputHapusSampah: document.getElementById("inputHapusSampah"),
+        listRekomendasiSampahHapus: document.getElementById("listRekomendasiSampahHapus"),
+        btnHapusSampah: document.getElementById("btnHapusSampah"),
         editCariJenis: document.getElementById("editCariJenis"),
         listRekomendasiSampahEdit: document.getElementById("listRekomendasiSampahEdit"),
         editNamaJenisLama: document.getElementById("editNamaJenisLama"),
         editHargaBaru: document.getElementById("editHargaBaru"),
         btnSimpanEditHarga: document.getElementById("btnSimpanEditHarga"),
-        inputJenisBaru: document.getElementById("inputJenisBaru"),
-        inputHargaJenisBaru: document.getElementById("inputHargaJenisBaru"),
-        inputSatuanJenisBaru: document.getElementById("inputSatuanJenisBaru"),
-        btnTambahJenisSampah: document.getElementById("btnTambahJenisSampah"),
         judulHistoriNasabah: document.getElementById("judulHistoriNasabah"),
         containerRekapHarian: document.getElementById("containerRekapHarian"),
         listRekapHarian: document.getElementById("listRekapHarian"),
         tabelHistori: document.getElementById("tabelHistori"),
+        modalEditNasabah: document.getElementById("modalEditNasabah"),
+        editNoNasabahCard: document.getElementById("editNoNasabahCard"),
+        editKodeNasabahCard: document.getElementById("editKodeNasabahCard"),
+        editNamaNasabahCard: document.getElementById("editNamaNasabahCard"),
+        btnSimpanEditNasabahCard: document.getElementById("btnSimpanEditNasabahCard"),
+        btnTutupModalNasabahCard: document.getElementById("btnTutupModalNasabahCard"),
         modalEdit: document.getElementById("modalEdit"),
         editTanggalHistori: document.getElementById("editTanggalHistori"),
         containerEditPenimbangan: document.getElementById("containerEditPenimbangan"),
@@ -395,10 +674,253 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
         btnTutupModalEdit: document.getElementById("btnTutupModalEdit")
       };
 
-      // --- HELPER FUNCTIONS ---
+      const today = new Date().toISOString().split('T')[0];
+      if (els.inputTanggalTimbang) els.inputTanggalTimbang.value = today;
+      if (els.inputTanggalTarik) els.inputTanggalTarik.value = today;
+
       const simpanKeStorage = () => {
-        localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
+        localStorage.setItem("dbNasabahBSU_v5", JSON.stringify(dbNasabah));
         localStorage.setItem("daftarHargaBSU_v3", JSON.stringify(daftarHarga));
+        updateDiagramSampah();
+        updateDiagramBulan();
+        updateDiagramNasabahIndividu();
+      };
+
+      const ekstrakKategori = (namaJenis) => {
+        if (!namaJenis) return "LAIN-LAIN (ELEKTRONIK)";
+        const upper = namaJenis.toUpperCase();
+        if (upper.includes("RAK TELUR") || upper.includes("EGG TRAY")) return "KERTAS";
+        if (upper.includes("AKI") || upper.includes("ACCU") || upper.includes("BATERAI")) return "LAIN-LAIN (ELEKTRONIK)";
+
+        let prefix = namaJenis;
+        if (namaJenis.includes(" - ")) prefix = namaJenis.split(" - ")[0].trim();
+        const upperPrefix = prefix.toUpperCase();
+
+        if (upperPrefix.includes("PLASTIK")) return "PLASTIK";
+        if (upperPrefix.includes("LOGAM")) return "LOGAM";
+        if (upperPrefix.includes("KERTAS")) return "KERTAS";
+        if (upperPrefix.includes("KACA")) return "KACA";
+        if (upperPrefix.includes("MINYAK")) return "MINYAK JELANTAH";
+        if (upperPrefix.includes("ORGANIK")) return "ORGANIK";
+        
+        return "LAIN-LAIN (ELEKTRONIK)";
+      };
+
+      const updateDiagramNasabahIndividu = () => {
+        const nasabah = activeNasabahCardId ? dbNasabah[activeNasabahCardId] : null;
+
+        const rekapKategori = {
+          "PLASTIK": 0, "LOGAM": 0, "KERTAS": 0, "KACA": 0,
+          "MINYAK JELANTAH": 0, "ORGANIK": 0, "LAIN-LAIN (ELEKTRONIK)": 0
+        };
+
+        const namaBulanIndo = [
+          "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        const tahunSekarang = new Date().getFullYear();
+        const rekapBulan = {};
+        for (let m = 0; m < 12; m++) {
+          rekapBulan[`${namaBulanIndo[m]} ${tahunSekarang}`] = 0;
+        }
+
+        if (nasabah && nasabah.histori) {
+          els.labelChartNasabahKategori.innerText = `📦 Timbangan per Kategori (kg) - ${nasabah.nama}`;
+          els.labelChartNasabahBulan.innerText = `📅 Timbangan per Bulan (kg) - ${nasabah.nama}`;
+
+          nasabah.histori.forEach(item => {
+            if (item.tipe === 'Penimbangan') {
+              if (item.jenis) {
+                const kat = ekstrakKategori(item.jenis);
+                rekapKategori[kat] = (rekapKategori[kat] || 0) + parseFloat(item.bobot || 0);
+              }
+              if (item.waktu) {
+                const parts = item.waktu.split('/');
+                if (parts.length === 3) {
+                  const bulanIndex = parseInt(parts[1], 10) - 1;
+                  const tahun = parts[2];
+                  if (bulanIndex >= 0 && bulanIndex < 12) {
+                    const keyBulan = `${namaBulanIndo[bulanIndex]} ${tahun}`;
+                    rekapBulan[keyBulan] = (rekapBulan[keyBulan] || 0) + parseFloat(item.bobot || 0);
+                  }
+                }
+              }
+            }
+          });
+        } else {
+          els.labelChartNasabahKategori.innerText = `📦 Timbangan per Kategori (kg) - (Pilih Nasabah)`;
+          els.labelChartNasabahBulan.innerText = `📅 Timbangan per Bulan (kg) - (Pilih Nasabah)`;
+        }
+
+        const labelsKat = Object.keys(rekapKategori);
+        const dataKat = Object.values(rekapKategori);
+        const ctxKat = document.getElementById('chartNasabahKategori').getContext('2d');
+
+        if (chartNasabahKategoriInstance) {
+          chartNasabahKategoriInstance.data.labels = labelsKat;
+          chartNasabahKategoriInstance.data.datasets[0].data = dataKat;
+          chartNasabahKategoriInstance.update();
+        } else {
+          chartNasabahKategoriInstance = new Chart(ctxKat, {
+            type: 'bar',
+            data: {
+              labels: labelsKat,
+              datasets: [{
+                label: 'Bobot Nasabah (kg)',
+                data: dataKat,
+                backgroundColor: 'rgba(29, 105, 216, 0.8)',
+                borderColor: '#0b4eab',
+                borderWidth: 1.5,
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
+
+        const labelsBulan = Object.keys(rekapBulan);
+        const dataBulan = Object.values(rekapBulan);
+        const ctxBulan = document.getElementById('chartNasabahBulan').getContext('2d');
+
+        if (chartNasabahBulanInstance) {
+          chartNasabahBulanInstance.data.labels = labelsBulan;
+          chartNasabahBulanInstance.data.datasets[0].data = dataBulan;
+          chartNasabahBulanInstance.update();
+        } else {
+          chartNasabahBulanInstance = new Chart(ctxBulan, {
+            type: 'bar',
+            data: {
+              labels: labelsBulan,
+              datasets: [{
+                label: 'Bobot Bulanan (kg)',
+                data: dataBulan,
+                backgroundColor: 'rgba(22, 163, 74, 0.8)',
+                borderColor: '#15803d',
+                borderWidth: 1.5,
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
+      };
+
+      const updateDiagramSampah = () => {
+        const rekapKategoriKg = {
+          "PLASTIK": 0, "LOGAM": 0, "KERTAS": 0, "KACA": 0,
+          "MINYAK JELANTAH": 0, "ORGANIK": 0, "LAIN-LAIN (ELEKTRONIK)": 0
+        };
+
+        for (let id in dbNasabah) {
+          if (dbNasabah[id].histori) {
+            dbNasabah[id].histori.forEach(item => {
+              if (item.tipe === 'Penimbangan' && item.jenis) {
+                const kat = ekstrakKategori(item.jenis);
+                rekapKategoriKg[kat] = (rekapKategoriKg[kat] || 0) + parseFloat(item.bobot || 0);
+              }
+            });
+          }
+        }
+
+        const labels = Object.keys(rekapKategoriKg);
+        const dataValues = Object.values(rekapKategoriKg);
+        const ctx = document.getElementById('chartSampahBatang').getContext('2d');
+
+        if (chartSampahInstance) {
+          chartSampahInstance.data.labels = labels;
+          chartSampahInstance.data.datasets[0].data = dataValues;
+          chartSampahInstance.update();
+        } else {
+          chartSampahInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Total Akumulasi (kg)',
+                data: dataValues,
+                backgroundColor: 'rgba(59, 130, 246, 0.75)',
+                borderColor: '#1d4ed8',
+                borderWidth: 1.5,
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
+      };
+
+      const updateDiagramBulan = () => {
+        const namaBulanIndo = [
+          "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        const rekapBulanKg = {};
+        const tahunSekarang = new Date().getFullYear();
+        for (let m = 0; m < 12; m++) {
+          rekapBulanKg[`${namaBulanIndo[m]} ${tahunSekarang}`] = 0;
+        }
+
+        for (let id in dbNasabah) {
+          if (dbNasabah[id].histori) {
+            dbNasabah[id].histori.forEach(item => {
+              if (item.tipe === 'Penimbangan' && item.waktu) {
+                const parts = item.waktu.split('/');
+                if (parts.length === 3) {
+                  const bulanIndex = parseInt(parts[1], 10) - 1;
+                  const tahun = parts[2];
+                  if (bulanIndex >= 0 && bulanIndex < 12) {
+                    const keyBulan = `${namaBulanIndo[bulanIndex]} ${tahun}`;
+                    rekapBulanKg[keyBulan] = (rekapBulanKg[keyBulan] || 0) + parseFloat(item.bobot || 0);
+                  }
+                }
+              }
+            });
+          }
+        }
+
+        const labels = Object.keys(rekapBulanKg);
+        const dataValues = Object.values(rekapBulanKg);
+        const ctxBulan = document.getElementById('chartSampahBulan').getContext('2d');
+
+        if (chartBulanInstance) {
+          chartBulanInstance.data.labels = labels;
+          chartBulanInstance.data.datasets[0].data = dataValues;
+          chartBulanInstance.update();
+        } else {
+          chartBulanInstance = new Chart(ctxBulan, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Total Akumulasi Per Bulan (kg)',
+                data: dataValues,
+                backgroundColor: 'rgba(34, 197, 94, 0.75)',
+                borderColor: '#15803d',
+                borderWidth: 1.5,
+                borderRadius: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
       };
 
       const formatTanggalKeIndo = (str) => {
@@ -410,17 +932,21 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
       const formatTanggalKeInput = (str) => {
         if (!str) return "";
         const b = str.split("/");
-        return b.length === 3 ? `${b[2]}-${b[1]}-${b[0]}` : str;
+        return b.length === 3 ? `${b[2]}-${b[1].padStart(2, '0')}-${b[0].padStart(2, '0')}` : str;
       };
 
       const cariIdNasabah = (input) => {
         if (!input) return null;
         const kw = input.trim().toLowerCase();
         if (dbNasabah[kw]) return kw;
+        
         const pemisah = kw.split(".")[0].trim();
         if (dbNasabah[pemisah]) return pemisah;
+
         for (let id in dbNasabah) {
-          if (dbNasabah[id].nama.toLowerCase() === kw) return id;
+          const item = dbNasabah[id];
+          if (item.nama.toLowerCase() === kw) return id;
+          if (item.kodeRekening && item.kodeRekening.toLowerCase() === kw) return id;
         }
         return null;
       };
@@ -449,69 +975,78 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
         simpanKeStorage();
       };
 
-      // --- UI RENDERING ---
-      const muatLinkPortal = () => {
-        const cur = window.location.href;
-        els.linkPortalInput.value = cur.substring(0, cur.lastIndexOf('/') + 1) + "history.html";
-      };
-
       const muatKomponenDinamis = () => {
         els.listRekomendasiNasabah.innerHTML = "";
+        els.listRekomendasiNasabahHapus.innerHTML = "";
+
         for (let id in dbNasabah) {
+          const n = dbNasabah[id];
+          const valStrSimpel = `${n.id}. ${n.nama}`;
+          
           const opt = document.createElement("option");
-          opt.value = `${dbNasabah[id].id}. ${dbNasabah[id].nama}`;
+          opt.value = valStrSimpel;
           els.listRekomendasiNasabah.appendChild(opt);
+
+          const optHapus = document.createElement("option");
+          optHapus.value = valStrSimpel;
+          els.listRekomendasiNasabahHapus.appendChild(optHapus);
         }
 
         els.listRekomendasiSampah.innerHTML = "";
         els.listRekomendasiSampahEdit.innerHTML = "";
+        els.listRekomendasiSampahHapus.innerHTML = "";
         els.listRekomendasiSampahModal.innerHTML = "";
 
         for (let jenis in daftarHarga) {
           const item = daftarHarga[jenis];
-          
+          const textOpt = `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
+
           const opt1 = document.createElement("option");
           opt1.value = jenis;
-          opt1.innerText = `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
+          opt1.innerText = textOpt;
           els.listRekomendasiSampah.appendChild(opt1);
 
           const opt2 = document.createElement("option");
           opt2.value = jenis;
           els.listRekomendasiSampahEdit.appendChild(opt2);
 
+          const optHapus = document.createElement("option");
+          optHapus.value = jenis;
+          optHapus.innerText = textOpt;
+          els.listRekomendasiSampahHapus.appendChild(optHapus);
+
           const opt3 = document.createElement("option");
           opt3.value = jenis;
-          opt3.innerText = `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
+          opt3.innerText = textOpt;
           els.listRekomendasiSampahModal.appendChild(opt3);
         }
       };
 
+      const rekapHarian = (histori) => {
+        const rekap = {};
+        histori.forEach(item => {
+          if (item.tipe === 'Penimbangan') {
+            rekap[item.waktu] = (rekap[item.waktu] || 0) + (parseFloat(item.bobot) || 0);
+          }
+        });
+        return rekap;
+      };
+
       const tampilkanHistori = (nasabah) => {
-        els.judulHistoriNasabah.innerText = `Riwayat Transaksi: No. ${nasabah.id} - ${nasabah.nama}`;
+        els.judulHistoriNasabah.innerText = `Riwayat Transaksi: No. ${nasabah.id} | ${nasabah.kodeRekening || ''} | ${nasabah.nama}`;
         
         if (!nasabah.histori || nasabah.histori.length === 0) {
           els.containerRekapHarian.style.display = "none";
-          els.tabelHistori.innerHTML = `<tr><td colspan="5" class="empty-state">Belum ada riwayat penimbangan atau penarikan dana.</td></tr>`;
+          els.tabelHistori.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada riwayat penimbangan atau penarikan dana.</td></tr>`;
           return;
         }
 
-        const rekapPerHari = {};
-        let adaPenimbangan = false;
-
-        nasabah.histori.forEach(item => {
-          if (item.tipe === 'Penimbangan') {
-            adaPenimbangan = true;
-            rekapPerHari[item.waktu] = (rekapPerHari[item.waktu] || 0) + item.nominal;
-          }
-        });
-
-        if (adaPenimbangan) {
+        const totalHarian = rekapHarian(nasabah.histori);
+        if (Object.keys(totalHarian).length > 0) {
           els.containerRekapHarian.style.display = "block";
-          els.listRekapHarian.innerHTML = Object.keys(rekapPerHari).map(tgl => `
-            <div class="rekap-harian-chip">
-              🗓️ <strong>${tgl}</strong>: Rp ${rekapPerHari[tgl].toLocaleString('id-ID')}
-            </div>
-          `).join("");
+          els.listRekapHarian.innerHTML = Object.entries(totalHarian)
+            .map(([tgl, total]) => `<span style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:6px; font-weight:bold;">${tgl}: ${total.toFixed(1)} kg</span>`)
+            .join('');
         } else {
           els.containerRekapHarian.style.display = "none";
         }
@@ -522,7 +1057,7 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
           const isTimbang = item.tipe === 'Penimbangan';
           const badgeClass = isTimbang ? 'badge-setor' : 'badge-tarik';
           const tanda = isTimbang ? '+' : '-';
-          const warna = isTimbang ? '#2e7d32' : '#d84315';
+          const warna = isTimbang ? '#166534' : '#991b1b';
 
           html += `
             <tr>
@@ -530,9 +1065,9 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
               <td><span class="badge ${badgeClass}">${item.tipe}</span></td>
               <td>${item.keterangan}</td>
               <td style="color: ${warna}; font-weight: bold;">${tanda} Rp ${item.nominal.toLocaleString('id-ID')}</td>
-              <td style="text-align: center; white-space: nowrap;">
-                <button class="btn-action btn-edit" data-id="${nasabah.id}" data-idx="${i}">Edit</button>
-                <button class="btn-action btn-delete" data-id="${nasabah.id}" data-idx="${i}">Hapus</button>
+              <td style="text-align: center;">
+                <button class="btn btn-warning btn-edit-histori" style="padding: 4px 8px; font-size: 0.7rem; margin-right: 4px;" data-id="${nasabah.id}" data-idx="${i}">Edit</button>
+                <button class="btn btn-danger btn-hapus-histori" style="padding: 4px 8px; font-size: 0.7rem;" data-id="${nasabah.id}" data-idx="${i}">Hapus</button>
               </td>
             </tr>
           `;
@@ -544,204 +1079,212 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
         const idFound = cariIdNasabah(els.inputNasabah.value);
 
         if (idFound && dbNasabah[idFound]) {
+          activeNasabahCardId = idFound;
           hitungUlangSaldoRealtime(idFound);
           const data = dbNasabah[idFound];
           const sisa = data.totalPendapatan - data.totalPenarikan;
           
           els.displaySaldo.innerText = "Rp " + sisa.toLocaleString('id-ID');
-          els.labelNasabahTerdeteksi.innerText = `✓ Terdeteksi: No. ${data.id} - ${data.nama}`;
-          els.containerUbahNamaNasabah.style.display = "block";
-          els.inputUbahNamaNasabah.value = data.nama;
+          els.infoColNo.innerText = data.id;
+          els.infoColKode.innerText = data.kodeRekening || "-";
+          els.infoColNama.innerText = data.nama;
+          
+          if(els.nasabahEmptyState) els.nasabahEmptyState.style.display = "none";
+          els.nasabahInfoBadge.classList.add("active");
+
+          els.linkPortalInput.value = window.location.origin + window.location.pathname + `?nasabah=${data.id}`;
+
           tampilkanHistori(data);
+          updateDiagramNasabahIndividu();
         } else {
+          activeNasabahCardId = null;
           els.displaySaldo.innerText = "Rp 0";
-          els.labelNasabahTerdeteksi.innerText = els.inputNasabah.value ? "Nasabah tidak ditemukan" : "";
-          els.containerUbahNamaNasabah.style.display = "none";
-          els.containerRekapHarian.style.display = "none";
-          els.judulHistoriNasabah.innerText = "Silakan pilih atau ketik nasabah untuk melihat riwayat transaksi";
-          els.tabelHistori.innerHTML = `<tr><td colspan="5" class="empty-state">Belum ada nasabah yang dipilih.</td></tr>`;
+          els.nasabahInfoBadge.classList.remove("active");
+          if(els.nasabahEmptyState) els.nasabahEmptyState.style.display = "block";
+          els.judulHistoriNasabah.innerText = "Pilih nasabah untuk melihat riwayat transaksi";
+          els.tabelHistori.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada nasabah yang dipilih.</td></tr>`;
+          els.linkPortalInput.value = "";
+          updateDiagramNasabahIndividu();
         }
       };
 
-      const hitungHasilTimbang = () => {
+      // EVENT SEARCH NASABAH
+      els.inputNasabah.addEventListener("input", muatDataNasabah);
+      els.inputNasabah.addEventListener("change", muatDataNasabah);
+
+      // SALIN LINK PORTAL
+      els.btnSalinPortal.addEventListener("click", () => {
+        if (!els.linkPortalInput.value) return alert("Pilih nasabah terlebih dahulu!");
+        els.linkPortalInput.select();
+        navigator.clipboard.writeText(els.linkPortalInput.value);
+        alert("Link portal mandiri nasabah berhasil disalin!");
+      });
+
+      // EDIT NASABAH
+      els.btnEditCardNasabah.addEventListener("click", () => {
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) return;
+        const data = dbNasabah[activeNasabahCardId];
+        els.editNoNasabahCard.value = data.id;
+        els.editKodeNasabahCard.value = data.kodeRekening || "";
+        els.editNamaNasabahCard.value = data.nama || "";
+        els.modalEditNasabah.classList.add("active");
+      });
+
+      els.btnTutupModalNasabahCard.addEventListener("click", () => {
+        els.modalEditNasabah.classList.remove("active");
+      });
+
+      els.btnSimpanEditNasabahCard.addEventListener("click", () => {
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) return;
+
+        const kodeBaru = els.editKodeNasabahCard.value.trim();
+        const namaBaru = els.editNamaNasabahCard.value.trim();
+
+        if (!namaBaru) return alert("Nama nasabah tidak boleh kosong!");
+
+        dbNasabah[activeNasabahCardId].kodeRekening = kodeBaru;
+        dbNasabah[activeNasabahCardId].nama = namaBaru;
+
+        simpanKeStorage();
+        muatKomponenDinamis();
+        
+        els.inputNasabah.value = `${dbNasabah[activeNasabahCardId].id}. ${namaBaru}`;
+        muatDataNasabah();
+
+        els.modalEditNasabah.classList.remove("active");
+        alert("Informasi nasabah berhasil diperbarui!");
+      });
+
+      const updateEstimasiTimbang = () => {
         const jenisFound = cariNamaJenisSampah(els.inputCariJenisSampah.value);
         const bobot = parseFloat(els.inputBobot.value) || 0;
-        const item = daftarHarga[jenisFound];
-        const total = item ? bobot * item.harga : 0;
-
-        els.hasilRupiahTimbang.innerText = "Rp " + total.toLocaleString('id-ID');
-        return total;
-      };
-
-      const hitungKalkulasiModalEdit = () => {
-        const jenisFound = cariNamaJenisSampah(els.editJenisSampahHistori.value);
-        const bobot = parseFloat(els.editBobotHistori.value) || 0;
 
         if (jenisFound && daftarHarga[jenisFound]) {
           const item = daftarHarga[jenisFound];
-          els.labelModalBobot.innerText = `Jumlah / Bobot (${item.satuan}):`;
-          els.editNominalHistori.value = bobot * item.harga;
-        }
-      };
-
-      const tutupModalEdit = () => {
-        els.modalEdit.style.display = "none";
-        tempNasabahId = null;
-        tempIndexHistori = null;
-      };
-
-      // --- EVENT HANDLERS & LISTENERS ---
-      els.btnSalinPortal.addEventListener("click", () => {
-        els.linkPortalInput.select();
-        els.linkPortalInput.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(els.linkPortalInput.value)
-          .then(() => alert("Link Portal Nasabah berhasil disalin!\nSilakan bagikan link ini ke nasabah."))
-          .catch(() => alert("Gagal menyalin otomatis, silakan salin link secara manual."));
-      });
-
-      els.inputNasabah.addEventListener("input", muatDataNasabah);
-
-      els.btnSimpanNamaNasabah.addEventListener("click", () => {
-        const idFound = cariIdNasabah(els.inputNasabah.value);
-        const namaBaru = els.inputUbahNamaNasabah.value.trim();
-
-        if (!idFound || !dbNasabah[idFound]) return alert("Pilih nasabah terlebih dahulu!");
-        if (!namaBaru) return alert("Masukkan nama baru!");
-
-        dbNasabah[idFound].nama = namaBaru;
-        simpanKeStorage();
-        els.inputNasabah.value = `${idFound}. ${namaBaru}`;
-        alert(`Nama nasabah ID ${idFound} berhasil diubah menjadi "${namaBaru}" secara permanen!`);
-        
-        muatKomponenDinamis();
-        muatDataNasabah();
-      });
-
-      els.btnHapusNasabah.addEventListener("click", () => {
-        const idFound = cariIdNasabah(els.inputNasabah.value);
-        if (!idFound || !dbNasabah[idFound]) return alert("Nasabah tidak ditemukan!");
-
-        const namaNasabah = dbNasabah[idFound].nama;
-        if (confirm(`Apakah Anda yakin ingin menghapus nasabah "${namaNasabah}" (ID: ${idFound})?\n\nTindakan ini bersifat PERMANEN.`)) {
-          delete dbNasabah[idFound];
-          simpanKeStorage();
-          alert(`Nasabah "${namaNasabah}" (ID: ${idFound}) telah berhasil dihapus dari sistem!`);
-          els.inputNasabah.value = "";
-          muatKomponenDinamis();
-          muatDataNasabah();
-        }
-      });
-
-      els.inputCariJenisSampah.addEventListener("input", () => {
-        const jenisFound = cariNamaJenisSampah(els.inputCariJenisSampah.value);
-        if (jenisFound && daftarHarga[jenisFound]) {
-          const item = daftarHarga[jenisFound];
-          els.infoHargaSampahTerpilih.innerText = `✓ Terpilih: ${jenisFound} (Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan})`;
-          els.labelBobot.innerText = `Jumlah / Bobot (${item.satuan}):`;
-          els.inputBobot.placeholder = `Masukkan jumlah (${item.satuan})`;
+          const total = bobot * item.harga;
+          els.infoHargaSampahTerpilih.innerText = `Harga: Rp ${item.harga.toLocaleString('id-ID')} / ${item.satuan}`;
+          els.hasilRupiahTimbang.innerText = "Rp " + total.toLocaleString('id-ID');
+          return total;
         } else {
-          els.infoHargaSampahTerpilih.innerText = els.inputCariJenisSampah.value ? "Mengetik kata kunci..." : "";
-          els.labelBobot.innerText = `Jumlah / Bobot (kg):`;
+          els.infoHargaSampahTerpilih.innerText = "";
+          els.hasilRupiahTimbang.innerText = "Rp 0";
+          return 0;
         }
-        hitungHasilTimbang();
-      });
+      };
 
-      els.inputBobot.addEventListener("input", hitungHasilTimbang);
+      els.inputCariJenisSampah.addEventListener("input", updateEstimasiTimbang);
+      els.inputBobot.addEventListener("input", updateEstimasiTimbang);
 
+      // SIMPAN PENIMBANGAN
       els.btnSimpanTimbang.addEventListener("click", () => {
-        const id = cariIdNasabah(els.inputNasabah.value.trim());
-        const jenis = cariNamaJenisSampah(els.inputCariJenisSampah.value);
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) {
+          return alert("Pilih nasabah terlebih dahulu di header pencarian!");
+        }
+        const jenisFound = cariNamaJenisSampah(els.inputCariJenisSampah.value);
         const bobot = parseFloat(els.inputBobot.value);
-        const valTanggal = els.inputTanggalTimbang.value;
+        const tgl = els.inputTanggalTimbang.value;
 
-        if (!id) return alert("Nasabah belum terdaftar/terpilih dengan benar!");
-        if (!valTanggal) return alert("Pilih tanggal penimbangan terlebih dahulu!");
-        if (!jenis || !daftarHarga[jenis]) return alert("Jenis sampah tidak terdaftar!");
-        if (!bobot || bobot <= 0) return alert("Masukkan jumlah/bobot yang valid!");
+        if (!tgl) return alert("Pilih tanggal penimbangan!");
+        if (!jenisFound) return alert("Pilih jenis sampah yang valid!");
+        if (isNaN(bobot) || bobot <= 0) return alert("Masukkan bobot yang valid!");
 
-        const item = daftarHarga[jenis];
-        const hasilRupiah = hitungHasilTimbang();
-        const tglFormatted = formatTanggalKeIndo(valTanggal);
+        const hargaItem = daftarHarga[jenisFound];
+        const nominal = bobot * hargaItem.harga;
+        const ketStr = `${jenisFound} (${bobot} ${hargaItem.satuan})`;
 
-        if (!dbNasabah[id].histori) dbNasabah[id].histori = [];
-        dbNasabah[id].histori.push({
-          waktu: tglFormatted,
+        dbNasabah[activeNasabahCardId].histori.push({
+          waktu: formatTanggalKeIndo(tgl),
           tipe: 'Penimbangan',
-          jenis,
-          bobot,
-          hargaSatuanSaatItu: item.harga,
-          keterangan: `${jenis} (${bobot} ${item.satuan})`,
-          nominal: hasilRupiah
+          jenis: jenisFound,
+          bobot: bobot,
+          keterangan: ketStr,
+          nominal: nominal
         });
 
-        hitungUlangSaldoRealtime(id);
-        alert(`Penimbangan tanggal ${tglFormatted} berhasil disimpan!\n+ Rp ${hasilRupiah.toLocaleString('id-ID')} ditambahkan ke saldo No. ${dbNasabah[id].id} (${dbNasabah[id].nama}).`);
-
-        muatKomponenDinamis();
+        hitungUlangSaldoRealtime(activeNasabahCardId);
         muatDataNasabah();
         els.inputCariJenisSampah.value = "";
-        els.infoHargaSampahTerpilih.innerText = "";
         els.inputBobot.value = "";
-        els.hasilRupiahTimbang.innerText = "Rp 0";
+        updateEstimasiTimbang();
+        alert("Transaksi penimbangan berhasil disimpan!");
       });
 
+      // QUICK ADD NOMINAL
+      els.btnTambahRibu.addEventListener("click", () => {
+        const val = parseInt(els.inputTarik.value) || 0;
+        els.inputTarik.value = val * 1000 || 1000;
+      });
+      els.btnNominal10k.addEventListener("click", () => els.inputTarik.value = 10000);
+      els.btnNominal20k.addEventListener("click", () => els.inputTarik.value = 20000);
+      els.btnNominal50k.addEventListener("click", () => els.inputTarik.value = 50000);
+      els.btnNominal100k.addEventListener("click", () => els.inputTarik.value = 100000);
+
+      // SIMPAN PENARIKAN DANA
       els.btnTarikDana.addEventListener("click", () => {
-        const id = cariIdNasabah(els.inputNasabah.value.trim());
-        const nominalTarik = parseFloat(els.inputTarik.value);
-        const valTanggal = els.inputTanggalTarik.value;
-        const metodeTarik = els.inputMetodeTarik.value;
-
-        if (!id || !dbNasabah[id]) return alert("Nasabah tidak ditemukan!");
-        if (!valTanggal) return alert("Pilih tanggal penarikan terlebih dahulu!");
-        if (!nominalTarik || nominalTarik <= 0) return alert("Masukkan nominal penarikan yang valid!");
-
-        const data = dbNasabah[id];
-        const sisaSaldo = data.totalPendapatan - data.totalPenarikan;
-
-        if (nominalTarik > sisaSaldo) {
-          return alert(`Penarikan gagal! Saldo tidak mencukupi.\nSisa saldo saat ini: Rp ${sisaSaldo.toLocaleString('id-ID')}`);
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) {
+          return alert("Pilih nasabah terlebih dahulu di header pencarian!");
         }
 
-        const tglFormatted = formatTanggalKeIndo(valTanggal);
-        if (!data.histori) data.histori = [];
-        data.histori.push({
-          waktu: tglFormatted,
+        const nominal = parseFloat(els.inputTarik.value);
+        const tgl = els.inputTanggalTarik.value;
+        const metode = els.inputMetodeTarik.value;
+
+        if (!tgl) return alert("Pilih tanggal penarikan!");
+        if (isNaN(nominal) || nominal <= 0) return alert("Masukkan nominal penarikan yang valid!");
+
+        const sisaSaldo = dbNasabah[activeNasabahCardId].totalPendapatan - dbNasabah[activeNasabahCardId].totalPenarikan;
+        if (nominal > sisaSaldo) {
+          return alert(`Saldo tidak mencukupi! Sisa saldo saat ini: Rp ${sisaSaldo.toLocaleString('id-ID')}`);
+        }
+
+        dbNasabah[activeNasabahCardId].histori.push({
+          waktu: formatTanggalKeIndo(tgl),
           tipe: 'Penarikan',
-          metode: metodeTarik,
-          keterangan: `Tarik Saldo (${metodeTarik})`,
-          nominal: nominalTarik
+          metode: metode,
+          keterangan: `Penarikan Saldo (${metode})`,
+          nominal: nominal
         });
 
-        hitungUlangSaldoRealtime(id);
-        alert(`Penarikan dana tanggal ${tglFormatted} via ${metodeTarik} berhasil!\n- Rp ${nominalTarik.toLocaleString('id-ID')} ditarik dari saldo No. ${data.id} (${data.nama}).`);
-        els.inputTarik.value = "";
+        hitungUlangSaldoRealtime(activeNasabahCardId);
         muatDataNasabah();
+        els.inputTarik.value = "";
+        alert("Penarikan dana saldo berhasil dicatat!");
       });
 
-      els.btnTambahNasabah.addEventListener("click", () => {
-        const namaBaru = els.inputNamaNasabahBaru.value.trim();
-        if (!namaBaru) return alert("Masukkan nama nasabah baru terlebih dahulu!");
+      // MANAJEMEN SAMPAH (TAMBAH / HAPUS / EDIT)
+      els.btnTambahSampah.addEventListener("click", () => {
+        const kat = els.inputKategoriSampahBaru.value;
+        const nama = els.inputNamaSampahBaru.value.trim();
+        const harga = parseFloat(els.inputHargaSampahBaru.value);
+        const satuan = els.inputSatuanSampahBaru.value;
 
-        for (let key in dbNasabah) {
-          if (dbNasabah[key].nama.toLowerCase() === namaBaru.toLowerCase()) {
-            return alert(`Nasabah "${namaBaru}" sudah terdaftar dengan ID ${key}!`);
-          }
-        }
+        if (!nama) return alert("Nama sampah tidak boleh kosong!");
+        if (isNaN(harga) || harga <= 0) return alert("Harga sampah tidak valid!");
 
-        const keys = Object.keys(dbNasabah).map(k => parseInt(k)).filter(k => !isNaN(k));
-        const nextId = (keys.length > 0 ? Math.max(...keys) + 1 : 1).toString();
-
-        dbNasabah[nextId] = { id: nextId, nama: namaBaru, totalPendapatan: 0, totalPenarikan: 0, histori: [] };
+        const fullNama = `${kat} - ${nama}`;
+        daftarHarga[fullNama] = { harga, satuan };
+        
         simpanKeStorage();
         muatKomponenDinamis();
-
-        els.inputNamaNasabahBaru.value = "";
-        els.inputNasabah.value = `${nextId}. ${namaBaru}`;
-        muatDataNasabah();
-        alert(`Nasabah baru "${namaBaru}" berhasil ditambahkan dengan ID: ${nextId}!`);
+        els.inputNamaSampahBaru.value = "";
+        els.inputHargaSampahBaru.value = "";
+        alert("Jenis sampah baru berhasil ditambahkan!");
       });
 
-      els.editCariJenis.addEventListener("input", () => {
+      els.btnHapusSampah.addEventListener("click", () => {
+        const jenisFound = cariNamaJenisSampah(els.inputHapusSampah.value);
+        if (!jenisFound || !daftarHarga[jenisFound]) return alert("Jenis sampah tidak ditemukan!");
+
+        if (confirm(`Apakah Anda yakin ingin menghapus jenis sampah "${jenisFound}"?`)) {
+          delete daftarHarga[jenisFound];
+          simpanKeStorage();
+          muatKomponenDinamis();
+          els.inputHapusSampah.value = "";
+          alert("Jenis sampah berhasil dihapus!");
+        }
+      });
+
+      els.editCariJenis.addEventListener("change", () => {
         const jenisFound = cariNamaJenisSampah(els.editCariJenis.value);
         if (jenisFound && daftarHarga[jenisFound]) {
           els.editNamaJenisLama.value = jenisFound;
@@ -750,137 +1293,151 @@ localStorage.setItem("dbNasabahBSU_v3", JSON.stringify(dbNasabah));
       });
 
       els.btnSimpanEditHarga.addEventListener("click", () => {
-        const jenisLama = cariNamaJenisSampah(els.editCariJenis.value);
-        const namaJenisBaru = els.editNamaJenisLama.value.trim();
+        const jenisAwal = cariNamaJenisSampah(els.editCariJenis.value);
+        const namaBaru = els.editNamaJenisLama.value.trim();
         const hargaBaru = parseFloat(els.editHargaBaru.value);
 
-        if (!jenisLama) return alert("Pilih jenis sampah yang ingin diubah!");
-        if (!namaJenisBaru) return alert("Nama jenis sampah tidak boleh kosong!");
-        if (isNaN(hargaBaru) || hargaBaru < 0) return alert("Masukkan harga baru yang valid!");
+        if (!jenisAwal || !daftarHarga[jenisAwal]) return alert("Pilih jenis sampah awal yang valid!");
+        if (!namaBaru) return alert("Nama sampah tidak boleh kosong!");
+        if (isNaN(hargaBaru) || hargaBaru <= 0) return alert("Harga tidak valid!");
 
-        const satuanLama = daftarHarga[jenisLama].satuan;
-        if (jenisLama !== namaJenisBaru) delete daftarHarga[jenisLama];
+        const satuanAwal = daftarHarga[jenisAwal].satuan;
+        delete daftarHarga[jenisAwal];
+        daftarHarga[namaBaru] = { harga: hargaBaru, satuan: satuanAwal };
 
-        daftarHarga[namaJenisBaru] = { harga: hargaBaru, satuan: satuanLama };
-        simpanKeStorage();
-
-        muatKomponenDinamis();
-        muatDataNasabah();
-        alert(`Harga/Nama sampah "${namaJenisBaru}" berhasil diperbarui menjadi Rp ${hargaBaru.toLocaleString('id-ID')}.`);
-      });
-
-      els.btnTambahJenisSampah.addEventListener("click", () => {
-        const namaBaru = els.inputJenisBaru.value.trim();
-        const hargaBaru = parseFloat(els.inputHargaJenisBaru.value);
-        const satuanBaru = els.inputSatuanJenisBaru.value;
-
-        if (!namaBaru) return alert("Masukkan nama jenis sampah baru!");
-        if (isNaN(hargaBaru) || hargaBaru < 0) return alert("Masukkan harga sampah yang valid!");
-
-        daftarHarga[namaBaru] = { harga: hargaBaru, satuan: satuanBaru };
         simpanKeStorage();
         muatKomponenDinamis();
-
-        els.inputJenisBaru.value = "";
-        els.inputHargaJenisBaru.value = "";
-        alert(`Jenis sampah baru "${namaBaru}" berhasil ditambahkan secara permanen!`);
+        els.editCariJenis.value = "";
+        els.editNamaJenisLama.value = "";
+        els.editHargaBaru.value = "";
+        alert("Perubahan master sampah berhasil disimpan!");
       });
 
-      // Delegation Event untuk Tombol Edit & Hapus Histori
-      els.tabelHistori.addEventListener("click", (e) => {
-        const target = e.target;
-        if (!target.classList.contains("btn-action")) return;
+      // TAMBAH & HAPUS NASABAH
+      els.btnTambahNasabah.addEventListener("click", () => {
+        const nama = els.inputNamaNasabahBaru.value.trim();
+        const kode = els.inputKodeRekeningBaru.value.trim();
 
-        const id = target.getAttribute("data-id");
-        const idx = parseInt(target.getAttribute("data-idx"));
+        if (!nama) return alert("Nama nasabah tidak boleh kosong!");
 
-        if (target.classList.contains("btn-edit")) {
-          tempNasabahId = id;
-          tempIndexHistori = idx;
-          const item = dbNasabah[id].histori[idx];
+        let maxId = 0;
+        for (let id in dbNasabah) {
+          const num = parseInt(id, 10);
+          if (!isNaN(num) && num > maxId) maxId = num;
+        }
 
-          els.editTanggalHistori.value = formatTanggalKeInput(item.waktu);
+        const newId = (maxId + 1).toString();
+        dbNasabah[newId] = {
+          id: newId,
+          kodeRekening: kode,
+          nama: nama,
+          totalPendapatan: 0,
+          totalPenarikan: 0,
+          histori: []
+        };
 
-          if (item.tipe === 'Penimbangan') {
-            els.containerEditPenimbangan.style.display = "block";
-            els.containerEditPenarikan.style.display = "none";
-            els.editJenisSampahHistori.value = item.jenis || "";
-            els.editBobotHistori.value = item.bobot !== undefined ? item.bobot : 0;
-            els.editNominalHistori.readOnly = true;
-            hitungKalkulasiModalEdit();
-          } else {
-            els.containerEditPenimbangan.style.display = "none";
-            els.containerEditPenarikan.style.display = "block";
-            els.editMetodeHistori.value = item.metode || "Tunai";
-            els.editKetHistori.value = item.keterangan || "";
-            els.editNominalHistori.value = item.nominal;
-            els.editNominalHistori.readOnly = false;
+        simpanKeStorage();
+        muatKomponenDinamis();
+
+        els.inputNamaNasabahBaru.value = "";
+        els.inputKodeRekeningBaru.value = "";
+        alert(`Nasabah baru berhasil ditambahkan dengan No Urut: ${newId}`);
+      });
+
+      els.btnHapusNasabah.addEventListener("click", () => {
+        const idFound = cariIdNasabah(els.inputHapusNasabah.value);
+        if (!idFound || !dbNasabah[idFound]) {
+          return alert("Nasabah tidak ditemukan!");
+        }
+
+        if (confirm(`Apakah Anda yakin ingin menghapus nasabah "${dbNasabah[idFound].nama}"?`)) {
+          delete dbNasabah[idFound];
+          if (activeNasabahCardId === idFound) {
+            activeNasabahCardId = null;
+            els.inputNasabah.value = "";
+            muatDataNasabah();
           }
-          els.modalEdit.style.display = "flex";
-        } else if (target.classList.contains("btn-delete")) {
-          const item = dbNasabah[id].histori[idx];
-          if (confirm(`Apakah Anda yakin ingin menghapus transaksi "${item.keterangan}" sebesar Rp ${item.nominal.toLocaleString('id-ID')}?`)) {
+          simpanKeStorage();
+          muatKomponenDinamis();
+          els.inputHapusNasabah.value = "";
+          alert("Nasabah berhasil dihapus!");
+        }
+      });
+
+      // EVENT HISTORI (EDIT & HAPUS TRANSAKSI)
+      document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-hapus-histori')) {
+          const id = e.target.getAttribute('data-id');
+          const idx = parseInt(e.target.getAttribute('data-idx'), 10);
+          if (confirm('Yakin ingin menghapus riwayat transaksi ini?')) {
             dbNasabah[id].histori.splice(idx, 1);
             hitungUlangSaldoRealtime(id);
             muatDataNasabah();
-            alert("Transaksi berhasil dihapus dan saldo otomatis diperbarui!");
           }
+        }
+
+        if (e.target.classList.contains('btn-edit-histori')) {
+          const id = e.target.getAttribute('data-id');
+          const idx = parseInt(e.target.getAttribute('data-idx'), 10);
+          const item = dbNasabah[id].histori[idx];
+
+          activeEditContext = { id, idx };
+          els.editTanggalHistori.value = formatTanggalKeInput(item.waktu);
+          els.editNominalHistori.value = item.nominal;
+
+          if (item.tipe === 'Penimbangan') {
+            els.containerEditPenimbangan.style.display = 'block';
+            els.containerEditPenarikan.style.display = 'none';
+            els.editJenisSampahHistori.value = item.jenis || '';
+            els.editBobotHistori.value = item.bobot || '';
+          } else {
+            els.containerEditPenimbangan.style.display = 'none';
+            els.containerEditPenarikan.style.display = 'block';
+            els.editMetodeHistori.value = item.metode || 'Tunai';
+            els.editKetHistori.value = item.keterangan || '';
+          }
+
+          els.modalEdit.classList.add('active');
         }
       });
 
-      els.editJenisSampahHistori.addEventListener("input", hitungKalkulasiModalEdit);
-      els.editBobotHistori.addEventListener("input", hitungKalkulasiModalEdit);
-      els.btnTutupModalEdit.addEventListener("click", tutupModalEdit);
+      els.btnTutupModalEdit.addEventListener("click", () => {
+        els.modalEdit.classList.remove("active");
+      });
 
       els.btnSimpanEditHistori.addEventListener("click", () => {
-        const id = tempNasabahId;
-        const index = tempIndexHistori;
-        const item = dbNasabah[id].histori[index];
-        const valTanggal = els.editTanggalHistori.value;
+        if (!activeEditContext) return;
+        const { id, idx } = activeEditContext;
+        const item = dbNasabah[id].histori[idx];
 
-        if (!valTanggal) return alert("Pilih tanggal transaksi!");
+        const tgl = els.editTanggalHistori.value;
+        const nominal = parseFloat(els.editNominalHistori.value);
 
-        item.waktu = formatTanggalKeIndo(valTanggal);
+        if (!tgl || isNaN(nominal)) return alert("Isi data tanggal dan nominal dengan benar!");
+
+        item.waktu = formatTanggalKeIndo(tgl);
+        item.nominal = nominal;
 
         if (item.tipe === 'Penimbangan') {
-          const jenisBaru = cariNamaJenisSampah(els.editJenisSampahHistori.value);
-          const bobotBaru = parseFloat(els.editBobotHistori.value);
-
-          if (!jenisBaru || !daftarHarga[jenisBaru] || isNaN(bobotBaru) || bobotBaru <= 0) {
-            return alert("Ketik Jenis Sampah yang valid dan masukkan bobot!");
-          }
-
-          const dataHarga = daftarHarga[jenisBaru];
-          item.jenis = jenisBaru;
-          item.bobot = bobotBaru;
-          item.keterangan = `${jenisBaru} (${bobotBaru} ${dataHarga.satuan})`;
-          item.nominal = bobotBaru * dataHarga.harga;
+          const jenis = els.editJenisSampahHistori.value;
+          const bobot = parseFloat(els.editBobotHistori.value) || 0;
+          item.jenis = jenis;
+          item.bobot = bobot;
+          item.keterangan = `${jenis} (${bobot} kg)`;
         } else {
-          const metodeBaru = els.editMetodeHistori.value;
-          const ketBaru = els.editKetHistori.value.trim();
-          const nominalBaru = parseFloat(els.editNominalHistori.value);
-
-          if (isNaN(nominalBaru) || nominalBaru < 0) {
-            return alert("Masukkan Nominal Rp yang valid!");
-          }
-
-          item.metode = metodeBaru;
-          item.keterangan = ketBaru || `Tarik Saldo (${metodeBaru})`;
-          item.nominal = nominalBaru;
+          item.metode = els.editMetodeHistori.value;
+          item.keterangan = els.editKetHistori.value || `Penarikan Saldo (${item.metode})`;
         }
 
         hitungUlangSaldoRealtime(id);
-        tutupModalEdit();
         muatDataNasabah();
-        alert("Transaksi histori berhasil diperbarui!");
+        els.modalEdit.classList.remove("active");
+        alert("Transaksi histori berhasil diubah!");
       });
 
-      // --- INIT ---
-      const hariIni = new Date().toISOString().split('T')[0];
-      els.inputTanggalTimbang.value = hariIni;
-      els.inputTanggalTarik.value = hariIni;
+      // INIT INITIAL DATA
       muatKomponenDinamis();
-      muatLinkPortal();
+      simpanKeStorage();
     });
   </script>
 </body>
