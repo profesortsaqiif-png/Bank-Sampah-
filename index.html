@@ -69,6 +69,11 @@
           <span class="nav-icon">📈</span>
           <span>Global</span>
         </a>
+        <!-- LINK REVISI: TAUTAN Halaman Portal Nasabah (history.html) -->
+        <a href="history.html" class="nav-item" style="margin-top: 15px; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #2563eb;">
+          <span class="nav-icon">🌐</span>
+          <span>Portal Nasabah</span>
+        </a>
       </nav>
     </aside>
 
@@ -143,15 +148,18 @@
             </div>
           </section>
 
+          <!-- SECTION LINK PORTAL NASABAH MANDIRI -->
           <section class="content-card">
             <div class="card-header-flex">
               <div>
-                <h2 class="section-title">Link Portal Mandiri Nasabah</h2>
+                <h2 class="section-title">🌐 Link Portal Mandiri Nasabah (history.html)</h2>
+                <p class="section-sub">Bagikan link ini kepada nasabah untuk mengecek histori & saldo secara mandiri.</p>
               </div>
             </div>
             <div class="flex-responsive-row">
-              <input type="text" id="linkPortalInput" readonly style="flex: 1;">
+              <input type="text" id="linkPortalInput" readonly style="flex: 1;" placeholder="Pilih nasabah terlebih dahulu...">
               <button class="btn" id="btnSalinPortal">📋 Salin Link</button>
+              <a id="btnBukaPortal" href="history.html" target="_blank" class="btn btn-secondary" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">🔗 Buka Portal</a>
             </div>
           </section>
         </div>
@@ -535,9 +543,7 @@
           item.classList.add('active');
           document.getElementById(targetTabId).classList.add('active');
           
-          // Tutup sidebar jika dalam mode mobile
           closeSidebar();
-          
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       });
@@ -604,6 +610,7 @@
         labelChartNasabahBulan: document.getElementById("labelChartNasabahBulan"),
         linkPortalInput: document.getElementById("linkPortalInput"),
         btnSalinPortal: document.getElementById("btnSalinPortal"),
+        btnBukaPortal: document.getElementById("btnBukaPortal"),
         inputNasabah: document.getElementById("inputNasabah"),
         listRekomendasiNasabah: document.getElementById("listRekomendasiNasabah"),
         nasabahInfoBadge: document.getElementById("nasabahInfoBadge"),
@@ -1092,7 +1099,14 @@
           if(els.nasabahEmptyState) els.nasabahEmptyState.style.display = "none";
           els.nasabahInfoBadge.classList.add("active");
 
-          els.linkPortalInput.value = window.location.origin + window.location.pathname + `?nasabah=${data.id}`;
+          // PROSES MEMBUAT LINK OTOMATIS KE history.html
+          const dirPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+          const fullPortalUrl = window.location.origin + dirPath + `history.html?nasabah=${data.id}`;
+          
+          els.linkPortalInput.value = fullPortalUrl;
+          if (els.btnBukaPortal) {
+            els.btnBukaPortal.href = `history.html?nasabah=${data.id}`;
+          }
 
           tampilkanHistori(data);
           updateDiagramNasabahIndividu();
@@ -1103,7 +1117,13 @@
           if(els.nasabahEmptyState) els.nasabahEmptyState.style.display = "block";
           els.judulHistoriNasabah.innerText = "Pilih nasabah untuk melihat riwayat transaksi";
           els.tabelHistori.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada nasabah yang dipilih.</td></tr>`;
-          els.linkPortalInput.value = "";
+          
+          // DEFAULT LINK KE history.html
+          els.linkPortalInput.value = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) + "history.html";
+          if (els.btnBukaPortal) {
+            els.btnBukaPortal.href = "history.html";
+          }
+          
           updateDiagramNasabahIndividu();
         }
       };
@@ -1438,6 +1458,7 @@
       // INIT INITIAL DATA
       muatKomponenDinamis();
       simpanKeStorage();
+      muatDataNasabah();
     });
   </script>
 </body>
