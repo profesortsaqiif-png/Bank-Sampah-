@@ -69,7 +69,6 @@
           <span class="nav-icon">📈</span>
           <span>Global</span>
         </a>
-        <!-- LINK REVISI: TAUTAN Halaman Portal Nasabah (history.html) -->
         <a href="history.html" class="nav-item" style="margin-top: 15px; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #2563eb;">
           <span class="nav-icon">🌐</span>
           <span>Portal Nasabah</span>
@@ -309,6 +308,7 @@
                     <option value="kg">kg</option>
                     <option value="pcs">pcs</option>
                     <option value="liter">liter</option>
+                    <option value="lembar">lembar</option>
                   </select>
                 </div>
               </div>
@@ -548,7 +548,7 @@
         });
       });
 
-      // DATABASE MASTER NASABAH INITIAL DATA
+      // DATABASE MASTER NASABAH INITIAL DATA (LENGKAP 1 - 210)
       const daftarNasabahMaster = [
         { id: "1", kodeRekening: "01/BSU MB/BKL/VII/2025", nama: "Andi Intan" },
         { id: "2", kodeRekening: "02/BSU MB/BKL/VII/2025", nama: "Safria" },
@@ -560,18 +560,269 @@
         { id: "8", kodeRekening: "08/BSU MB/BKL/VII/2025", nama: "Desi Saraswati" },
         { id: "9", kodeRekening: "09/BSU MB/BKL/VII/2025", nama: "Hj. Hastia" },
         { id: "10", kodeRekening: "10/BSU MB/BKL/VII/2025", nama: "Umm Nuraeni" },
+        { id: "11", kodeRekening: "11/BSU MB/BKL/VII/2025", nama: "Umm Rahmawati" },
+        { id: "12", kodeRekening: "12/BSU MB/BKL/VII/2025", nama: "Umm Jumriah" },
+        { id: "13", kodeRekening: "13/BSU MB/BKL/VII/2025", nama: "Umm Fajriah" },
+        { id: "14", kodeRekening: "14/BSU MB/BKL/VII/2025", nama: "Ansar Djanantin" },
+        { id: "15", kodeRekening: "15/BSU MB/BKL/VIII/2025", nama: "Abdul Manan" },
+        { id: "16", kodeRekening: "16/BSU MB/BKL/VIII/2025", nama: "Andi Anto" },
+        { id: "17", kodeRekening: "17/BSU MB/BKL/VIII/2025", nama: "Narmi Rahayu" },
+        { id: "18", kodeRekening: "18/BSU MB/BKL/VIII/2025", nama: "Umm Ramlah" },
+        { id: "19", kodeRekening: "19/BSU MB/BKL/VIII/2025", nama: "Aisyah" },
+        { id: "20", kodeRekening: "20/BSU MB/BKL/VIII/2025", nama: "A. Bau Chandrawali" },
+        { id: "21", kodeRekening: "21/BSU MB/BKL/VIII/2025", nama: "Suryani" },
+        { id: "22", kodeRekening: "22/BSU MB/BKL/VIII/2025", nama: "Syamsul Sadiman" },
+        { id: "23", kodeRekening: "23/BSU MB/BKL/VIII/2025", nama: "Selvi Karim" },
+        { id: "24", kodeRekening: "24/BSU MB/BKL/VIII/2025", nama: "Saniasa" },
+        { id: "25", kodeRekening: "25/BSU MB/BKL/VIII/2025", nama: "Lutfia" },
+        { id: "26", kodeRekening: "26/BSU MB/BKL/VIII/2025", nama: "Irmayanty Ahmad" },
+        { id: "27", kodeRekening: "27/BSU MB/BKL/VIII/2025", nama: "A. Fasiha" },
+        { id: "28", kodeRekening: "28/BSU MB/BKL/VIII/2025", nama: "Rostati Abbas" },
+        { id: "29", kodeRekening: "29/BSU MB/BKL/VIII/2025", nama: "Hadijah Yusuf" },
+        { id: "30", kodeRekening: "30/BSU MB/BKL/VIII/2025", nama: "Hadhoral Qismah" },
+        { id: "31", kodeRekening: "31/BSU MB/BKL/VIII/2025", nama: "Hasniawati M." },
+        { id: "32", kodeRekening: "32/BSU MB/BKL/VIII /2025", nama: "Rahmansyah Dermawan" },
+        { id: "33", kodeRekening: "33/BSU MB/BKL/VIII/2025", nama: "Hj. Samsiah" },
+        { id: "34", kodeRekening: "34/BSU MB/BKL/VIII/2025", nama: "Ismayanti" },
+        { id: "35", kodeRekening: "35/BSU MB/BKL/VIII/2025", nama: "Hj. Nurhaedah" },
+        { id: "36", kodeRekening: "36/BSU MB/BKL/VIII/2025", nama: "Siti Haderah" },
+        { id: "37", kodeRekening: "37/BSU MB/BKL/VIII/2025", nama: "Dessy Yanti" },
+        { id: "38", kodeRekening: "38/BSU MB/BKL/VIII/2025", nama: "Nur Rakhma Radjab Djoha, SH." },
+        { id: "39", kodeRekening: "39/BSU MB/BKL/VIII/2025", nama: "Iriani Haji" },
+        { id: "40", kodeRekening: "40/BSU MB/BKL/IX/2025", nama: "Novia Tenriawaru" },
+        { id: "41", kodeRekening: "41/BSU MB/BKL/IX/2025", nama: "Laela Qadrianti" },
+        { id: "42", kodeRekening: "42/BSU MB/BKL/IX/2025", nama: "Nursiah Chaidir" },
+        { id: "43", kodeRekening: "43/BSU MB/BKL/IX/2025", nama: "Siti Nadrah" },
+        { id: "44", kodeRekening: "44/BSU MB/BKL/IX/2025", nama: "Sitti Nursyahda" },
+        { id: "45", kodeRekening: "45/BSU MB/BKL/IX/2025", nama: "Ummi Ros" },
+        { id: "46", kodeRekening: "46/BSU MB/BKL/IX/2025", nama: "Riska Maulidiah" },
+        { id: "47", kodeRekening: "47/BSU MB/BKL/IX/2025", nama: "H. Kadir dg. Bani" },
+        { id: "48", kodeRekening: "48/BSU MB/BKL/IX/2025", nama: "A. Ilmi Asrianti Asdar" },
+        { id: "49", kodeRekening: "49/BSU MB/BKL/IX/2025", nama: "Andi Rosmawati" },
+        { id: "50", kodeRekening: "50/BSU MB/BKL/IX/2025", nama: "Adriani (Upi)" },
+        { id: "51", kodeRekening: "51/BSU MB/BKL/IX/2025", nama: "Muh. Irwan" },
+        { id: "52", kodeRekening: "52/BSU MB/BKL/IX/2025", nama: "Sitti Rahma Said (Oma)" },
+        { id: "53", kodeRekening: "53/BSU MB/BKL/X/2025", nama: "Andi wahida Mahmud" },
+        { id: "54", kodeRekening: "54/BSU MB/BKL/X/2025", nama: "Hj. A. Kartini Suaib" },
+        { id: "55", kodeRekening: "55/BSU MB/BKL/X/2025", nama: "Sumarniati (Marni)" },
+        { id: "56", kodeRekening: "56/BSU MB/BKL/X/2025", nama: "Hijrah Amalia Azis" },
+        { id: "57", kodeRekening: "57/BSU MB/BKL/X/2025", nama: "Umm Nanny" },
+        { id: "58", kodeRekening: "58/BSU MB/BKL/X/2025", nama: "Ahmad" },
+        { id: "59", kodeRekening: "59/BSU MB/BKL/X/2025", nama: "A. Syamsuria" },
+        { id: "60", kodeRekening: "60/BSU MB/BKL/X/2025", nama: "Sri Anita" },
+        { id: "61", kodeRekening: "61/BSU MB/BKL/X/2025", nama: "Asniar Tahir" },
+        { id: "62", kodeRekening: "62/BSU MB/BKL/X/2025", nama: "Juarni" },
+        { id: "63", kodeRekening: "63/BSU MB/BKL/X/2025", nama: "Hj. Asnaini R." },
+        { id: "64", kodeRekening: "64/BSU MB/BKL/X/2025", nama: "Harlinda" },
+        { id: "65", kodeRekening: "65/BSU MB/BKL/X/2025", nama: "Hatijah" },
+        { id: "66", kodeRekening: "66/BSU MB/BKL/X/2025", nama: "A. Mahira" },
+        { id: "67", kodeRekening: "67/BSU MB/BKL/X/2025", nama: "Ismayuni, SE." },
+        { id: "68", kodeRekening: "68/BSU MB/BKL/X/2025", nama: "Dr. Ir. Subagio, SE., MM." },
+        { id: "69", kodeRekening: "69/BSU MB/BKL/XI/2025", nama: "Norma Syam" },
+        { id: "70", kodeRekening: "70/BSU MB/BKL/XI/2025", nama: "Orin (Novrini Kesumadewi)" },
+        { id: "71", kodeRekening: "71/BSU MB/BKL/XI/2025", nama: "Abidar" },
+        { id: "72", kodeRekening: "72/BSU MB/BKL/XI/2025", nama: "Pammusereng" },
+        { id: "73", kodeRekening: "73/BSU MB/BKL/XI/2025", nama: "Nursan" },
+        { id: "74", kodeRekening: "74/BSU MB/BKL/XI/2025", nama: "Husti" },
+        { id: "75", kodeRekening: "75/BSU MB/BKL/XII/2025", nama: "Christyanti / Yanty Lia" },
+        { id: "76", kodeRekening: "76/BSU MB/BKL/XII/2025", nama: "daeng Tobo" },
+        { id: "77", kodeRekening: "77/BSU MB/BKL/XII/2025", nama: "Hj. Suswati" },
+        { id: "78", kodeRekening: "78/BSU MB/BKL/XII/2025", nama: "Asni Azis" },
+        { id: "79", kodeRekening: "79/BSU MB/BKL/XII/2025", nama: "Muh. Dapri Kodding" },
+        { id: "80", kodeRekening: "80/BSU MB/BKL/XII/2025", nama: "Aghits Renaldy" },
+        { id: "81", kodeRekening: "81/BSU MB/BKL/XII/2025", nama: "Hj. Semma" },
+        { id: "82", kodeRekening: "82/BSU MB/BKL/XII/2025", nama: "A. Wiwi" },
+        { id: "83", kodeRekening: "83/BSU MB/BKL/XII/2025", nama: "Dewi Sartika" },
+        { id: "84", kodeRekening: "84/BSU MB/BKL/XII/2025", nama: "Umm Isel" },
+        { id: "85", kodeRekening: "85/BSU MB/BKL/I/2026", nama: "Meri" },
+        { id: "86", kodeRekening: "86/BSU MB/BKL/I/2026", nama: "Anggraini" },
+        { id: "87", kodeRekening: "87/BSU MB/BKL/I/2026", nama: "Azizah" },
+        { id: "88", kodeRekening: "88/BSU MB/BKL/I/2026", nama: "Amrullah (nirmawati)" },
+        { id: "89", kodeRekening: "89/BSU MB/BKL/I/2026", nama: "Abidin Nuhung" },
+        { id: "90", kodeRekening: "90/BSU MB/BKL/I/2026", nama: "Andi Rahmi" },
+        { id: "91", kodeRekening: "91/BSU MB/BKL/I/2026", nama: "Siti Syara Syarda" },
+        { id: "92", kodeRekening: "92/BSU MB/BKL/I/2026", nama: "Ateng" },
+        { id: "93", kodeRekening: "93/BSU MB/BKL/I/2026", nama: "Asni Nurani" },
+        { id: "94", kodeRekening: "94/BSU MB/BKL/I/2026", nama: "Hj. Sumiati" },
+        { id: "95", kodeRekening: "95/BSU MB/BKL/I/2026", nama: "Suriani Jabbar" },
+        { id: "96", kodeRekening: "96/BSU MB/BKL/I/2026", nama: "Rosmah Tami" },
+        { id: "97", kodeRekening: "97/BSU MB/BKL/I/2026", nama: "Hj. Erna Habibah" },
+        { id: "98", kodeRekening: "98/BSU MB/BKL/I/2026", nama: "Rahmat Ilannur" },
+        { id: "99", kodeRekening: "99/BSU MB/BKL/I/2026", nama: "A. Ernawaty" },
+        { id: "100", kodeRekening: "100/BSU MB/BKL/I/2026", nama: "Azura" },
+        { id: "101", kodeRekening: "101/BSU MB/BKL/II/2026", nama: "Winda" },
+        { id: "102", kodeRekening: "102/BSU MB/BKL/II/2026", nama: "Raihan Shafa" },
+        { id: "103", kodeRekening: "103/BSU MB/BKL/II/2026", nama: "Maryani" },
+        { id: "104", kodeRekening: "104/BSU MB/BKL/II/2026", nama: "Febi" },
+        { id: "105", kodeRekening: "105/BSU MB/BKL/II/2026", nama: "Nurwanti" },
+        { id: "106", kodeRekening: "106/BSU MB/BKL/II/2026", nama: "Fidah" },
+        { id: "107", kodeRekening: "107/BSU MB/BKL/II/2026", nama: "Mila" },
+        { id: "108", kodeRekening: "108/BSU MB/BKL/II/2026", nama: "Maryati Tombokan" },
+        { id: "109", kodeRekening: "109/BSU MB/BKL/II/2026", nama: "H. Gus" },
+        { id: "110", kodeRekening: "110/BSU MB/BKL/II/2026", nama: "Hasni Dekor" },
+        { id: "111", kodeRekening: "111/BSU MB/BKL/II/2026", nama: "Muh. Sain" },
+        { id: "112", kodeRekening: "112/BSU MB/BKL/II/2026", nama: "Putri Katering" },
+        { id: "113", kodeRekening: "113/BSU MB/BKL/II/2026", nama: "Hj. Musina" },
+        { id: "114", kodeRekening: "114/BSU MB/BKL/II/2026", nama: "Rustam" },
+        { id: "115", kodeRekening: "115/BSU MB/BKL/III/2026", nama: "Evi Alimin" },
+        { id: "116", kodeRekening: "116/BSU MB/BKL/III/2026", nama: "Yulman" },
+        { id: "117", kodeRekening: "117/BSU MB/BKL/III/2026", nama: "MBG" },
+        { id: "118", kodeRekening: "118/BSU MB/BKL/III/2026", nama: "Ridawati" },
+        { id: "119", kodeRekening: "119/BSU MB/BKL/IV/2026", nama: "Suwarni" },
+        { id: "120", kodeRekening: "120/BSU MB/BKL/IV/2026", nama: "Suwardi" },
+        { id: "121", kodeRekening: "121/BSU MB/BKL/IV/2026", nama: "Damis" },
+        { id: "122", kodeRekening: "122/BSU MB/BKL/IV/2026", nama: "Cece" },
+        { id: "123", kodeRekening: "123/BSU MB/BKL/IV/2026", nama: "Nur Fahmi" },
+        { id: "124", kodeRekening: "124/BSU MB/BKL/IV/2026", nama: "Andi Rahmawati" },
+        { id: "125", kodeRekening: "125/BSU MB/BKL/IV/2026", nama: "M. Taufik" },
+        { id: "126", kodeRekening: "126/BSU MB/BKL/IV/2026", nama: "Fuad" },
+        { id: "127", kodeRekening: "127/BSU MB/BKL/IV/2026", nama: "Emma" },
+        { id: "128", kodeRekening: "128/BSU MB/BKL/IV/2026", nama: "Sawir" },
+        { id: "129", kodeRekening: "129/BSU MB/BKL/IV/2026", nama: "Maya" },
+        { id: "130", kodeRekening: "130/BSU MB/BKL/IV/2026", nama: "Hj. Ernawati Dahlan" },
+        { id: "131", kodeRekening: "131/BSU MB/BKL/IV/2026", nama: "Suci" },
+        { id: "132", kodeRekening: "132/BSU MB/BKL/IV/2026", nama: "Masdar" },
+        { id: "133", kodeRekening: "133/BSU MB/BKL/V/2026", nama: "Waris" },
+        { id: "134", kodeRekening: "134/BSU MB/BKL/V/2026", nama: "Nuraeni" },
+        { id: "135", kodeRekening: "135/BSU MB/BKL/V/2026", nama: "Jamaludin" },
+        { id: "136", kodeRekening: "136/BSU MB/BKL/V/2026", nama: "Hijrah Abbas" },
+        { id: "137", kodeRekening: "137/BSU MB/BKL/V/2026", nama: "Muslim" },
+        { id: "138", kodeRekening: "138/BSU MB/BKL/V/2026", nama: "Nur Israj Yuliana Amir /Yuyun" },
+        { id: "139", kodeRekening: "139/BSU MB/BKL/V/2026", nama: "Erna Dedi" },
+        { id: "140", kodeRekening: "140/BSU MB/BKL/V/2026", nama: "A. Titin" },
+        { id: "141", kodeRekening: "141/BSU MB/BKL/V/2026", nama: "Amos" },
+        { id: "142", kodeRekening: "142/BSU MB/BKL/V/2026", nama: "Baso Jalaluddin" },
+        { id: "143", kodeRekening: "143/BSU MB/BKL/V/2026", nama: "Memed/Siti Hafsah" },
+        { id: "144", kodeRekening: "144/BSU MB/BKL/V/2026", nama: "M. Saiful Saad, SH." },
+        { id: "145", kodeRekening: "145/BSU MB/BKL/V/2026", nama: "Marsuni" },
+        { id: "146", kodeRekening: "146/BSU MB/BKL/V/2026", nama: "Samin" },
+        { id: "147", kodeRekening: "147/BSU MB/BKL/V/2026", nama: "Firman" },
+        { id: "148", kodeRekening: "148/BSU MB/BKL/V/2026", nama: "Khaeriyati" },
+        { id: "149", kodeRekening: "149/BSU MB/BKL/V/2026", nama: "Jupri" },
+        { id: "150", kodeRekening: "150/BSU MB/BKL/VI/2026", nama: "Feli" },
+        { id: "151", kodeRekening: "151/BSU MB/BKL/VI/2026", nama: "Nafisa" },
+        { id: "152", kodeRekening: "152/BSU MB/BKL/VI/2026", nama: "Muh. Saad" },
+        { id: "153", kodeRekening: "153/BSU MB/BKL/VI/2026", nama: "Sumartina" },
+        { id: "154", kodeRekening: "154/BSU MB/BKL/VI/2026", nama: "Sukri" },
+        { id: "155", kodeRekening: "155/BSU MB/BKL/VI/2026", nama: "Mulai" },
+        { id: "156", kodeRekening: "156/BSU MB/BKL/VI/2026", nama: "Ayhu Siti Hajar" },
+        { id: "157", kodeRekening: "157/BSU MB/BKL/VI/2026", nama: "Erni Johan" },
+        { id: "158", kodeRekening: "158/BSU MB/BKL/VI/2026", nama: "Hartati Abbas" },
+        { id: "159", kodeRekening: "159/BSU MB/BKL/VI/2026", nama: "Ria Pesona" },
+        { id: "160", kodeRekening: "160/BSU MB/BKL/VI/2026", nama: "Umm Manaf" },
+        { id: "161", kodeRekening: "161/BSU MB/BKL/VII/2026", nama: "Ernawati Rifai" },
+        { id: "162", kodeRekening: "162/BSU MB/BKL/VII/2026", nama: "Nurfitriani" },
+        { id: "163", kodeRekening: "163/BSU MB/BKL/VII/2026", nama: "Umm Yeti" },
+        { id: "164", kodeRekening: "164/BSU MB/BKL/VII/2026", nama: "Ramli Abbas" },
+        { id: "165", kodeRekening: "165/BSU MB/BKL/VII/2026", nama: "Salmawati" },
+        { id: "166", kodeRekening: "166/BSU MB/BKL/VII/2026", nama: "A. Hasnia / Nuni" },
+        { id: "167", kodeRekening: "167/BSU MB/BKL/VII/2026", nama: "Nurlia" },
+        { id: "168", kodeRekening: "168/BSU MB/BKL/VII/2026", nama: "Jumriah" },
+        { id: "169", kodeRekening: "169/BSU MB/BKL/VII/2026", nama: "Hasnah Dg. Baji" },
+        { id: "170", kodeRekening: "170/BSU MB/BKL/VII/2026", nama: "Uni Dg. Masenang" },
+        { id: "171", kodeRekening: "171/BSU MB/BKL/VII/2026", nama: "Edo" },
+        { id: "172", kodeRekening: "172/BSU MB/BKL/VII/2026", nama: "Lidia / Maulidya Fuan Ahadatain" },
+        { id: "173", kodeRekening: "173/BSU MB/BKL/VII/2026", nama: "Fadillah" },
+        { id: "174", kodeRekening: "174/BSU MB/BKL/VII/2026", nama: "M. Rizal Rahman" },
+        { id: "175", kodeRekening: "175/BSU MB/BKL/VII/2026", nama: "Risma Nawir" },
+        { id: "176", kodeRekening: "176/BSU MB/BKL/VII/2026", nama: "KWT Permata Hijau / Wana" },
+        { id: "177", kodeRekening: "177/BSU MB/BKL/VII/2026", nama: "Wahida" },
+        { id: "178", kodeRekening: "178/BSU MB/BKL/VII/2026", nama: "A. Rasnah" },
+        { id: "179", kodeRekening: "179/BSU MB/BKL/VII/2026", nama: "Menuk" },
+        { id: "180", kodeRekening: "180/BSU MB/BKL/VII/2026", nama: "Herna Hamzah" },
+        { id: "181", kodeRekening: "181/BSU MB/BKL/VII/2026", nama: "Hj. Inda Siradju" },
+        { id: "182", kodeRekening: "182/BSU MB/BKL/VIII/2026", nama: "Abdul Kadir" },
+        { id: "183", kodeRekening: "183/BSU MB/BKL/VIII/2026", nama: "Umul" },
+        { id: "184", kodeRekening: "184/BSU MB/BKL/VIII/2026", nama: "Fevy Indriyani" },
+        { id: "185", kodeRekening: "185/BSU MB/BKL/VIII/2026", nama: "Masyita Aprianti" },
+        { id: "186", kodeRekening: "186/BSU MB/BKL/VIII/2026", nama: "Umhy" },
+        { id: "187", kodeRekening: "187/BSU MB/BKL/VIII/2026", nama: "Zaky/Idrus" },
+        { id: "188", kodeRekening: "188/BSU MB/BKL/VIII/2026", nama: "Nurmin" },
+        { id: "189", kodeRekening: "189/BSU MB/BKL/VIII/2026", nama: "Hasnah Evifana" },
+        { id: "190", kodeRekening: "190/BSU MB/BKL/VIII/2026", nama: "Nia" },
+        { id: "191", kodeRekening: "191/BSU MB/BKL/VIII/2026", nama: "Rahima" },
+        { id: "192", kodeRekening: "192/BSU MB/BKL/VIII/2026", nama: "Yusuf Pratama" },
+        { id: "193", kodeRekening: "193/BSU MB/BKL/VIII/2026", nama: "Rezki Amalia / Kiki" },
+        { id: "194", kodeRekening: "194/BSU MB/BKL/VIII/2026", nama: "Abdurrahman" },
+        { id: "195", kodeRekening: "195/BSU MB/BKL/VIII/2026", nama: "Siti Fanifa" },
+        { id: "196", kodeRekening: "196/BSU MB/BKL/VIII/2026", nama: "Amie Asikin" },
+        { id: "197", kodeRekening: "197/BSU MB/BKL/VIII/2026", nama: "MITQ Azhar Center" },
+        { id: "198", kodeRekening: "198/BSU MB/BKL/VIII/2026", nama: "Muliati" },
+        { id: "199", kodeRekening: "199/BSU MB/BKL/VIII/2026", nama: "Sari" },
+        { id: "200", kodeRekening: "200/BSU MB/BKL/VIII/2026", nama: "Suharno LPM" },
+        { id: "201", kodeRekening: "201/BSU MB/BKL/VIII/2026", nama: "Siman" },
+        { id: "202", kodeRekening: "202/BSU MB/BKL/VIII/2026", nama: "Yuyun" },
+        { id: "203", kodeRekening: "203/BSU MB/BKL/VIII/2026", nama: "Dafqul School" },
+        { id: "204", kodeRekening: "204/BSU MB/BKL/VIII/2026", nama: "Hikmah" },
+        { id: "205", kodeRekening: "205/BSU MB/BKL/VIII/2026", nama: "Sri Harmaini" },
+        { id: "206", kodeRekening: "206/BSU MB/BKL/VIII/2026", nama: "Hj. Nana" },
+        { id: "207", kodeRekening: "207/BSU MB/BKL/VIII/2026", nama: "Hj. A. Herawati S. Kep. Ns." },
+        { id: "208", kodeRekening: "208/BSU MB/BKL/VIII/2026", nama: "Kumalasari" },
+        { id: "209", kodeRekening: "209/BSU MB/BKL/VIII/2026", nama: "Akmal" },
         { id: "210", kodeRekening: "210/BSU MB/BKL/VIII/2026", nama: "Amanah Amirah" }
       ];
 
+      // DATABASE MASTER SAMPAH DENGAN HARGA DAN SATUAN LENGKAP
       const defaultHargaBSU = {
+        // KATEGORI PLASTIK
         "PLASTIK - PP Gelas Bening Bersih": { harga: 5000, satuan: "kg" },
         "PLASTIK - PP Gelas Bening Kotor": { harga: 2500, satuan: "kg" },
+        "PLASTIK - PP Gelas Warna (ale2, montea, teh gelas)": { harga: 2100, satuan: "kg" },
+        "PLASTIK - PP Pipet": { harga: 900, satuan: "kg" },
+        "PLASTIK - PP Cincin Gelas": { harga: 1800, satuan: "kg" },
         "PLASTIK - PET Botol Bening Bersih": { harga: 4500, satuan: "kg" },
+        "PLASTIK - PET Botol Biru Muda Bersih": { harga: 3200, satuan: "kg" },
+        "PLASTIK - PET Botol Kotor": { harga: 800, satuan: "kg" },
+        "PLASTIK - PET Botol Warna Bersih (hijau/biru)": { harga: 1100, satuan: "kg" },
+        "PLASTIK - PET Botol Bersih Campur (semua warna)": { harga: 1000, satuan: "kg" },
+        "PLASTIK - Toples (dari bahan plastik PET)": { harga: 1200, satuan: "kg" },
+        "PLASTIK - Plastik HD Campur (baskom, gelas, piring)": { harga: 1100, satuan: "kg" },
+        "PLASTIK - Tutup Botol": { harga: 2000, satuan: "kg" },
+        "PLASTIK - Tutup Galon": { harga: 2400, satuan: "kg" },
+        "PLASTIK - Plastik HD Blow (bergaris tengah)": { harga: 1500, satuan: "kg" },
+        "PLASTIK - PP Metalik (plastik pembungkus Snack, lapisan dalam silver)": { harga: 200, satuan: "kg" },
+        "PLASTIK - PP Cetak (plastik pembungkus Snack, roti, mie instan)": { harga: 1000, satuan: "kg" },
+        "PLASTIK - Plastik Minyak Goreng / Refill / Karung Beras": { harga: 150, satuan: "lembar" },
+
+        // KATEGORI LOGAM
         "LOGAM - Besi Tebal (besi cor, besi plat)": { harga: 2500, satuan: "kg" },
+        "LOGAM - Besi Tipis (drum, rak piring)": { harga: 1600, satuan: "kg" },
+        "LOGAM - Kaleng Makanan, Kaleng Susu": { harga: 1000, satuan: "kg" },
+        "LOGAM - Kuningan (Kuningan piala)": { harga: 44000, satuan: "kg" },
+        "LOGAM - Tembaga (tembaga dari kabel)": { harga: 80000, satuan: "kg" },
+        "LOGAM - Aluminium Tebal (box mesin motor)": { harga: 15000, satuan: "kg" },
+        "LOGAM - Aluminium Tipis (kaleng minuman, wajan)": { harga: 12000, satuan: "kg" },
+        "LOGAM - Aluminium Siku (Alma dekor)": { harga: 17000, satuan: "kg" },
+        "LOGAM - Aluminium Campur (aluminium campur besi)": { harga: 7000, satuan: "kg" },
+        "LOGAM - Besi Seng (seng bekas)": { harga: 800, satuan: "kg" },
+        "LOGAM - Perunggu (keran air, kepala regulator)": { harga: 12000, satuan: "kg" },
+
+        // KATEGORI KERTAS
+        "KERTAS - Kertas Putih (buku tulis tanpa cover, kertas fotokopi)": { harga: 1300, satuan: "kg" },
+        "KERTAS - Kertas Campur/Warna (majalah, dos kue, sampul buku)": { harga: 450, satuan: "kg" },
+        "KERTAS - Kertas Buram (kertas kelabu/buram)": { harga: 800, satuan: "kg" },
         "KERTAS - Kardus (dos/kardus coklat)": { harga: 1200, satuan: "kg" },
-        "KERTAS - Rak Telur": { harga: 1000, satuan: "kg" },
-        "MINYAK JELANTAH - Jerigen": { harga: 6000, satuan: "kg" },
-        "LAIN-LAIN (ELEKTRONIK) - Aki Bekas": { harga: 10000, satuan: "kg" }
+        "KERTAS - Kertas Semen": { harga: 300, satuan: "kg" },
+        "KERTAS - Koran Berita": { harga: 950, satuan: "kg" },
+        "KERTAS - Cones (kertas gulungan bulat)": { harga: 200, satuan: "kg" },
+        "KERTAS - Rak Telur B (bagus, tidak robek)": { harga: 800, satuan: "kg" },
+        "KERTAS - Rak Telur C (ada yg robek)": { harga: 600, satuan: "kg" },
+
+        // KATEGORI KACA
+        "KACA - Botol Markisa, Bensin": { harga: 700, satuan: "pcs" },
+        "KACA - Botol Kecap/DHT": { harga: 450, satuan: "pcs" },
+
+        // KATEGORI MINYAK JELANTAH
+        "MINYAK JELANTAH - Minyak Jelantah": { harga: 4000, satuan: "kg" },
+
+        // LAIN-LAIN (ELEKTRONIK / AKI)
+        "LAIN-LAIN (ELEKTRONIK) - Aki Motor": { harga: 10000, satuan: "pcs" },
+        "LAIN-LAIN (ELEKTRONIK) - Aki Mobil": { harga: 55000, satuan: "pcs" },
+
+        // KATEGORI ORGANIK
+        "ORGANIK - Kompos Kering (telah diayak)": { harga: 800, satuan: "kg" },
+        "ORGANIK - Kompos Basah": { harga: 400, satuan: "kg" },
+        "ORGANIK - Kasgot Murni (kering, diayak)": { harga: 6000, satuan: "kg" }
       };
 
       const buatDbAwal = () => {
@@ -595,7 +846,7 @@
         localStorage.setItem("dbNasabahBSU_v5", JSON.stringify(dbNasabah));
       }
 
-      let daftarHarga = JSON.parse(localStorage.getItem("daftarHargaBSU_v3")) || defaultHargaBSU;
+      let daftarHarga = JSON.parse(localStorage.getItem("daftarHargaBSU_v4")) || defaultHargaBSU;
 
       let activeEditContext = null;
       let activeNasabahCardId = null;
@@ -687,7 +938,7 @@
 
       const simpanKeStorage = () => {
         localStorage.setItem("dbNasabahBSU_v5", JSON.stringify(dbNasabah));
-        localStorage.setItem("daftarHargaBSU_v3", JSON.stringify(daftarHarga));
+        localStorage.setItem("daftarHargaBSU_v4", JSON.stringify(daftarHarga));
         updateDiagramSampah();
         updateDiagramBulan();
         updateDiagramNasabahIndividu();
@@ -1099,7 +1350,6 @@
           if(els.nasabahEmptyState) els.nasabahEmptyState.style.display = "none";
           els.nasabahInfoBadge.classList.add("active");
 
-          // PROSES MEMBUAT LINK OTOMATIS KE history.html
           const dirPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
           const fullPortalUrl = window.location.origin + dirPath + `history.html?nasabah=${data.id}`;
           
@@ -1118,7 +1368,6 @@
           els.judulHistoriNasabah.innerText = "Pilih nasabah untuk melihat riwayat transaksi";
           els.tabelHistori.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada nasabah yang dipilih.</td></tr>`;
           
-          // DEFAULT LINK KE history.html
           els.linkPortalInput.value = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) + "history.html";
           if (els.btnBukaPortal) {
             els.btnBukaPortal.href = "history.html";
@@ -1184,10 +1433,17 @@
           const total = bobot * item.harga;
           els.infoHargaSampahTerpilih.innerText = `Harga: Rp ${item.harga.toLocaleString('id-ID')} / ${item.satuan}`;
           els.hasilRupiahTimbang.innerText = "Rp " + total.toLocaleString('id-ID');
+          
+          if (els.labelBobot) {
+            els.labelBobot.innerText = `Jumlah / Bobot (${item.satuan}):`;
+          }
           return total;
         } else {
           els.infoHargaSampahTerpilih.innerText = "";
           els.hasilRupiahTimbang.innerText = "Rp 0";
+          if (els.labelBobot) {
+            els.labelBobot.innerText = "Jumlah / Bobot (kg):";
+          }
           return 0;
         }
       };
@@ -1441,9 +1697,12 @@
         if (item.tipe === 'Penimbangan') {
           const jenis = els.editJenisSampahHistori.value;
           const bobot = parseFloat(els.editBobotHistori.value) || 0;
+          const itemHarga = daftarHarga[jenis];
+          const satuan = itemHarga ? itemHarga.satuan : 'kg';
+          
           item.jenis = jenis;
           item.bobot = bobot;
-          item.keterangan = `${jenis} (${bobot} kg)`;
+          item.keterangan = `${jenis} (${bobot} ${satuan})`;
         } else {
           item.metode = els.editMetodeHistori.value;
           item.keterangan = els.editKetHistori.value || `Penarikan Saldo (${item.metode})`;
