@@ -147,8 +147,38 @@
             </div>
           </section>
 
-          <!-- SECTION LINK PORTAL NASABAH MANDIRI -->
+          <!-- SECTION FITUR PENIMBANGAN & PENUKARAN MINYAK JELANTAH -->
           <section class="content-card">
+            <div class="jelantah-box">
+              <div class="jelantah-header">
+                <div class="jelantah-title">
+                  <span style="font-size: 1.4rem;">🛢️</span>
+                  <div>
+                    <div style="font-size: 1rem;">Program Penukaran Minyak Jelantah</div>
+                    <div style="font-size: 0.75rem; color: #9a3412; font-weight: normal;">Kumpulkan 5 kg minyak jelantah untuk mendapatkan 1 Minyak Goreng (Tabungan Non-Tunai)!</div>
+                  </div>
+                </div>
+                <span class="jelantah-badge" id="badgeJelantahTersedia">Jatah Tukar: 0 Minyak Goreng</span>
+              </div>
+
+              <div class="jelantah-progress-bg">
+                <div class="jelantah-progress-fill" id="progressJelantahFill"></div>
+              </div>
+
+              <div style="font-size: 0.8rem; color: #7c2d12; margin-bottom: 14px; font-weight: 600;" id="textStatusJelantah">
+                Total Minyak Jelantah Tertimbang: 0 kg (Kemajuan: 0 / 5 kg)
+              </div>
+
+              <div class="jelantah-actions">
+                <div style="display: flex; gap: 8px; flex: 1; min-width: 200px;">
+                  <input type="number" id="inputTimbangJelantahHome" placeholder="Bobot Jelantah (kg)" step="0.1" style="flex: 1; padding: 8px; border: 1px solid #fdba74; border-radius: 6px;">
+                  <button class="btn" id="btnTimbangJelantahHome" style="background-color: #ea580c; border: none; white-space: nowrap;">⚖️ Timbang Jelantah</button>
+                </div>
+                <button class="btn" id="btnTukarMinyakGoreng" style="background-color: #16a34a; border: none; white-space: nowrap;" disabled>🍾 Tukar 1 Minyak Goreng</button>
+              </div>
+            </div>
+
+            <!-- SECTION LINK PORTAL NASABAH MANDIRI -->
             <div class="card-header-flex">
               <div>
                 <h2 class="section-title">🌐 Link Portal Mandiri Nasabah (history.html)</h2>
@@ -368,7 +398,7 @@
             </div>
 
             <div id="containerRekapHarian" style="display:none; margin-bottom: 20px; background: #f8fafc; padding: 14px; border-radius: 8px;">
-              <div style="font-size: 0.75rem; font-weight: 600; margin-bottom: 8px;">📅 Total Penimbangan per Hari:</div>
+              <div style="font-size: 0.75rem; font-weight: 600; margin-bottom: 8px;">📅 Rekap Hasil Penimbangan per Hari:</div>
               <div id="listRekapHarian" style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.75rem;"></div>
             </div>
 
@@ -548,7 +578,7 @@
         });
       });
 
-      // DATABASE MASTER NASABAH INITIAL DATA (LENGKAP 1 - 210)
+      // DATABASE MASTER NASABAH INITIAL DATA
       const daftarNasabahMaster = [
         { id: "1", kodeRekening: "01/BSU MB/BKL/VII/2025", nama: "Andi Intan" },
         { id: "2", kodeRekening: "02/BSU MB/BKL/VII/2025", nama: "Safria" },
@@ -559,210 +589,11 @@
         { id: "7", kodeRekening: "07/BSU MB/BKL/VII/2025", nama: "St. Farida Syam" },
         { id: "8", kodeRekening: "08/BSU MB/BKL/VII/2025", nama: "Desi Saraswati" },
         { id: "9", kodeRekening: "09/BSU MB/BKL/VII/2025", nama: "Hj. Hastia" },
-        { id: "10", kodeRekening: "10/BSU MB/BKL/VII/2025", nama: "Umm Nuraeni" },
-        { id: "11", kodeRekening: "11/BSU MB/BKL/VII/2025", nama: "Umm Rahmawati" },
-        { id: "12", kodeRekening: "12/BSU MB/BKL/VII/2025", nama: "Umm Jumriah" },
-        { id: "13", kodeRekening: "13/BSU MB/BKL/VII/2025", nama: "Umm Fajriah" },
-        { id: "14", kodeRekening: "14/BSU MB/BKL/VII/2025", nama: "Ansar Djanantin" },
-        { id: "15", kodeRekening: "15/BSU MB/BKL/VIII/2025", nama: "Abdul Manan" },
-        { id: "16", kodeRekening: "16/BSU MB/BKL/VIII/2025", nama: "Andi Anto" },
-        { id: "17", kodeRekening: "17/BSU MB/BKL/VIII/2025", nama: "Narmi Rahayu" },
-        { id: "18", kodeRekening: "18/BSU MB/BKL/VIII/2025", nama: "Umm Ramlah" },
-        { id: "19", kodeRekening: "19/BSU MB/BKL/VIII/2025", nama: "Aisyah" },
-        { id: "20", kodeRekening: "20/BSU MB/BKL/VIII/2025", nama: "A. Bau Chandrawali" },
-        { id: "21", kodeRekening: "21/BSU MB/BKL/VIII/2025", nama: "Suryani" },
-        { id: "22", kodeRekening: "22/BSU MB/BKL/VIII/2025", nama: "Syamsul Sadiman" },
-        { id: "23", kodeRekening: "23/BSU MB/BKL/VIII/2025", nama: "Selvi Karim" },
-        { id: "24", kodeRekening: "24/BSU MB/BKL/VIII/2025", nama: "Saniasa" },
-        { id: "25", kodeRekening: "25/BSU MB/BKL/VIII/2025", nama: "Lutfia" },
-        { id: "26", kodeRekening: "26/BSU MB/BKL/VIII/2025", nama: "Irmayanty Ahmad" },
-        { id: "27", kodeRekening: "27/BSU MB/BKL/VIII/2025", nama: "A. Fasiha" },
-        { id: "28", kodeRekening: "28/BSU MB/BKL/VIII/2025", nama: "Rostati Abbas" },
-        { id: "29", kodeRekening: "29/BSU MB/BKL/VIII/2025", nama: "Hadijah Yusuf" },
-        { id: "30", kodeRekening: "30/BSU MB/BKL/VIII/2025", nama: "Hadhoral Qismah" },
-        { id: "31", kodeRekening: "31/BSU MB/BKL/VIII/2025", nama: "Hasniawati M." },
-        { id: "32", kodeRekening: "32/BSU MB/BKL/VIII /2025", nama: "Rahmansyah Dermawan" },
-        { id: "33", kodeRekening: "33/BSU MB/BKL/VIII/2025", nama: "Hj. Samsiah" },
-        { id: "34", kodeRekening: "34/BSU MB/BKL/VIII/2025", nama: "Ismayanti" },
-        { id: "35", kodeRekening: "35/BSU MB/BKL/VIII/2025", nama: "Hj. Nurhaedah" },
-        { id: "36", kodeRekening: "36/BSU MB/BKL/VIII/2025", nama: "Siti Haderah" },
-        { id: "37", kodeRekening: "37/BSU MB/BKL/VIII/2025", nama: "Dessy Yanti" },
-        { id: "38", kodeRekening: "38/BSU MB/BKL/VIII/2025", nama: "Nur Rakhma Radjab Djoha, SH." },
-        { id: "39", kodeRekening: "39/BSU MB/BKL/VIII/2025", nama: "Iriani Haji" },
-        { id: "40", kodeRekening: "40/BSU MB/BKL/IX/2025", nama: "Novia Tenriawaru" },
-        { id: "41", kodeRekening: "41/BSU MB/BKL/IX/2025", nama: "Laela Qadrianti" },
-        { id: "42", kodeRekening: "42/BSU MB/BKL/IX/2025", nama: "Nursiah Chaidir" },
-        { id: "43", kodeRekening: "43/BSU MB/BKL/IX/2025", nama: "Siti Nadrah" },
-        { id: "44", kodeRekening: "44/BSU MB/BKL/IX/2025", nama: "Sitti Nursyahda" },
-        { id: "45", kodeRekening: "45/BSU MB/BKL/IX/2025", nama: "Ummi Ros" },
-        { id: "46", kodeRekening: "46/BSU MB/BKL/IX/2025", nama: "Riska Maulidiah" },
-        { id: "47", kodeRekening: "47/BSU MB/BKL/IX/2025", nama: "H. Kadir dg. Bani" },
-        { id: "48", kodeRekening: "48/BSU MB/BKL/IX/2025", nama: "A. Ilmi Asrianti Asdar" },
-        { id: "49", kodeRekening: "49/BSU MB/BKL/IX/2025", nama: "Andi Rosmawati" },
-        { id: "50", kodeRekening: "50/BSU MB/BKL/IX/2025", nama: "Adriani (Upi)" },
-        { id: "51", kodeRekening: "51/BSU MB/BKL/IX/2025", nama: "Muh. Irwan" },
-        { id: "52", kodeRekening: "52/BSU MB/BKL/IX/2025", nama: "Sitti Rahma Said (Oma)" },
-        { id: "53", kodeRekening: "53/BSU MB/BKL/X/2025", nama: "Andi wahida Mahmud" },
-        { id: "54", kodeRekening: "54/BSU MB/BKL/X/2025", nama: "Hj. A. Kartini Suaib" },
-        { id: "55", kodeRekening: "55/BSU MB/BKL/X/2025", nama: "Sumarniati (Marni)" },
-        { id: "56", kodeRekening: "56/BSU MB/BKL/X/2025", nama: "Hijrah Amalia Azis" },
-        { id: "57", kodeRekening: "57/BSU MB/BKL/X/2025", nama: "Umm Nanny" },
-        { id: "58", kodeRekening: "58/BSU MB/BKL/X/2025", nama: "Ahmad" },
-        { id: "59", kodeRekening: "59/BSU MB/BKL/X/2025", nama: "A. Syamsuria" },
-        { id: "60", kodeRekening: "60/BSU MB/BKL/X/2025", nama: "Sri Anita" },
-        { id: "61", kodeRekening: "61/BSU MB/BKL/X/2025", nama: "Asniar Tahir" },
-        { id: "62", kodeRekening: "62/BSU MB/BKL/X/2025", nama: "Juarni" },
-        { id: "63", kodeRekening: "63/BSU MB/BKL/X/2025", nama: "Hj. Asnaini R." },
-        { id: "64", kodeRekening: "64/BSU MB/BKL/X/2025", nama: "Harlinda" },
-        { id: "65", kodeRekening: "65/BSU MB/BKL/X/2025", nama: "Hatijah" },
-        { id: "66", kodeRekening: "66/BSU MB/BKL/X/2025", nama: "A. Mahira" },
-        { id: "67", kodeRekening: "67/BSU MB/BKL/X/2025", nama: "Ismayuni, SE." },
-        { id: "68", kodeRekening: "68/BSU MB/BKL/X/2025", nama: "Dr. Ir. Subagio, SE., MM." },
-        { id: "69", kodeRekening: "69/BSU MB/BKL/XI/2025", nama: "Norma Syam" },
-        { id: "70", kodeRekening: "70/BSU MB/BKL/XI/2025", nama: "Orin (Novrini Kesumadewi)" },
-        { id: "71", kodeRekening: "71/BSU MB/BKL/XI/2025", nama: "Abidar" },
-        { id: "72", kodeRekening: "72/BSU MB/BKL/XI/2025", nama: "Pammusereng" },
-        { id: "73", kodeRekening: "73/BSU MB/BKL/XI/2025", nama: "Nursan" },
-        { id: "74", kodeRekening: "74/BSU MB/BKL/XI/2025", nama: "Husti" },
-        { id: "75", kodeRekening: "75/BSU MB/BKL/XII/2025", nama: "Christyanti / Yanty Lia" },
-        { id: "76", kodeRekening: "76/BSU MB/BKL/XII/2025", nama: "daeng Tobo" },
-        { id: "77", kodeRekening: "77/BSU MB/BKL/XII/2025", nama: "Hj. Suswati" },
-        { id: "78", kodeRekening: "78/BSU MB/BKL/XII/2025", nama: "Asni Azis" },
-        { id: "79", kodeRekening: "79/BSU MB/BKL/XII/2025", nama: "Muh. Dapri Kodding" },
-        { id: "80", kodeRekening: "80/BSU MB/BKL/XII/2025", nama: "Aghits Renaldy" },
-        { id: "81", kodeRekening: "81/BSU MB/BKL/XII/2025", nama: "Hj. Semma" },
-        { id: "82", kodeRekening: "82/BSU MB/BKL/XII/2025", nama: "A. Wiwi" },
-        { id: "83", kodeRekening: "83/BSU MB/BKL/XII/2025", nama: "Dewi Sartika" },
-        { id: "84", kodeRekening: "84/BSU MB/BKL/XII/2025", nama: "Umm Isel" },
-        { id: "85", kodeRekening: "85/BSU MB/BKL/I/2026", nama: "Meri" },
-        { id: "86", kodeRekening: "86/BSU MB/BKL/I/2026", nama: "Anggraini" },
-        { id: "87", kodeRekening: "87/BSU MB/BKL/I/2026", nama: "Azizah" },
-        { id: "88", kodeRekening: "88/BSU MB/BKL/I/2026", nama: "Amrullah (nirmawati)" },
-        { id: "89", kodeRekening: "89/BSU MB/BKL/I/2026", nama: "Abidin Nuhung" },
-        { id: "90", kodeRekening: "90/BSU MB/BKL/I/2026", nama: "Andi Rahmi" },
-        { id: "91", kodeRekening: "91/BSU MB/BKL/I/2026", nama: "Siti Syara Syarda" },
-        { id: "92", kodeRekening: "92/BSU MB/BKL/I/2026", nama: "Ateng" },
-        { id: "93", kodeRekening: "93/BSU MB/BKL/I/2026", nama: "Asni Nurani" },
-        { id: "94", kodeRekening: "94/BSU MB/BKL/I/2026", nama: "Hj. Sumiati" },
-        { id: "95", kodeRekening: "95/BSU MB/BKL/I/2026", nama: "Suriani Jabbar" },
-        { id: "96", kodeRekening: "96/BSU MB/BKL/I/2026", nama: "Rosmah Tami" },
-        { id: "97", kodeRekening: "97/BSU MB/BKL/I/2026", nama: "Hj. Erna Habibah" },
-        { id: "98", kodeRekening: "98/BSU MB/BKL/I/2026", nama: "Rahmat Ilannur" },
-        { id: "99", kodeRekening: "99/BSU MB/BKL/I/2026", nama: "A. Ernawaty" },
-        { id: "100", kodeRekening: "100/BSU MB/BKL/I/2026", nama: "Azura" },
-        { id: "101", kodeRekening: "101/BSU MB/BKL/II/2026", nama: "Winda" },
-        { id: "102", kodeRekening: "102/BSU MB/BKL/II/2026", nama: "Raihan Shafa" },
-        { id: "103", kodeRekening: "103/BSU MB/BKL/II/2026", nama: "Maryani" },
-        { id: "104", kodeRekening: "104/BSU MB/BKL/II/2026", nama: "Febi" },
-        { id: "105", kodeRekening: "105/BSU MB/BKL/II/2026", nama: "Nurwanti" },
-        { id: "106", kodeRekening: "106/BSU MB/BKL/II/2026", nama: "Fidah" },
-        { id: "107", kodeRekening: "107/BSU MB/BKL/II/2026", nama: "Mila" },
-        { id: "108", kodeRekening: "108/BSU MB/BKL/II/2026", nama: "Maryati Tombokan" },
-        { id: "109", kodeRekening: "109/BSU MB/BKL/II/2026", nama: "H. Gus" },
-        { id: "110", kodeRekening: "110/BSU MB/BKL/II/2026", nama: "Hasni Dekor" },
-        { id: "111", kodeRekening: "111/BSU MB/BKL/II/2026", nama: "Muh. Sain" },
-        { id: "112", kodeRekening: "112/BSU MB/BKL/II/2026", nama: "Putri Katering" },
-        { id: "113", kodeRekening: "113/BSU MB/BKL/II/2026", nama: "Hj. Musina" },
-        { id: "114", kodeRekening: "114/BSU MB/BKL/II/2026", nama: "Rustam" },
-        { id: "115", kodeRekening: "115/BSU MB/BKL/III/2026", nama: "Evi Alimin" },
-        { id: "116", kodeRekening: "116/BSU MB/BKL/III/2026", nama: "Yulman" },
-        { id: "117", kodeRekening: "117/BSU MB/BKL/III/2026", nama: "MBG" },
-        { id: "118", kodeRekening: "118/BSU MB/BKL/III/2026", nama: "Ridawati" },
-        { id: "119", kodeRekening: "119/BSU MB/BKL/IV/2026", nama: "Suwarni" },
-        { id: "120", kodeRekening: "120/BSU MB/BKL/IV/2026", nama: "Suwardi" },
-        { id: "121", kodeRekening: "121/BSU MB/BKL/IV/2026", nama: "Damis" },
-        { id: "122", kodeRekening: "122/BSU MB/BKL/IV/2026", nama: "Cece" },
-        { id: "123", kodeRekening: "123/BSU MB/BKL/IV/2026", nama: "Nur Fahmi" },
-        { id: "124", kodeRekening: "124/BSU MB/BKL/IV/2026", nama: "Andi Rahmawati" },
-        { id: "125", kodeRekening: "125/BSU MB/BKL/IV/2026", nama: "M. Taufik" },
-        { id: "126", kodeRekening: "126/BSU MB/BKL/IV/2026", nama: "Fuad" },
-        { id: "127", kodeRekening: "127/BSU MB/BKL/IV/2026", nama: "Emma" },
-        { id: "128", kodeRekening: "128/BSU MB/BKL/IV/2026", nama: "Sawir" },
-        { id: "129", kodeRekening: "129/BSU MB/BKL/IV/2026", nama: "Maya" },
-        { id: "130", kodeRekening: "130/BSU MB/BKL/IV/2026", nama: "Hj. Ernawati Dahlan" },
-        { id: "131", kodeRekening: "131/BSU MB/BKL/IV/2026", nama: "Suci" },
-        { id: "132", kodeRekening: "132/BSU MB/BKL/IV/2026", nama: "Masdar" },
-        { id: "133", kodeRekening: "133/BSU MB/BKL/V/2026", nama: "Waris" },
-        { id: "134", kodeRekening: "134/BSU MB/BKL/V/2026", nama: "Nuraeni" },
-        { id: "135", kodeRekening: "135/BSU MB/BKL/V/2026", nama: "Jamaludin" },
-        { id: "136", kodeRekening: "136/BSU MB/BKL/V/2026", nama: "Hijrah Abbas" },
-        { id: "137", kodeRekening: "137/BSU MB/BKL/V/2026", nama: "Muslim" },
-        { id: "138", kodeRekening: "138/BSU MB/BKL/V/2026", nama: "Nur Israj Yuliana Amir /Yuyun" },
-        { id: "139", kodeRekening: "139/BSU MB/BKL/V/2026", nama: "Erna Dedi" },
-        { id: "140", kodeRekening: "140/BSU MB/BKL/V/2026", nama: "A. Titin" },
-        { id: "141", kodeRekening: "141/BSU MB/BKL/V/2026", nama: "Amos" },
-        { id: "142", kodeRekening: "142/BSU MB/BKL/V/2026", nama: "Baso Jalaluddin" },
-        { id: "143", kodeRekening: "143/BSU MB/BKL/V/2026", nama: "Memed/Siti Hafsah" },
-        { id: "144", kodeRekening: "144/BSU MB/BKL/V/2026", nama: "M. Saiful Saad, SH." },
-        { id: "145", kodeRekening: "145/BSU MB/BKL/V/2026", nama: "Marsuni" },
-        { id: "146", kodeRekening: "146/BSU MB/BKL/V/2026", nama: "Samin" },
-        { id: "147", kodeRekening: "147/BSU MB/BKL/V/2026", nama: "Firman" },
-        { id: "148", kodeRekening: "148/BSU MB/BKL/V/2026", nama: "Khaeriyati" },
-        { id: "149", kodeRekening: "149/BSU MB/BKL/V/2026", nama: "Jupri" },
-        { id: "150", kodeRekening: "150/BSU MB/BKL/VI/2026", nama: "Feli" },
-        { id: "151", kodeRekening: "151/BSU MB/BKL/VI/2026", nama: "Nafisa" },
-        { id: "152", kodeRekening: "152/BSU MB/BKL/VI/2026", nama: "Muh. Saad" },
-        { id: "153", kodeRekening: "153/BSU MB/BKL/VI/2026", nama: "Sumartina" },
-        { id: "154", kodeRekening: "154/BSU MB/BKL/VI/2026", nama: "Sukri" },
-        { id: "155", kodeRekening: "155/BSU MB/BKL/VI/2026", nama: "Mulai" },
-        { id: "156", kodeRekening: "156/BSU MB/BKL/VI/2026", nama: "Ayhu Siti Hajar" },
-        { id: "157", kodeRekening: "157/BSU MB/BKL/VI/2026", nama: "Erni Johan" },
-        { id: "158", kodeRekening: "158/BSU MB/BKL/VI/2026", nama: "Hartati Abbas" },
-        { id: "159", kodeRekening: "159/BSU MB/BKL/VI/2026", nama: "Ria Pesona" },
-        { id: "160", kodeRekening: "160/BSU MB/BKL/VI/2026", nama: "Umm Manaf" },
-        { id: "161", kodeRekening: "161/BSU MB/BKL/VII/2026", nama: "Ernawati Rifai" },
-        { id: "162", kodeRekening: "162/BSU MB/BKL/VII/2026", nama: "Nurfitriani" },
-        { id: "163", kodeRekening: "163/BSU MB/BKL/VII/2026", nama: "Umm Yeti" },
-        { id: "164", kodeRekening: "164/BSU MB/BKL/VII/2026", nama: "Ramli Abbas" },
-        { id: "165", kodeRekening: "165/BSU MB/BKL/VII/2026", nama: "Salmawati" },
-        { id: "166", kodeRekening: "166/BSU MB/BKL/VII/2026", nama: "A. Hasnia / Nuni" },
-        { id: "167", kodeRekening: "167/BSU MB/BKL/VII/2026", nama: "Nurlia" },
-        { id: "168", kodeRekening: "168/BSU MB/BKL/VII/2026", nama: "Jumriah" },
-        { id: "169", kodeRekening: "169/BSU MB/BKL/VII/2026", nama: "Hasnah Dg. Baji" },
-        { id: "170", kodeRekening: "170/BSU MB/BKL/VII/2026", nama: "Uni Dg. Masenang" },
-        { id: "171", kodeRekening: "171/BSU MB/BKL/VII/2026", nama: "Edo" },
-        { id: "172", kodeRekening: "172/BSU MB/BKL/VII/2026", nama: "Lidia / Maulidya Fuan Ahadatain" },
-        { id: "173", kodeRekening: "173/BSU MB/BKL/VII/2026", nama: "Fadillah" },
-        { id: "174", kodeRekening: "174/BSU MB/BKL/VII/2026", nama: "M. Rizal Rahman" },
-        { id: "175", kodeRekening: "175/BSU MB/BKL/VII/2026", nama: "Risma Nawir" },
-        { id: "176", kodeRekening: "176/BSU MB/BKL/VII/2026", nama: "KWT Permata Hijau / Wana" },
-        { id: "177", kodeRekening: "177/BSU MB/BKL/VII/2026", nama: "Wahida" },
-        { id: "178", kodeRekening: "178/BSU MB/BKL/VII/2026", nama: "A. Rasnah" },
-        { id: "179", kodeRekening: "179/BSU MB/BKL/VII/2026", nama: "Menuk" },
-        { id: "180", kodeRekening: "180/BSU MB/BKL/VII/2026", nama: "Herna Hamzah" },
-        { id: "181", kodeRekening: "181/BSU MB/BKL/VII/2026", nama: "Hj. Inda Siradju" },
-        { id: "182", kodeRekening: "182/BSU MB/BKL/VIII/2026", nama: "Abdul Kadir" },
-        { id: "183", kodeRekening: "183/BSU MB/BKL/VIII/2026", nama: "Umul" },
-        { id: "184", kodeRekening: "184/BSU MB/BKL/VIII/2026", nama: "Fevy Indriyani" },
-        { id: "185", kodeRekening: "185/BSU MB/BKL/VIII/2026", nama: "Masyita Aprianti" },
-        { id: "186", kodeRekening: "186/BSU MB/BKL/VIII/2026", nama: "Umhy" },
-        { id: "187", kodeRekening: "187/BSU MB/BKL/VIII/2026", nama: "Zaky/Idrus" },
-        { id: "188", kodeRekening: "188/BSU MB/BKL/VIII/2026", nama: "Nurmin" },
-        { id: "189", kodeRekening: "189/BSU MB/BKL/VIII/2026", nama: "Hasnah Evifana" },
-        { id: "190", kodeRekening: "190/BSU MB/BKL/VIII/2026", nama: "Nia" },
-        { id: "191", kodeRekening: "191/BSU MB/BKL/VIII/2026", nama: "Rahima" },
-        { id: "192", kodeRekening: "192/BSU MB/BKL/VIII/2026", nama: "Yusuf Pratama" },
-        { id: "193", kodeRekening: "193/BSU MB/BKL/VIII/2026", nama: "Rezki Amalia / Kiki" },
-        { id: "194", kodeRekening: "194/BSU MB/BKL/VIII/2026", nama: "Abdurrahman" },
-        { id: "195", kodeRekening: "195/BSU MB/BKL/VIII/2026", nama: "Siti Fanifa" },
-        { id: "196", kodeRekening: "196/BSU MB/BKL/VIII/2026", nama: "Amie Asikin" },
-        { id: "197", kodeRekening: "197/BSU MB/BKL/VIII/2026", nama: "MITQ Azhar Center" },
-        { id: "198", kodeRekening: "198/BSU MB/BKL/VIII/2026", nama: "Muliati" },
-        { id: "199", kodeRekening: "199/BSU MB/BKL/VIII/2026", nama: "Sari" },
-        { id: "200", kodeRekening: "200/BSU MB/BKL/VIII/2026", nama: "Suharno LPM" },
-        { id: "201", kodeRekening: "201/BSU MB/BKL/VIII/2026", nama: "Siman" },
-        { id: "202", kodeRekening: "202/BSU MB/BKL/VIII/2026", nama: "Yuyun" },
-        { id: "203", kodeRekening: "203/BSU MB/BKL/VIII/2026", nama: "Dafqul School" },
-        { id: "204", kodeRekening: "204/BSU MB/BKL/VIII/2026", nama: "Hikmah" },
-        { id: "205", kodeRekening: "205/BSU MB/BKL/VIII/2026", nama: "Sri Harmaini" },
-        { id: "206", kodeRekening: "206/BSU MB/BKL/VIII/2026", nama: "Hj. Nana" },
-        { id: "207", kodeRekening: "207/BSU MB/BKL/VIII/2026", nama: "Hj. A. Herawati S. Kep. Ns." },
-        { id: "208", kodeRekening: "208/BSU MB/BKL/VIII/2026", nama: "Kumalasari" },
-        { id: "209", kodeRekening: "209/BSU MB/BKL/VIII/2026", nama: "Akmal" },
-        { id: "210", kodeRekening: "210/BSU MB/BKL/VIII/2026", nama: "Amanah Amirah" }
+        { id: "10", kodeRekening: "10/BSU MB/BKL/VII/2025", nama: "Umm Nuraeni" }
       ];
 
       // DATABASE MASTER SAMPAH DENGAN HARGA DAN SATUAN LENGKAP
+      // MINYAK JELANTAH HARGA DIBUAT 0 (NON-UANG / KHUSUS PENUKARAN BARANG)
       const defaultHargaBSU = {
         // KATEGORI PLASTIK
         "PLASTIK - PP Gelas Bening Bersih": { harga: 5000, satuan: "kg" },
@@ -812,8 +643,8 @@
         "KACA - Botol Markisa, Bensin": { harga: 700, satuan: "pcs" },
         "KACA - Botol Kecap/DHT": { harga: 450, satuan: "pcs" },
 
-        // KATEGORI MINYAK JELANTAH
-        "MINYAK JELANTAH - Minyak Jelantah": { harga: 4000, satuan: "kg" },
+        // KATEGORI MINYAK JELANTAH (HARGA 0 DITETAPKAN SUPAYA TIDAK NILAI UANG)
+        "MINYAK JELANTAH - Minyak Jelantah": { harga: 0, satuan: "kg" },
 
         // LAIN-LAIN (ELEKTRONIK / AKI)
         "LAIN-LAIN (ELEKTRONIK) - Aki Motor": { harga: 10000, satuan: "pcs" },
@@ -841,12 +672,16 @@
       };
 
       let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v5"));
-      if (!dbNasabah || !dbNasabah["210"]) {
+      if (!dbNasabah) {
         dbNasabah = buatDbAwal();
         localStorage.setItem("dbNasabahBSU_v5", JSON.stringify(dbNasabah));
       }
 
       let daftarHarga = JSON.parse(localStorage.getItem("daftarHargaBSU_v4")) || defaultHargaBSU;
+      // Memastikan Minyak Jelantah bernilai 0 di daftarHarga
+      if (daftarHarga["MINYAK JELANTAH - Minyak Jelantah"]) {
+        daftarHarga["MINYAK JELANTAH - Minyak Jelantah"].harga = 0;
+      }
 
       let activeEditContext = null;
       let activeNasabahCardId = null;
@@ -929,7 +764,15 @@
         editKetHistori: document.getElementById("editKetHistori"),
         editNominalHistori: document.getElementById("editNominalHistori"),
         btnSimpanEditHistori: document.getElementById("btnSimpanEditHistori"),
-        btnTutupModalEdit: document.getElementById("btnTutupModalEdit")
+        btnTutupModalEdit: document.getElementById("btnTutupModalEdit"),
+
+        // ELEMEN FITUR MINYAK JELANTAH
+        inputTimbangJelantahHome: document.getElementById("inputTimbangJelantahHome"),
+        btnTimbangJelantahHome: document.getElementById("btnTimbangJelantahHome"),
+        btnTukarMinyakGoreng: document.getElementById("btnTukarMinyakGoreng"),
+        badgeJelantahTersedia: document.getElementById("badgeJelantahTersedia"),
+        progressJelantahFill: document.getElementById("progressJelantahFill"),
+        textStatusJelantah: document.getElementById("textStatusJelantah")
       };
 
       const today = new Date().toISOString().split('T')[0];
@@ -988,18 +831,23 @@
 
           nasabah.histori.forEach(item => {
             if (item.tipe === 'Penimbangan') {
-              if (item.jenis) {
-                const kat = ekstrakKategori(item.jenis);
-                rekapKategori[kat] = (rekapKategori[kat] || 0) + parseFloat(item.bobot || 0);
-              }
-              if (item.waktu) {
-                const parts = item.waktu.split('/');
-                if (parts.length === 3) {
-                  const bulanIndex = parseInt(parts[1], 10) - 1;
-                  const tahun = parts[2];
-                  if (bulanIndex >= 0 && bulanIndex < 12) {
-                    const keyBulan = `${namaBulanIndo[bulanIndex]} ${tahun}`;
-                    rekapBulan[keyBulan] = (rekapBulan[keyBulan] || 0) + parseFloat(item.bobot || 0);
+              const infoSampah = item.jenis ? daftarHarga[item.jenis] : null;
+              const isKg = !infoSampah || (infoSampah.satuan && infoSampah.satuan.toLowerCase() === 'kg');
+
+              if (isKg) {
+                if (item.jenis) {
+                  const kat = ekstrakKategori(item.jenis);
+                  rekapKategori[kat] = (rekapKategori[kat] || 0) + parseFloat(item.bobot || 0);
+                }
+                if (item.waktu) {
+                  const parts = item.waktu.split('/');
+                  if (parts.length === 3) {
+                    const bulanIndex = parseInt(parts[1], 10) - 1;
+                    const tahun = parts[2];
+                    if (bulanIndex >= 0 && bulanIndex < 12) {
+                      const keyBulan = `${namaBulanIndo[bulanIndex]} ${tahun}`;
+                      rekapBulan[keyBulan] = (rekapBulan[keyBulan] || 0) + parseFloat(item.bobot || 0);
+                    }
                   }
                 }
               }
@@ -1083,8 +931,12 @@
           if (dbNasabah[id].histori) {
             dbNasabah[id].histori.forEach(item => {
               if (item.tipe === 'Penimbangan' && item.jenis) {
-                const kat = ekstrakKategori(item.jenis);
-                rekapKategoriKg[kat] = (rekapKategoriKg[kat] || 0) + parseFloat(item.bobot || 0);
+                const infoSampah = daftarHarga[item.jenis];
+                const isKg = !infoSampah || (infoSampah.satuan && infoSampah.satuan.toLowerCase() === 'kg');
+                if (isKg) {
+                  const kat = ekstrakKategori(item.jenis);
+                  rekapKategoriKg[kat] = (rekapKategoriKg[kat] || 0) + parseFloat(item.bobot || 0);
+                }
               }
             });
           }
@@ -1136,13 +988,17 @@
           if (dbNasabah[id].histori) {
             dbNasabah[id].histori.forEach(item => {
               if (item.tipe === 'Penimbangan' && item.waktu) {
-                const parts = item.waktu.split('/');
-                if (parts.length === 3) {
-                  const bulanIndex = parseInt(parts[1], 10) - 1;
-                  const tahun = parts[2];
-                  if (bulanIndex >= 0 && bulanIndex < 12) {
-                    const keyBulan = `${namaBulanIndo[bulanIndex]} ${tahun}`;
-                    rekapBulanKg[keyBulan] = (rekapBulanKg[keyBulan] || 0) + parseFloat(item.bobot || 0);
+                const infoSampah = item.jenis ? daftarHarga[item.jenis] : null;
+                const isKg = !infoSampah || (infoSampah.satuan && infoSampah.satuan.toLowerCase() === 'kg');
+                if (isKg) {
+                  const parts = item.waktu.split('/');
+                  if (parts.length === 3) {
+                    const bulanIndex = parseInt(parts[1], 10) - 1;
+                    const tahun = parts[2];
+                    if (bulanIndex >= 0 && bulanIndex < 12) {
+                      const keyBulan = `${namaBulanIndo[bulanIndex]} ${tahun}`;
+                      rekapBulanKg[keyBulan] = (rekapBulanKg[keyBulan] || 0) + parseFloat(item.bobot || 0);
+                    }
                   }
                 }
               }
@@ -1225,7 +1081,7 @@
         if (dbNasabah[id].histori) {
           dbNasabah[id].histori.forEach(item => {
             if (item.tipe === 'Penimbangan') pendapatan += item.nominal;
-            else if (item.tipe === 'Penarikan') penarikan += item.nominal;
+            else if (item.tipe === 'Penarikan' || item.tipe === 'Penukaran') penarikan += item.nominal;
           });
         }
         dbNasabah[id].totalPendapatan = pendapatan;
@@ -1257,7 +1113,7 @@
 
         for (let jenis in daftarHarga) {
           const item = daftarHarga[jenis];
-          const textOpt = `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
+          const textOpt = item.harga === 0 ? `Tabungan Tukar Barang (${item.satuan})` : `Rp ${item.harga.toLocaleString('id-ID')}/${item.satuan}`;
 
           const opt1 = document.createElement("option");
           opt1.value = jenis;
@@ -1280,11 +1136,103 @@
         }
       };
 
+      // FUNGSI UPDATE TAMPILAN FITUR MINYAK JELANTAH
+      const updateFiturMinyakJelantah = () => {
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) {
+          els.badgeJelantahTersedia.innerText = "Jatah Tukar: 0 Minyak Goreng";
+          els.progressJelantahFill.style.width = "0%";
+          els.textStatusJelantah.innerText = "Pilih nasabah terlebih dahulu untuk melihat akumulasi Jelantah.";
+          els.btnTukarMinyakGoreng.disabled = true;
+          return;
+        }
+
+        const nasabah = dbNasabah[activeNasabahCardId];
+        let totalBobotJelantah = 0;
+        let totalMinyakDitukar = 0;
+
+        if (nasabah.histori) {
+          nasabah.histori.forEach(item => {
+            if (item.tipe === 'Penimbangan' && item.jenis && item.jenis.toUpperCase().includes('MINYAK JELANTAH')) {
+              totalBobotJelantah += parseFloat(item.bobot || 0);
+            }
+            if (item.tipe === 'Penukaran' && item.keterangan && item.keterangan.includes('Penukaran 5kg Jelantah')) {
+              totalMinyakDitukar += 1;
+            }
+          });
+        }
+
+        const bobotTerpakai = totalMinyakDitukar * 5;
+        const sisaJelantah = Math.max(0, totalBobotJelantah - bobotTerpakai);
+        const jatahTukar = Math.floor(sisaJelantah / 5);
+        const progresKg = (sisaJelantah % 5);
+        const persentase = (progresKg / 5) * 100;
+
+        els.badgeJelantahTersedia.innerText = `Jatah Tukar: ${jatahTukar} Minyak Goreng`;
+        els.progressJelantahFill.style.width = `${persentase}%`;
+        els.textStatusJelantah.innerText = `Total Minyak Jelantah Belum Ditukar: ${sisaJelantah.toFixed(1)} kg (Kemajuan: ${progresKg.toFixed(1)} / 5 kg)`;
+
+        els.btnTukarMinyakGoreng.disabled = jatahTukar <= 0;
+      };
+
+      // LOGIKA TOMBOL TIMBANG MINYAK JELANTAH DARI HOME (NILAI UNTUK DITUKAR = Rp 0)
+      els.btnTimbangJelantahHome.addEventListener("click", () => {
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) {
+          return alert("Pilih nasabah terlebih dahulu di header pencarian!");
+        }
+
+        const bobot = parseFloat(els.inputTimbangJelantahHome.value);
+        if (isNaN(bobot) || bobot <= 0) {
+          return alert("Masukkan jumlah bobot minyak jelantah yang valid!");
+        }
+
+        const jenisFound = cariNamaJenisSampah("MINYAK JELANTAH - Minyak Jelantah") || "MINYAK JELANTAH - Minyak Jelantah";
+        const nominal = 0; // Tidak ada nilai uang
+        const ketStr = `${jenisFound} (${bobot} kg) - Tabungan Non-Tunai`;
+
+        dbNasabah[activeNasabahCardId].histori.push({
+          waktu: formatTanggalKeIndo(today),
+          tipe: 'Penimbangan',
+          jenis: jenisFound,
+          bobot: bobot,
+          keterangan: ketStr,
+          nominal: nominal
+        });
+
+        hitungUlangSaldoRealtime(activeNasabahCardId);
+        muatDataNasabah();
+        els.inputTimbangJelantahHome.value = "";
+        alert("Berhasil menabung Minyak Jelantah! Bobot tercatat untuk program penukaran Minyak Goreng.");
+      });
+
+      // LOGIKA TOMBOL PENUKARAN MINYAK GORENG
+      els.btnTukarMinyakGoreng.addEventListener("click", () => {
+        if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) {
+          return alert("Pilih nasabah terlebih dahulu!");
+        }
+
+        if (confirm("Apakah Anda yakin ingin menukar 5 kg Minyak Jelantah dengan 1 Botol Minyak Goreng?")) {
+          dbNasabah[activeNasabahCardId].histori.push({
+            waktu: formatTanggalKeIndo(today),
+            tipe: 'Penukaran',
+            keterangan: "Penukaran 5kg Jelantah -> 1 Minyak Goreng 🍾",
+            nominal: 0
+          });
+
+          hitungUlangSaldoRealtime(activeNasabahCardId);
+          muatDataNasabah();
+          alert("Penukaran berhasil! Silakan berikan 1 Minyak Goreng kepada nasabah.");
+        }
+      });
+
+      // FUNGSI REKAP HARIAN KHUSUS TOTAL PENGAHSILAN RUPIAH
       const rekapHarian = (histori) => {
         const rekap = {};
         histori.forEach(item => {
           if (item.tipe === 'Penimbangan') {
-            rekap[item.waktu] = (rekap[item.waktu] || 0) + (parseFloat(item.bobot) || 0);
+            if (!rekap[item.waktu]) {
+              rekap[item.waktu] = { totalHarga: 0 };
+            }
+            rekap[item.waktu].totalHarga += (parseFloat(item.nominal) || 0);
           }
         });
         return rekap;
@@ -1303,7 +1251,11 @@
         if (Object.keys(totalHarian).length > 0) {
           els.containerRekapHarian.style.display = "block";
           els.listRekapHarian.innerHTML = Object.entries(totalHarian)
-            .map(([tgl, total]) => `<span style="background:#e0f2fe; color:#0369a1; padding:4px 8px; border-radius:6px; font-weight:bold;">${tgl}: ${total.toFixed(1)} kg</span>`)
+            .map(([tgl, data]) => `
+              <span style="background:#e0f2fe; color:#0369a1; padding:6px 10px; border-radius:6px; font-weight:bold; border:1px solid #bae6fd;">
+                📅 ${tgl}: <span style="color:#166534;">Rp ${data.totalHarga.toLocaleString('id-ID')}</span>
+              </span>
+            `)
             .join('');
         } else {
           els.containerRekapHarian.style.display = "none";
@@ -1313,9 +1265,21 @@
         for (let i = nasabah.histori.length - 1; i >= 0; i--) {
           const item = nasabah.histori[i];
           const isTimbang = item.tipe === 'Penimbangan';
-          const badgeClass = isTimbang ? 'badge-setor' : 'badge-tarik';
-          const tanda = isTimbang ? '+' : '-';
-          const warna = isTimbang ? '#166534' : '#991b1b';
+          const isPenukaran = item.tipe === 'Penukaran';
+          
+          let badgeClass = 'badge-tarik';
+          let tanda = '-';
+          let warna = '#991b1b';
+
+          if (isTimbang) {
+            badgeClass = 'badge-setor';
+            tanda = '+';
+            warna = '#166534';
+          } else if (isPenukaran) {
+            badgeClass = 'badge-setor';
+            tanda = '🎁';
+            warna = '#ea580c';
+          }
 
           html += `
             <tr>
@@ -1360,6 +1324,7 @@
 
           tampilkanHistori(data);
           updateDiagramNasabahIndividu();
+          updateFiturMinyakJelantah();
         } else {
           activeNasabahCardId = null;
           els.displaySaldo.innerText = "Rp 0";
@@ -1374,6 +1339,7 @@
           }
           
           updateDiagramNasabahIndividu();
+          updateFiturMinyakJelantah();
         }
       };
 
@@ -1431,7 +1397,12 @@
         if (jenisFound && daftarHarga[jenisFound]) {
           const item = daftarHarga[jenisFound];
           const total = bobot * item.harga;
-          els.infoHargaSampahTerpilih.innerText = `Harga: Rp ${item.harga.toLocaleString('id-ID')} / ${item.satuan}`;
+          
+          if (item.harga === 0) {
+            els.infoHargaSampahTerpilih.innerText = `Kategori Non-Tunai: Menabung untuk ditukar barang (${item.satuan})`;
+          } else {
+            els.infoHargaSampahTerpilih.innerText = `Harga: Rp ${item.harga.toLocaleString('id-ID')} / ${item.satuan}`;
+          }
           els.hasilRupiahTimbang.innerText = "Rp " + total.toLocaleString('id-ID');
           
           if (els.labelBobot) {
@@ -1448,10 +1419,33 @@
         }
       };
 
+      // KALKULASI OTOMATIS NOMINAL SAAT BOBOT/JENIS DIEDIT PADA MODAL
+      const hitungOtomatisNominalModalEdit = () => {
+        const jenisFound = cariNamaJenisSampah(els.editJenisSampahHistori.value);
+        const bobot = parseFloat(els.editBobotHistori.value) || 0;
+
+        if (jenisFound && daftarHarga[jenisFound]) {
+          const itemHarga = daftarHarga[jenisFound];
+          els.editNominalHistori.value = bobot * itemHarga.harga;
+          if (els.labelModalBobot) {
+            els.labelModalBobot.innerText = `Jumlah / Bobot Satuan (${itemHarga.satuan}):`;
+          }
+        } else {
+          if (els.labelModalBobot) {
+            els.labelModalBobot.innerText = "Jumlah / Bobot Satuan:";
+          }
+        }
+      };
+
+      els.editBobotHistori.addEventListener("input", hitungOtomatisNominalModalEdit);
+      els.editBobotHistori.addEventListener("change", hitungOtomatisNominalModalEdit);
+      els.editJenisSampahHistori.addEventListener("input", hitungOtomatisNominalModalEdit);
+      els.editJenisSampahHistori.addEventListener("change", hitungOtomatisNominalModalEdit);
+
       els.inputCariJenisSampah.addEventListener("input", updateEstimasiTimbang);
       els.inputBobot.addEventListener("input", updateEstimasiTimbang);
 
-      // SIMPAN PENIMBANGAN
+      // SIMPAN PENIMBANGAN (SAMPAH BIASA MEMILIKI NOMINAL RUPIAH, JELANTAH = Rp 0)
       els.btnSimpanTimbang.addEventListener("click", () => {
         if (!activeNasabahCardId || !dbNasabah[activeNasabahCardId]) {
           return alert("Pilih nasabah terlebih dahulu di header pencarian!");
@@ -1466,7 +1460,9 @@
 
         const hargaItem = daftarHarga[jenisFound];
         const nominal = bobot * hargaItem.harga;
-        const ketStr = `${jenisFound} (${bobot} ${hargaItem.satuan})`;
+        const ketStr = hargaItem.harga === 0 
+          ? `${jenisFound} (${bobot} ${hargaItem.satuan}) - Non-Tunai` 
+          : `${jenisFound} (${bobot} ${hargaItem.satuan})`;
 
         dbNasabah[activeNasabahCardId].histori.push({
           waktu: formatTanggalKeIndo(tgl),
@@ -1527,84 +1523,18 @@
         alert("Penarikan dana saldo berhasil dicatat!");
       });
 
-      // MANAJEMEN SAMPAH (TAMBAH / HAPUS / EDIT)
-      els.btnTambahSampah.addEventListener("click", () => {
-        const kat = els.inputKategoriSampahBaru.value;
-        const nama = els.inputNamaSampahBaru.value.trim();
-        const harga = parseFloat(els.inputHargaSampahBaru.value);
-        const satuan = els.inputSatuanSampahBaru.value;
-
-        if (!nama) return alert("Nama sampah tidak boleh kosong!");
-        if (isNaN(harga) || harga <= 0) return alert("Harga sampah tidak valid!");
-
-        const fullNama = `${kat} - ${nama}`;
-        daftarHarga[fullNama] = { harga, satuan };
-        
-        simpanKeStorage();
-        muatKomponenDinamis();
-        els.inputNamaSampahBaru.value = "";
-        els.inputHargaSampahBaru.value = "";
-        alert("Jenis sampah baru berhasil ditambahkan!");
-      });
-
-      els.btnHapusSampah.addEventListener("click", () => {
-        const jenisFound = cariNamaJenisSampah(els.inputHapusSampah.value);
-        if (!jenisFound || !daftarHarga[jenisFound]) return alert("Jenis sampah tidak ditemukan!");
-
-        if (confirm(`Apakah Anda yakin ingin menghapus jenis sampah "${jenisFound}"?`)) {
-          delete daftarHarga[jenisFound];
-          simpanKeStorage();
-          muatKomponenDinamis();
-          els.inputHapusSampah.value = "";
-          alert("Jenis sampah berhasil dihapus!");
-        }
-      });
-
-      els.editCariJenis.addEventListener("change", () => {
-        const jenisFound = cariNamaJenisSampah(els.editCariJenis.value);
-        if (jenisFound && daftarHarga[jenisFound]) {
-          els.editNamaJenisLama.value = jenisFound;
-          els.editHargaBaru.value = daftarHarga[jenisFound].harga;
-        }
-      });
-
-      els.btnSimpanEditHarga.addEventListener("click", () => {
-        const jenisAwal = cariNamaJenisSampah(els.editCariJenis.value);
-        const namaBaru = els.editNamaJenisLama.value.trim();
-        const hargaBaru = parseFloat(els.editHargaBaru.value);
-
-        if (!jenisAwal || !daftarHarga[jenisAwal]) return alert("Pilih jenis sampah awal yang valid!");
-        if (!namaBaru) return alert("Nama sampah tidak boleh kosong!");
-        if (isNaN(hargaBaru) || hargaBaru <= 0) return alert("Harga tidak valid!");
-
-        const satuanAwal = daftarHarga[jenisAwal].satuan;
-        delete daftarHarga[jenisAwal];
-        daftarHarga[namaBaru] = { harga: hargaBaru, satuan: satuanAwal };
-
-        simpanKeStorage();
-        muatKomponenDinamis();
-        els.editCariJenis.value = "";
-        els.editNamaJenisLama.value = "";
-        els.editHargaBaru.value = "";
-        alert("Perubahan master sampah berhasil disimpan!");
-      });
-
-      // TAMBAH & HAPUS NASABAH
+      // MANAJEMEN NASABAH & SAMPAH
       els.btnTambahNasabah.addEventListener("click", () => {
         const nama = els.inputNamaNasabahBaru.value.trim();
         const kode = els.inputKodeRekeningBaru.value.trim();
+        if (!nama) return alert("Masukkan nama nasabah!");
 
-        if (!nama) return alert("Nama nasabah tidak boleh kosong!");
+        let nextId = 1;
+        const keys = Object.keys(dbNasabah).map(Number).sort((a,b) => a-b);
+        if (keys.length > 0) nextId = keys[keys.length - 1] + 1;
 
-        let maxId = 0;
-        for (let id in dbNasabah) {
-          const num = parseInt(id, 10);
-          if (!isNaN(num) && num > maxId) maxId = num;
-        }
-
-        const newId = (maxId + 1).toString();
-        dbNasabah[newId] = {
-          id: newId,
+        dbNasabah[nextId] = {
+          id: String(nextId),
           kodeRekening: kode,
           nama: nama,
           totalPendapatan: 0,
@@ -1614,66 +1544,126 @@
 
         simpanKeStorage();
         muatKomponenDinamis();
-
         els.inputNamaNasabahBaru.value = "";
         els.inputKodeRekeningBaru.value = "";
-        alert(`Nasabah baru berhasil ditambahkan dengan No Urut: ${newId}`);
+        alert(`Nasabah baru berhasil ditambahkan dengan No. ${nextId}`);
       });
 
       els.btnHapusNasabah.addEventListener("click", () => {
         const idFound = cariIdNasabah(els.inputHapusNasabah.value);
-        if (!idFound || !dbNasabah[idFound]) {
-          return alert("Nasabah tidak ditemukan!");
-        }
+        if (!idFound) return alert("Nasabah tidak ditemukan!");
 
-        if (confirm(`Apakah Anda yakin ingin menghapus nasabah "${dbNasabah[idFound].nama}"?`)) {
+        if (confirm(`Yakin ingin menghapus nasabah ${dbNasabah[idFound].nama}?`)) {
           delete dbNasabah[idFound];
-          if (activeNasabahCardId === idFound) {
-            activeNasabahCardId = null;
-            els.inputNasabah.value = "";
-            muatDataNasabah();
-          }
           simpanKeStorage();
           muatKomponenDinamis();
           els.inputHapusNasabah.value = "";
+          if (activeNasabahCardId === idFound) {
+            els.inputNasabah.value = "";
+            muatDataNasabah();
+          }
           alert("Nasabah berhasil dihapus!");
         }
       });
 
-      // EVENT HISTORI (EDIT & HAPUS TRANSAKSI)
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-hapus-histori')) {
-          const id = e.target.getAttribute('data-id');
-          const idx = parseInt(e.target.getAttribute('data-idx'), 10);
-          if (confirm('Yakin ingin menghapus riwayat transaksi ini?')) {
+      els.btnTambahSampah.addEventListener("click", () => {
+        const kat = els.inputKategoriSampahBaru.value;
+        const nama = els.inputNamaSampahBaru.value.trim();
+        const harga = parseFloat(els.inputHargaSampahBaru.value);
+        const satuan = els.inputSatuanSampahBaru.value;
+
+        if (!nama) return alert("Masukkan nama jenis sampah!");
+        if (isNaN(harga) || harga < 0) return alert("Masukkan harga yang valid!");
+
+        const keyFull = `${kat} - ${nama}`;
+        daftarHarga[keyFull] = { harga: harga, satuan: satuan };
+
+        simpanKeStorage();
+        muatKomponenDinamis();
+        els.inputNamaSampahBaru.value = "";
+        els.inputHargaSampahBaru.value = "";
+        alert("Jenis sampah baru berhasil ditambahkan!");
+      });
+
+      els.btnHapusSampah.addEventListener("click", () => {
+        const jenis = cariNamaJenisSampah(els.inputHapusSampah.value);
+        if (!jenis) return alert("Jenis sampah tidak ditemukan!");
+
+        if (confirm(`Hapus jenis sampah ${jenis}?`)) {
+          delete daftarHarga[jenis];
+          simpanKeStorage();
+          muatKomponenDinamis();
+          els.inputHapusSampah.value = "";
+          alert("Jenis sampah berhasil dihapus!");
+        }
+      });
+
+      els.editCariJenis.addEventListener("change", () => {
+        const jenis = cariNamaJenisSampah(els.editCariJenis.value);
+        if (jenis) {
+          els.editNamaJenisLama.value = jenis;
+          els.editHargaBaru.value = daftarHarga[jenis].harga;
+        }
+      });
+
+      els.btnSimpanEditHarga.addEventListener("click", () => {
+        const jenisLama = cariNamaJenisSampah(els.editCariJenis.value);
+        const namaBaru = els.editNamaJenisLama.value.trim();
+        const hargaBaru = parseFloat(els.editHargaBaru.value);
+
+        if (!jenisLama) return alert("Pilih jenis sampah yang valid!");
+        if (!namaBaru) return alert("Nama sampah baru tidak boleh kosong!");
+        if (isNaN(hargaBaru) || hargaBaru < 0) return alert("Harga baru tidak valid!");
+
+        const satuanLama = daftarHarga[jenisLama].satuan;
+        if (jenisLama !== namaBaru) {
+          delete daftarHarga[jenisLama];
+        }
+        daftarHarga[namaBaru] = { harga: hargaBaru, satuan: satuanLama };
+
+        simpanKeStorage();
+        muatKomponenDinamis();
+        els.editCariJenis.value = "";
+        els.editNamaJenisLama.value = "";
+        els.editHargaBaru.value = "";
+        alert("Data sampah berhasil diperbarui!");
+      });
+
+      // EDIT & HAPUS HISTORI TRANSAKSI
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("btn-hapus-histori")) {
+          const id = e.target.getAttribute("data-id");
+          const idx = parseInt(e.target.getAttribute("data-idx"), 10);
+          if (confirm("Apakah Anda yakin ingin menghapus catatan transaksi ini?")) {
             dbNasabah[id].histori.splice(idx, 1);
             hitungUlangSaldoRealtime(id);
             muatDataNasabah();
           }
         }
 
-        if (e.target.classList.contains('btn-edit-histori')) {
-          const id = e.target.getAttribute('data-id');
-          const idx = parseInt(e.target.getAttribute('data-idx'), 10);
+        if (e.target.classList.contains("btn-edit-histori")) {
+          const id = e.target.getAttribute("data-id");
+          const idx = parseInt(e.target.getAttribute("data-idx"), 10);
           const item = dbNasabah[id].histori[idx];
 
           activeEditContext = { id, idx };
           els.editTanggalHistori.value = formatTanggalKeInput(item.waktu);
           els.editNominalHistori.value = item.nominal;
 
-          if (item.tipe === 'Penimbangan') {
-            els.containerEditPenimbangan.style.display = 'block';
-            els.containerEditPenarikan.style.display = 'none';
-            els.editJenisSampahHistori.value = item.jenis || '';
-            els.editBobotHistori.value = item.bobot || '';
+          if (item.tipe === "Penimbangan") {
+            els.containerEditPenimbangan.style.display = "block";
+            els.containerEditPenarikan.style.display = "none";
+            els.editJenisSampahHistori.value = item.jenis || "";
+            els.editBobotHistori.value = item.bobot || 0;
+            hitungOtomatisNominalModalEdit();
           } else {
-            els.containerEditPenimbangan.style.display = 'none';
-            els.containerEditPenarikan.style.display = 'block';
-            els.editMetodeHistori.value = item.metode || 'Tunai';
-            els.editKetHistori.value = item.keterangan || '';
+            els.containerEditPenimbangan.style.display = "none";
+            els.containerEditPenarikan.style.display = "block";
+            els.editMetodeHistori.value = item.metode || "Tunai";
+            els.editKetHistori.value = item.keterangan || "";
           }
 
-          els.modalEdit.classList.add('active');
+          els.modalEdit.classList.add("active");
         }
       });
 
@@ -1685,25 +1675,26 @@
         if (!activeEditContext) return;
         const { id, idx } = activeEditContext;
         const item = dbNasabah[id].histori[idx];
-
         const tgl = els.editTanggalHistori.value;
         const nominal = parseFloat(els.editNominalHistori.value);
 
-        if (!tgl || isNaN(nominal)) return alert("Isi data tanggal dan nominal dengan benar!");
+        if (!tgl || isNaN(nominal)) return alert("Data input tidak valid!");
 
         item.waktu = formatTanggalKeIndo(tgl);
         item.nominal = nominal;
 
-        if (item.tipe === 'Penimbangan') {
-          const jenis = els.editJenisSampahHistori.value;
-          const bobot = parseFloat(els.editBobotHistori.value) || 0;
-          const itemHarga = daftarHarga[jenis];
-          const satuan = itemHarga ? itemHarga.satuan : 'kg';
-          
-          item.jenis = jenis;
+        if (item.tipe === "Penimbangan") {
+          const jenisFound = cariNamaJenisSampah(els.editJenisSampahHistori.value);
+          const bobot = parseFloat(els.editBobotHistori.value);
+          if (!jenisFound || isNaN(bobot)) return alert("Data penimbangan tidak valid!");
+
+          const satuan = daftarHarga[jenisFound] ? daftarHarga[jenisFound].satuan : "kg";
+          const isNonTunai = daftarHarga[jenisFound] && daftarHarga[jenisFound].harga === 0;
+
+          item.jenis = jenisFound;
           item.bobot = bobot;
-          item.keterangan = `${jenis} (${bobot} ${satuan})`;
-        } else {
+          item.keterangan = isNonTunai ? `${jenisFound} (${bobot} ${satuan}) - Non-Tunai` : `${jenisFound} (${bobot} ${satuan})`;
+        } else if (item.tipe === "Penarikan") {
           item.metode = els.editMetodeHistori.value;
           item.keterangan = els.editKetHistori.value || `Penarikan Saldo (${item.metode})`;
         }
@@ -1711,13 +1702,13 @@
         hitungUlangSaldoRealtime(id);
         muatDataNasabah();
         els.modalEdit.classList.remove("active");
-        alert("Transaksi histori berhasil diubah!");
       });
 
-      // INIT INITIAL DATA
+      // INIT AWAL
       muatKomponenDinamis();
-      simpanKeStorage();
       muatDataNasabah();
+      updateDiagramSampah();
+      updateDiagramBulan();
     });
   </script>
 </body>

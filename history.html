@@ -107,6 +107,26 @@
             <p>Visualisasi statistik total timbangan sampah berdasarkan kategori dan per bulan (Jan - Des).</p>
           </div>
 
+          <!-- BOX PROGRES MINYAK JELANTAH -->
+          <div class="jelantah-box-card">
+            <div class="jelantah-header">
+              <div class="jelantah-title">
+                <span>🛢️ Progres Setoran Minyak Jelantah</span>
+              </div>
+              <div class="jelantah-stats">
+                <span class="jelantah-val" id="totalJelantahVal">0</span>
+                <span class="jelantah-unit">Liter / kg</span>
+              </div>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="jelantahProgressBar"></div>
+            </div>
+            <div class="jelantah-footer-info">
+              <span id="jelantahStatusText">Pencapaian: 0% dari target minimal (10 Liter)</span>
+              <span id="jelantahTargetText">Target: 10 Liter</span>
+            </div>
+          </div>
+
           <section class="content-card" style="border: 2px solid #bfdbfe; background: #f4f8ff;">
             <div class="card-header-flex">
               <div>
@@ -238,6 +258,11 @@
       const labelChartNasabahKategori = document.getElementById("labelChartNasabahKategori");
       const labelChartNasabahBulan = document.getElementById("labelChartNasabahBulan");
       const tabelHistori = document.getElementById("tabelHistori");
+
+      // Elements Progres Minyak Jelantah
+      const totalJelantahVal = document.getElementById("totalJelantahVal");
+      const jelantahProgressBar = document.getElementById("jelantahProgressBar");
+      const jelantahStatusText = document.getElementById("jelantahStatusText");
 
       // Elements Navigasi Sidebar Mobile
       const btnToggleSidebar = document.getElementById("btnToggleSidebar");
@@ -407,7 +432,7 @@
         return "LAIN-LAIN (ELEKTRONIK)";
       };
 
-      const updateCharts = (data) => {
+      const updateChartsAndJelantah = (data) => {
         const ctxKategori = document.getElementById('chartKategori').getContext('2d');
         const ctxBulan = document.getElementById('chartBulan').getContext('2d');
 
@@ -425,6 +450,7 @@
         };
 
         const bulanData12 = Array(12).fill(0);
+        let totalJelantah = 0;
 
         if (data && data.histori && data.histori.length > 0) {
           data.histori.forEach(item => {
@@ -441,6 +467,11 @@
                 kategoriMap["LAIN-LAIN (ELEKTRONIK)"] += berat;
               }
 
+              // Hitung khusus minyak jelantah
+              if (katMapped === "MINYAK JELANTAH") {
+                totalJelantah += berat;
+              }
+
               const idxBulan = dapatkanIndeksBulan(item.waktu || item.tanggal);
               if (idxBulan !== -1) {
                 bulanData12[idxBulan] += berat;
@@ -449,6 +480,15 @@
           });
         }
 
+        // UPDATE UI PROGRES MINYAK JELANTAH
+        const targetJelantah = 10; // Target acuan (10 Liter/kg)
+        const persenJelantah = Math.min(Math.round((totalJelantah / targetJelantah) * 100), 100);
+
+        totalJelantahVal.innerText = totalJelantah.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+        jelantahProgressBar.style.width = persenJelantah + "%";
+        jelantahStatusText.innerText = `Pencapaian: ${persenJelantah}% dari target acuan (${targetJelantah} L)`;
+
+        // UPDATE CHART KATEGORI
         const catLabels = KATEGORI_UTAMA;
         const catData = KATEGORI_UTAMA.map(k => kategoriMap[k]);
 
@@ -488,6 +528,7 @@
           }
         });
 
+        // UPDATE CHART BULAN
         chartBulanInstance = new Chart(ctxBulan, {
           type: 'bar',
           data: {
@@ -543,7 +584,7 @@
           labelChartNasabahKategori.innerText = `📦 Timbangan per 7 Kategori (kg) - ${data.nama}`;
           labelChartNasabahBulan.innerText = `📅 Timbangan per Bulan (Jan - Des) (kg) - ${data.nama}`;
 
-          updateCharts(data);
+          updateChartsAndJelantah(data);
 
           if (!data.histori || data.histori.length === 0) {
             tabelHistori.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada catatan transaksi.</td></tr>`;
@@ -580,7 +621,7 @@
           labelChartNasabahBulan.innerText = "📅 Timbangan per Bulan (Jan - Des) (kg) - (Pilih Nasabah)";
           tabelHistori.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">Silakan cari ID atau Nama Nasabah di kolom atas untuk menampilkan riwayat transaksi.</td></tr>`;
           
-          updateCharts(null);
+          updateChartsAndJelantah(null);
         }
       };
 
