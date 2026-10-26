@@ -1,4 +1,4 @@
-    * {
+ * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -15,7 +15,7 @@
       --text-muted: #64748b;
       --accent-blue: #1d69d8;
       --header-height: 80px;
-      --sidebar-width: 240px;
+      --sidebar-width: 260px;
     }
 
     body {
@@ -26,18 +26,129 @@
       flex-direction: column;
     }
 
-    span b {
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: var(--text-main);
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      padding: 2px 6px;
+    /* OVERLAY KHUSUS SIDEBAR MOBILE */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(2px);
+      z-index: 350;
+      transition: opacity 0.3s ease;
     }
 
-    /* HEADER UTAMA */
-    .site-header {
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    /* SIDEBAR / NAVIGATION (POSISI DIPINDAHKAN PALING ATAS PADA Z-INDEX) */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      z-index: 400;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    /* BRAND / LOGO DI SIDEBAR PALING ATAS */
+    .sidebar-brand-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-bottom: 20px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .sidebar-logo-box {
+      width: 220px;
+      height: 220px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      margin-bottom: 12px;
+    }
+
+    .sidebar-logo-img {
       width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .sidebar-brand-title {
+      width: 100%;
+      font-size: 0.95rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1d69d8 0%, #0b4eab 100%);
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: #ffffff;
+      letter-spacing: 0.8px;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background-color: var(--accent-blue);
+      color: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background-color: var(--sidebar-hover);
+      color: white;
+    }
+
+    .nav-item.active {
+      background-color: var(--sidebar-active);
+      color: white;
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* HEADER UTAMA (GESER KE KANAN SESUAI LEBAR SIDEBAR DESKTOP) */
+    .site-header {
+      width: calc(100% - var(--sidebar-width));
       min-height: var(--header-height);
       background-color: var(--sidebar-bg);
       display: flex;
@@ -46,55 +157,11 @@
       padding: 12px 24px;
       position: fixed;
       top: 0;
-      left: 0;
+      left: var(--sidebar-width);
       z-index: 200;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
       gap: 16px;
-    }
-
-    .site-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .brand-logo-box {
-      width: 50px;
-      height: 50px;
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .brand-logo-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand-title {
-      font-size: 1.1rem;
-      font-weight: 850;
-      line-height: 1.2;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
-
-    .brand-subtitle {
-      font-size: 0.8rem;
-      opacity: 0.85;
-      margin-top: 2px;
-      color: #dbeafe;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .header-right-container {
@@ -102,17 +169,19 @@
       align-items: center;
       gap: 16px;
       margin-left: auto;
+      width: 100%;
+      justify-content: flex-end;
     }
 
     .header-search-box {
-      width: 260px;
+      width: 280px;
       display: flex;
       flex-direction: column;
     }
 
     .header-search-box input {
       width: 100%;
-      padding: 8px 14px;
+      padding: 10px 14px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 8px;
       font-size: 0.85rem;
@@ -171,6 +240,7 @@
     /* TOGGLE MENU HAMBURGER UNTUK MOBILE */
     .mobile-nav-toggle {
       display: none;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
       background: transparent;
       border: none;
       color: white;
@@ -180,86 +250,11 @@
       line-height: 1;
     }
 
-    /* OVERLAY KHUSUS SIDEBAR MOBILE */
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(2px);
-      z-index: 250;
-      transition: opacity 0.3s ease;
-    }
-
-    .sidebar-overlay.active {
-      display: block;
-    }
-
     /* APP LAYOUT */
     .app-container {
       display: flex;
       margin-top: var(--header-height);
       min-height: calc(100vh - var(--header-height));
-    }
-
-    .sidebar {
-      width: var(--sidebar-width);
-      background-color: var(--sidebar-bg);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 12px;
-      position: fixed;
-      top: var(--header-height);
-      bottom: 0;
-      left: 0;
-      overflow-y: auto;
-      z-index: 300;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s ease-in-out;
-    }
-
-    .nav-menu {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex-grow: 1;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      background-color: var(--accent-blue);
-      color: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .nav-item:hover {
-      background-color: var(--sidebar-hover);
-      color: white;
-    }
-
-    .nav-item.active {
-      background-color: var(--sidebar-active);
-      color: white;
-      font-weight: 600;
-    }
-
-    .nav-icon {
-      font-size: 1.1rem;
-      width: 20px;
-      text-align: center;
     }
 
     .main-wrapper {
@@ -690,31 +685,30 @@
       }
 
       .site-header {
-        position: relative;
-        flex-direction: column;
-        align-items: stretch;
+        position: fixed;
+        width: 100%;
+        left: 0;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         padding: 12px 16px;
+        border-left: none;
       }
 
       .header-right-container {
-        width: 100%;
-        justify-content: space-between;
-        margin-left: 0;
-        flex-wrap: wrap;
+        width: auto;
+        justify-content: flex-end;
+        margin-left: auto;
+        flex-wrap: nowrap;
         gap: 10px;
       }
 
       .header-search-box {
-        width: 100%;
-        order: 2;
-      }
-
-      .header-user-badge {
-        order: 1;
+        width: 180px;
       }
 
       .app-container {
-        margin-top: 0;
+        margin-top: var(--header-height);
         flex-direction: column;
       }
 
@@ -724,13 +718,12 @@
         top: 0;
         bottom: 0;
         left: 0;
-        width: 260px;
+        width: 270px;
         height: 100vh;
-        padding: 20px 12px;
-        z-index: 300;
+        padding: 20px 14px;
+        z-index: 400;
         transform: translateX(-100%);
         box-shadow: 4px 0 15px rgba(0,0,0,0.2);
-        border-top: none;
       }
 
       .sidebar.open {
@@ -784,17 +777,12 @@
     }
 
     @media (max-width: 576px) {
-      .brand-title {
-        font-size: 0.95rem;
+      .header-search-box {
+        width: 140px;
       }
 
-      .brand-subtitle {
-        font-size: 0.7rem;
-      }
-
-      .brand-logo-box {
-        width: 42px;
-        height: 42px;
+      .user-info {
+        display: none;
       }
 
       .global-card-right {

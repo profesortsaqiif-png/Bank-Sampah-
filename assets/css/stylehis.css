@@ -547,67 +547,97 @@
       z-index: 99;
     }
 
-     .jelantah-box-card {
-      background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%);
-      border: 2px solid #facc15;
-      border-radius: 12px;
-      padding: 20px;
+    .jelantah-modern-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #fde68a;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 6px 20px rgba(217, 119, 6, 0.08);
       margin-bottom: 24px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
     }
-    .jelantah-header {
+    .jelantah-modern-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 5px; height: 100%;
+      background: #d97706;
+    }
+    .jelantah-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .jelantah-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .jelantah-icon-box {
+      width: 48px; height: 48px;
+      background: #f59e0b;
+      color: #ffffff;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+    }
+    .jelantah-heading-text h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #78350f;
+      margin: 0 0 4px 0;
+    }
+    .jelantah-heading-text p {
+      font-size: 0.8rem;
+      color: #92400e;
+      margin: 0;
+      line-height: 1.4;
+    }
+    .jelantah-badge-pill {
+      background: #d97706;
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      box-shadow: 0 2px 6px rgba(217, 119, 6, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .jelantah-progress-wrapper {
+      background: #fef08a;
+      height: 14px;
+      border-radius: 7px;
+      overflow: hidden;
+      margin: 14px 0 10px 0;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .jelantah-progress-bar-fill {
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      height: 100%;
+      width: 0%;
+      border-radius: 7px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .jelantah-footer-status {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-    }
-    .jelantah-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #854d0e;
-      display: flex;
-      align-items: center;
+      font-size: 0.82rem;
+      color: #78350f;
+      font-weight: 600;
+      flex-wrap: wrap;
       gap: 8px;
     }
-    .jelantah-stats {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-    .jelantah-val {
-      font-size: 28px;
-      font-weight: 800;
-      color: #713f12;
-    }
-    .jelantah-unit {
-      font-size: 14px;
-      font-weight: 600;
-      color: #a16207;
-    }
-    .progress-bar-bg {
-      width: 100%;
-      height: 14px;
-      background-color: #fef9c3;
-      border: 1px solid #fde047;
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #eab308 0%, #ca8a04 100%);
-      width: 0%;
-      transition: width 0.5s ease-in-out;
-      border-radius: 20px;
-    }
-    .jelantah-footer-info {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: #854d0e;
-      margin-top: 6px;
-      font-weight: 600;
-    }
+    
 
     /* RESPONSIVE MEDIA QUERIES */
     @media (max-width: 992px) {

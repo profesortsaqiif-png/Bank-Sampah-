@@ -107,27 +107,32 @@
             <p>Visualisasi statistik total timbangan sampah berdasarkan kategori dan per bulan (Jan - Des).</p>
           </div>
 
-          <!-- BOX PROGRES MINYAK JELANTAH -->
-          <div class="jelantah-box-card">
-            <div class="jelantah-header">
-              <div class="jelantah-title">
-                <span>🛢️ Progres Setoran Minyak Jelantah</span>
+          <!-- KARTU PROGRAM MINYAK JELANTAH REDESIGN (UI PREMIUM) -->
+          <div class="jelantah-modern-card">
+            <div class="jelantah-header-flex">
+              <div class="jelantah-title-group">
+                <div class="jelantah-icon-box">🛢️</div>
+                <div class="jelantah-heading-text">
+                  <h3>Program Penukaran Minyak Jelantah</h3>
+                  <p>Kumpulkan 5 kg minyak jelantah khusus tabungan barang untuk mendapatkan 1 Minyak Goreng.</p>
+                </div>
               </div>
-              <div class="jelantah-stats">
-                <span class="jelantah-val" id="totalJelantahVal">0</span>
-                <span class="jelantah-unit">Liter / kg</span>
+              <div class="jelantah-badge-pill" id="badgeJelantahTersedia">
+                🎁 Jatah Tukar: 0 Minyak Goreng
               </div>
             </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" id="jelantahProgressBar"></div>
+
+            <div class="jelantah-progress-wrapper">
+              <div class="jelantah-progress-bar-fill" id="progressJelantahFill"></div>
             </div>
-            <div class="jelantah-footer-info">
-              <span id="jelantahStatusText">Pencapaian: 0% dari target minimal (10 Liter)</span>
-              <span id="jelantahTargetText">Target: 10 Liter</span>
+
+            <div class="jelantah-footer-status">
+              <span id="textStatusJelantah">Total Jelantah Khusus Minyak Goreng: 0.0 kg (Kemajuan: 0.0 / 5 kg)</span>
+              <span style="font-size: 0.75rem; color: #b45309;">Target Kelipatan: 5 kg = 1 Botol</span>
             </div>
           </div>
 
-          <section class="content-card" style="border: 2px solid #bfdbfe; background: #f4f8ff;">
+          <section class="content-card" style="border: 2px solid #bfdbfe; background: #f4f8ff; margin-top: 20px;">
             <div class="card-header-flex">
               <div>
                 <h2 class="section-title" style="background-color: #dbeafe; color: #1e40af; border-left-color: #1d69d8;">
@@ -171,6 +176,12 @@
             <div>
               <h2 class="section-title">📜 Histori Transaksi</h2>
               <p class="section-sub" id="judulHistoriNasabah" style="margin-bottom: 18px;">Pilih nasabah untuk melihat rincian transaksi</p>
+            </div>
+
+            <!-- CONTAINER REKAP HARIAN -->
+            <div id="containerRekapHarian" style="display:none; margin-bottom: 20px; background: #f8fafc; padding: 14px; border-radius: 8px;">
+              <div style="font-size: 12px; font-weight: 600; margin-bottom: 8px;">📅 Rekap Hasil Transaksi per Hari:</div>
+              <div id="listRekapHarian" style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px;"></div>
             </div>
 
             <div class="table-container">
@@ -244,7 +255,36 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v5")) || JSON.parse(localStorage.getItem("dbNasabahBSU_v3")) || {};
+      // Pembacaan Database Terpusat
+      const daftarNasabahMaster = [
+        { id: "1", kodeRekening: "01/BSU MB/BKL/VII/2025", nama: "Andi Intan" },
+        { id: "2", kodeRekening: "02/BSU MB/BKL/VII/2025", nama: "Safria" },
+        { id: "3", kodeRekening: "03/BSU MB/BKL/VII/2025", nama: "Hamsidar" },
+        { id: "4", kodeRekening: "04/BSU MB/BKL/VII/2025", nama: "Lasviwati Ginting" },
+        { id: "5", kodeRekening: "05/BSU MB/BKL/VII/2025", nama: "Umm Nisrianty" },
+        { id: "6", kodeRekening: "07/BSU MB/BKL/VII/2025", nama: "A. Putri Dwi Yanti" },
+        { id: "7", kodeRekening: "07/BSU MB/BKL/VII/2025", nama: "St. Farida Syam" },
+        { id: "8", kodeRekening: "08/BSU MB/BKL/VII/2025", nama: "Desi Saraswati" },
+        { id: "9", kodeRekening: "09/BSU MB/BKL/VII/2025", nama: "Hj. Hastia" },
+        { id: "10", kodeRekening: "10/BSU MB/BKL/VII/2025", nama: "Umm Nuraeni" }
+      ];
+
+      const buatDbAwal = () => {
+        const db = {};
+        daftarNasabahMaster.forEach((item) => {
+          db[item.id] = { 
+            id: item.id, 
+            kodeRekening: item.kodeRekening, 
+            nama: item.nama.trim(), 
+            totalPendapatan: 0, 
+            totalPenarikan: 0, 
+            histori: [] 
+          };
+        });
+        return db;
+      };
+
+      let dbNasabah = JSON.parse(localStorage.getItem("dbNasabahBSU_v6")) || buatDbAwal();
 
       const inputNasabah = document.getElementById("inputNasabah");
       const listRekomendasiNasabah = document.getElementById("listRekomendasiNasabah");
@@ -257,12 +297,14 @@
       const judulHistoriNasabah = document.getElementById("judulHistoriNasabah");
       const labelChartNasabahKategori = document.getElementById("labelChartNasabahKategori");
       const labelChartNasabahBulan = document.getElementById("labelChartNasabahBulan");
+      const containerRekapHarian = document.getElementById("containerRekapHarian");
+      const listRekapHarian = document.getElementById("listRekapHarian");
       const tabelHistori = document.getElementById("tabelHistori");
 
-      // Elements Progres Minyak Jelantah
-      const totalJelantahVal = document.getElementById("totalJelantahVal");
-      const jelantahProgressBar = document.getElementById("jelantahProgressBar");
-      const jelantahStatusText = document.getElementById("jelantahStatusText");
+      // Elemen Fitur Minyak Jelantah
+      const badgeJelantahTersedia = document.getElementById("badgeJelantahTersedia");
+      const progressJelantahFill = document.getElementById("progressJelantahFill");
+      const textStatusJelantah = document.getElementById("textStatusJelantah");
 
       // Elements Navigasi Sidebar Mobile
       const btnToggleSidebar = document.getElementById("btnToggleSidebar");
@@ -279,8 +321,8 @@
         sidebarOverlay.classList.remove("active");
       };
 
-      btnToggleSidebar.addEventListener("click", toggleMobileSidebar);
-      sidebarOverlay.addEventListener("click", closeMobileSidebar);
+      if (btnToggleSidebar) btnToggleSidebar.addEventListener("click", toggleMobileSidebar);
+      if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeMobileSidebar);
 
       // Elements Navigasi Tab
       const navHome = document.getElementById("navHome");
@@ -293,7 +335,6 @@
       let chartKategoriInstance = null;
       let chartBulanInstance = null;
 
-      // 7 Kategori Sampah Utama
       const KATEGORI_UTAMA = [
         "PLASTIK",
         "LOGAM",
@@ -314,13 +355,11 @@
         "#8b5cf6"
       ];
 
-      // Daftar 12 Bulan Lengkap
       const LIST_BULAN = [
         "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", 
         "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
       ];
 
-      // Event Listener Navigasi Menu
       navHome.addEventListener("click", () => {
         navHome.classList.add("active");
         navHistory.classList.remove("active");
@@ -368,6 +407,7 @@
         if (dbNasabah[pemisah]) return pemisah;
         for (let id in dbNasabah) {
           if (dbNasabah[id].nama.toLowerCase() === kw) return id;
+          if (dbNasabah[id].kodeRekening && dbNasabah[id].kodeRekening.toLowerCase() === kw) return id;
         }
         return null;
       };
@@ -378,9 +418,9 @@
         if (data && data.histori) {
           data.histori.forEach(item => {
             const tipe = item.tipe || (item.kategori ? 'Penimbangan' : '');
-            if (tipe === 'Penimbangan' || (item.nominal > 0 && !item.metode)) {
+            if (tipe === 'Penimbangan' || (item.nominal > 0 && !item.metode && tipe !== 'Penukaran')) {
               pendapatan += (item.nominal || item.totalRupiah || 0);
-            } else if (tipe === 'Penarikan' || item.metode) {
+            } else if (tipe === 'Penarikan' || tipe === 'Penukaran' || item.metode) {
               penarikan += (item.nominal || item.totalRupiah || 0);
             }
           });
@@ -422,17 +462,51 @@
         const txt = inputKat.toUpperCase().trim();
         
         if (txt.includes("PLASTIK") || txt.includes("PET") || txt.includes("HDPE")) return "PLASTIK";
-        if (txt.includes("LOGAM") || txt.includes("BESI") || txt.includes("SENG") || txt.includes("TEMBAGA") || txt.includes("ALUMNIUM")) return "LOGAM";
-        if (txt.includes("KERTAS") || txt.includes("KARTON") || txt.includes("DUPLEX") || txt.includes("KORAN") || txt.includes("RAK TELUR") || txt.includes("EGG TRAY")) return "KERTAS";
+        if (txt.includes("LOGAM") || txt.includes("BESI") || txt.includes("SENG") || txt.includes("TEMBAGA") || txt.includes("ALUMINIUM")) return "LOGAM";
+        if (txt.includes("KERTAS") || txt.includes("KARTON") || txt.includes("DUPLEX") || txt.includes("KORAN") || txt.includes("RAK TELUR")) return "KERTAS";
         if (txt.includes("KACA") || txt.includes("BELING")) return "KACA";
         if (txt.includes("JELANTAH") || txt.includes("MINYAK")) return "MINYAK JELANTAH";
-        if (txt.includes("ORGANIK") || txt.includes("KOMPOS") || txt.includes("MAKANAN")) return "ORGANIK";
+        if (txt.includes("ORGANIK") || txt.includes("KOMPOS")) return "ORGANIK";
         if (txt.includes("AKI") || txt.includes("ACCU") || txt.includes("ELEKTRONIK")) return "LAIN-LAIN (ELEKTRONIK)";
         
         return "LAIN-LAIN (ELEKTRONIK)";
       };
 
-      const updateChartsAndJelantah = (data) => {
+      // FUNGSI PERHITUNGAN DAN PENGUPDATE-AN JELANTAH DENGAN DESIGN ELEGAN
+      const updateFiturMinyakJelantah = (data) => {
+        if (!data) {
+          badgeJelantahTersedia.innerHTML = "🎁 Jatah Tukar: 0 Minyak Goreng";
+          progressJelantahFill.style.width = "0%";
+          textStatusJelantah.innerText = "Total Jelantah Khusus Minyak Goreng: 0.0 kg (Kemajuan: 0.0 / 5 kg)";
+          return;
+        }
+
+        let totalBobotJelantah = 0;
+        let totalMinyakDitukar = 0;
+
+        if (data.histori) {
+          data.histori.forEach(item => {
+            if (item.tipe === 'Penimbangan' && item.jenis && item.jenis === 'MINYAK JELANTAH - Minyak Jelantah (Tabungan Minyak Goreng)') {
+              totalBobotJelantah += parseFloat(item.bobot || 0);
+            }
+            if (item.tipe === 'Penukaran' && item.keterangan && item.keterangan.includes('Penukaran 5kg Jelantah')) {
+              totalMinyakDitukar += 1;
+            }
+          });
+        }
+
+        const bobotTerpakai = totalMinyakDitukar * 5;
+        const sisaJelantah = Math.max(0, totalBobotJelantah - bobotTerpakai);
+        const jatahTukar = Math.floor(sisaJelantah / 5);
+        const progresKg = (sisaJelantah % 5);
+        const persentase = (progresKg / 5) * 100;
+
+        badgeJelantahTersedia.innerHTML = `🎁 Jatah Tukar: <b>${jatahTukar} Minyak Goreng</b>`;
+        progressJelantahFill.style.width = `${persentase}%`;
+        textStatusJelantah.innerText = `Total Jelantah Khusus Minyak Goreng: ${sisaJelantah.toFixed(1)} kg (Kemajuan: ${progresKg.toFixed(1)} / 5 kg)`;
+      };
+
+      const updateCharts = (data) => {
         const ctxKategori = document.getElementById('chartKategori').getContext('2d');
         const ctxBulan = document.getElementById('chartBulan').getContext('2d');
 
@@ -450,26 +524,20 @@
         };
 
         const bulanData12 = Array(12).fill(0);
-        let totalJelantah = 0;
 
         if (data && data.histori && data.histori.length > 0) {
           data.histori.forEach(item => {
             const isSetor = (item.tipe === 'Penimbangan') || (!item.tipe && item.nominal > 0 && !item.metode);
             
             if (isSetor) {
-              const rawKat = item.kategori || item.jenis || 'LAIN-LAIN (ELEKTRONIK)';
+              const rawKat = item.jenis || item.kategori || 'LAIN-LAIN (ELEKTRONIK)';
               const katMapped = petakanKategori(rawKat);
-              const berat = parseFloat(item.berat || item.bobot || item.kg || 1);
+              const berat = parseFloat(item.bobot || item.berat || item.kg || 0);
               
               if (kategoriMap.hasOwnProperty(katMapped)) {
                 kategoriMap[katMapped] += berat;
               } else {
                 kategoriMap["LAIN-LAIN (ELEKTRONIK)"] += berat;
-              }
-
-              // Hitung khusus minyak jelantah
-              if (katMapped === "MINYAK JELANTAH") {
-                totalJelantah += berat;
               }
 
               const idxBulan = dapatkanIndeksBulan(item.waktu || item.tanggal);
@@ -479,14 +547,6 @@
             }
           });
         }
-
-        // UPDATE UI PROGRES MINYAK JELANTAH
-        const targetJelantah = 10; // Target acuan (10 Liter/kg)
-        const persenJelantah = Math.min(Math.round((totalJelantah / targetJelantah) * 100), 100);
-
-        totalJelantahVal.innerText = totalJelantah.toLocaleString("id-ID", { maximumFractionDigits: 2 });
-        jelantahProgressBar.style.width = persenJelantah + "%";
-        jelantahStatusText.innerText = `Pencapaian: ${persenJelantah}% dari target acuan (${targetJelantah} L)`;
 
         // UPDATE CHART KATEGORI
         const catLabels = KATEGORI_UTAMA;
@@ -566,6 +626,26 @@
         });
       };
 
+      const rekapHarian = (histori) => {
+        const rekap = {};
+        if (!histori) return rekap;
+        histori.forEach(item => {
+          const waktu = item.waktu || item.tanggal || '-';
+          if (!rekap[waktu]) {
+            rekap[waktu] = { timbang: 0, tarik: 0 };
+          }
+          const isSetor = (item.tipe === 'Penimbangan') || (!item.tipe && item.nominal > 0 && !item.metode);
+          const nominalVal = item.nominal || item.totalRupiah || 0;
+          
+          if (isSetor) {
+            rekap[waktu].timbang += (parseFloat(nominalVal) || 0);
+          } else if (item.tipe === 'Penarikan' || item.metode) {
+            rekap[waktu].tarik += (parseFloat(nominalVal) || 0);
+          }
+        });
+        return rekap;
+      };
+
       const tampilkanData = () => {
         const idFound = cariIdNasabah(inputNasabah.value);
 
@@ -584,21 +664,66 @@
           labelChartNasabahKategori.innerText = `📦 Timbangan per 7 Kategori (kg) - ${data.nama}`;
           labelChartNasabahBulan.innerText = `📅 Timbangan per Bulan (Jan - Des) (kg) - ${data.nama}`;
 
-          updateChartsAndJelantah(data);
+          updateCharts(data);
+          updateFiturMinyakJelantah(data);
 
           if (!data.histori || data.histori.length === 0) {
+            containerRekapHarian.style.display = "none";
             tabelHistori.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">Belum ada catatan transaksi.</td></tr>`;
           } else {
+            const totalHarian = rekapHarian(data.histori);
+            if (Object.keys(totalHarian).length > 0) {
+              containerRekapHarian.style.display = "block";
+              listRekapHarian.innerHTML = Object.entries(totalHarian)
+                .map(([tgl, rData]) => {
+                  let htmlBadges = [];
+                  if (rData.timbang > 0) {
+                    htmlBadges.push(`<span style="background:#dcfce7; color:#15803d; padding:3px 8px; border-radius:4px; border:1px solid #bbf7d0; font-weight:bold;">⚖️ Penimbangan: Rp ${rData.timbang.toLocaleString('id-ID')}</span>`);
+                  }
+                  if (rData.tarik > 0) {
+                    htmlBadges.push(`<span style="background:#fee2e2; color:#b91c1c; padding:3px 8px; border-radius:4px; border:1px solid #fca5a5; font-weight:bold;">💵 Penarikan: Rp ${rData.tarik.toLocaleString('id-ID')}</span>`);
+                  }
+                  return `
+                    <div style="background:#ffffff; padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:8px;">
+                      <span style="font-weight:bold; color:#334155;">📅 ${tgl}:</span>
+                      ${htmlBadges.join('')}
+                    </div>
+                  `;
+                })
+                .join('');
+            } else {
+              containerRekapHarian.style.display = "none";
+            }
+
             let html = "";
             for (let i = data.histori.length - 1; i >= 0; i--) {
               const item = data.histori[i];
               const isSetor = (item.tipe === 'Penimbangan') || (!item.tipe && item.nominal > 0 && !item.metode);
-              const badgeClass = isSetor ? 'badge-setor' : 'badge-tarik';
-              const labelTipe = isSetor ? 'Penimbangan' : 'Penarikan';
-              const tanda = isSetor ? '+' : '-';
-              const warna = isSetor ? '#166534' : '#991b1b';
+              const isPenukaran = item.tipe === 'Penukaran';
+
+              let badgeClass = 'badge-tarik';
+              let labelTipe = item.tipe || 'Penarikan';
+              let tanda = '-';
+              let warna = '#991b1b';
+
+              if (isSetor) {
+                badgeClass = 'badge-setor';
+                labelTipe = item.tipe || 'Penimbangan';
+                tanda = '+';
+                warna = '#166534';
+              } else if (isPenukaran) {
+                badgeClass = 'badge-setor';
+                labelTipe = 'Penukaran';
+                tanda = '🎁';
+                warna = '#ea580c';
+              }
+
               const nominalVal = item.nominal || item.totalRupiah || 0;
-              const ket = item.keterangan || item.jenis || (item.metode ? `Penarikan via ${item.metode}` : '-');
+              
+              let ket = item.jenis || item.keterangan || (item.metode ? `Penarikan via ${item.metode}` : '-');
+              if (item.bobot && isSetor && !ket.includes('kg')) {
+                ket += ` (${item.bobot} kg)`;
+              }
               const waktu = item.waktu || item.tanggal || '-';
 
               html += `
@@ -619,11 +744,19 @@
           judulHistoriNasabah.innerText = "Pilih nasabah untuk melihat rincian transaksi";
           labelChartNasabahKategori.innerText = "📦 Timbangan per 7 Kategori (kg) - (Pilih Nasabah)";
           labelChartNasabahBulan.innerText = "📅 Timbangan per Bulan (Jan - Des) (kg) - (Pilih Nasabah)";
+          containerRekapHarian.style.display = "none";
           tabelHistori.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 28px;">Silakan cari ID atau Nama Nasabah di kolom atas untuk menampilkan riwayat transaksi.</td></tr>`;
           
-          updateChartsAndJelantah(null);
+          updateCharts(null);
+          updateFiturMinyakJelantah(null);
         }
       };
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramId = urlParams.get('nasabah') || urlParams.get('id');
+      if (paramId && dbNasabah[paramId]) {
+        inputNasabah.value = `${dbNasabah[paramId].id}. ${dbNasabah[paramId].nama}`;
+      }
 
       inputNasabah.addEventListener("input", tampilkanData);
       muatDatalist();
